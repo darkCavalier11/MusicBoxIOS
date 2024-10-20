@@ -33,7 +33,7 @@
 		955C77D12CC4BD1F0066BE43 /* Exceptions for "MusicBoxApp" folder in "MusicBoxApp" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
-				Info.plist,
+				Resources/Info.plist,
 			);
 			target = 955C77A52CC4BD1E0066BE43 /* MusicBoxApp */;
 		};
@@ -291,7 +291,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5729K49X7Z;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = MusicBoxApp/Info.plist;
+				INFOPLIST_FILE = MusicBoxApp/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -318,7 +318,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 5729K49X7Z;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = MusicBoxApp/Info.plist;
+				INFOPLIST_FILE = MusicBoxApp/Resources/Info.plist;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
