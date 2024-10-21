@@ -6,6 +6,12 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		955C78532CC518F60066BE43 /* MusicBox in Frameworks */ = {isa = PBXBuildFile; productRef = 955C78522CC518F60066BE43 /* MusicBox */; };
+		955C78552CC51DCC0066BE43 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 955C78542CC51DCC0066BE43 /* RxSwift */; };
+		955C78572CC51DFD0066BE43 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 955C78562CC51DFD0066BE43 /* RxCocoa */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		955C77C02CC4BD1F0066BE43 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -65,6 +71,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				955C78572CC51DFD0066BE43 /* RxCocoa in Frameworks */,
+				955C78552CC51DCC0066BE43 /* RxSwift in Frameworks */,
+				955C78532CC518F60066BE43 /* MusicBox in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -91,6 +100,7 @@
 				955C77A82CC4BD1E0066BE43 /* MusicBoxApp */,
 				955C77C22CC4BD1F0066BE43 /* MusicBoxAppTests */,
 				955C77CC2CC4BD1F0066BE43 /* MusicBoxAppUITests */,
+				955C784B2CC4EF070066BE43 /* Frameworks */,
 				955C77A72CC4BD1E0066BE43 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -103,6 +113,13 @@
 				955C77C92CC4BD1F0066BE43 /* MusicBoxAppUITests.xctest */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		955C784B2CC4EF070066BE43 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -125,6 +142,9 @@
 			);
 			name = MusicBoxApp;
 			packageProductDependencies = (
+				955C78522CC518F60066BE43 /* MusicBox */,
+				955C78542CC51DCC0066BE43 /* RxSwift */,
+				955C78562CC51DFD0066BE43 /* RxCocoa */,
 			);
 			productName = MusicBoxApp;
 			productReference = 955C77A62CC4BD1E0066BE43 /* MusicBoxApp.app */;
@@ -208,6 +228,10 @@
 			);
 			mainGroup = 955C779D2CC4BD1E0066BE43;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				955C78462CC4E33E0066BE43 /* XCRemoteSwiftPackageReference "RxSwift" */,
+				955C78512CC518E20066BE43 /* XCRemoteSwiftPackageReference "MusicBoxSwift" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 955C77A72CC4BD1E0066BE43 /* Products */;
 			projectDirPath = "";
@@ -567,6 +591,43 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		955C78462CC4E33E0066BE43 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.8.0;
+			};
+		};
+		955C78512CC518E20066BE43 /* XCRemoteSwiftPackageReference "MusicBoxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/darkCavalier11/MusicBoxSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		955C78522CC518F60066BE43 /* MusicBox */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 955C78512CC518E20066BE43 /* XCRemoteSwiftPackageReference "MusicBoxSwift" */;
+			productName = MusicBox;
+		};
+		955C78542CC51DCC0066BE43 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 955C78462CC4E33E0066BE43 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
+		};
+		955C78562CC51DFD0066BE43 /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 955C78462CC4E33E0066BE43 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 955C779E2CC4BD1E0066BE43 /* Project object */;
 }
