@@ -30,7 +30,6 @@ class HomeViewController: UIViewController {
     musicSearchTypeAheadTableView.bindWithViewModel(viewModel: viewModel)
     musicSearchFieldController.bindWithViewModel(viewModel: viewModel)
     setupSearchScreenTableViewConstraints()
-
   }
   
   func setupSearchScreenTableViewConstraints() {

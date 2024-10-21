@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import MusicBox
 
 class MusicItemsTableView: UITableView {
   static let reusableIdentifier = "MusicItemTableViewCell"
@@ -25,7 +26,6 @@ class MusicItemTableViewCell: UITableViewCell {
   private var musicThumbnail: UIImageView = {
     let imageView = UIImageView()
     imageView.translatesAutoresizingMaskIntoConstraints = false
-    imageView.image = UIImage(systemName: "plus")
     imageView.contentMode = .scaleAspectFill
     return imageView
   }()
@@ -34,7 +34,6 @@ class MusicItemTableViewCell: UITableViewCell {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.numberOfLines = 1
-    label.text = "Mahua Pani"
     label.font = .preferredFont(forTextStyle: .headline)
     return label
   }()
@@ -42,7 +41,6 @@ class MusicItemTableViewCell: UITableViewCell {
   private var musicPublisherTitle: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.text = "Saregama"
     label.font = .preferredFont(forTextStyle: .caption2)
     label.numberOfLines = 1
     label.textColor = .secondaryLabel
@@ -52,16 +50,29 @@ class MusicItemTableViewCell: UITableViewCell {
   private var musicDuration: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.text = "04:55"
     label.font = .preferredFont(forTextStyle: .footnote)
     label.textColor = .secondaryLabel
     return label
   }()
   
+  var musicItem: MusicItem?
+  
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     let musicCellContainer = UIView()
     musicCellContainer.translatesAutoresizingMaskIntoConstraints = false
+    
+    guard let musicItem = musicItem else { return }
+    musicTitle.text = musicItem.title
+    musicPublisherTitle.text = musicItem.publisherTitle
+    musicDuration.text = musicItem.runningDurationInSeconds.convertToDuration()
+    
+    DispatchQueue.global().async { [weak self] in
+      guard let url = URL(string: musicItem.smallestThumbnail) else { return }
+      guard let imageData = try? Data(contentsOf: url) else { return }
+      self?.musicThumbnail.image = UIImage(data: imageData)
+    }
+    
     musicCellContainer.addSubview(musicThumbnail)
     musicCellContainer.addSubview(musicTitle)
     musicCellContainer.addSubview(musicPublisherTitle)
@@ -94,5 +105,17 @@ class MusicItemTableViewCell: UITableViewCell {
   
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
+  }
+}
+
+private extension Int {
+  func convertToDuration() -> String {
+    var duration = self
+    let seconds = duration % 60
+    duration /= 60
+    let minutes = duration % 60
+    duration /= 60
+    let hours = duration
+    return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
   }
 }
