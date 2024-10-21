@@ -1,5 +1,5 @@
 //
-//  HomeViewModel.swift
+//  MusicViewModel.swift
 //  MusicBoxApp
 //
 //  Created by Sumit Pradhan on 21/10/24.
@@ -12,24 +12,23 @@ import RxCocoa
 
 protocol MusicViewModel {
   var isFetchingMusicList: Observable<Bool> { get }
-  func getMusicList(query: MusicListQuery) -> Observable<[MusicItem]>
+  func getMusicList(query: MusicListQueryType) -> Observable<[MusicItem]>
 }
 
-enum MusicListQuery {
+enum MusicListQueryType {
   case defaultMusicList
   case withSearchQuery(query: String)
 }
 
 final class HomeMusicViewModel: MusicViewModel {
   let mb = MusicBox()
-  private let homeScreenMusicListRelay = BehaviorRelay(value: [MusicItem]())
   private let isFetchingMusicListRelay = BehaviorRelay(value: false)
   
   var isFetchingMusicList: Observable<Bool> {
     isFetchingMusicListRelay.asObservable()
   }
   
-  func getMusicList(query: MusicListQuery) -> Observable<[MusicItem]> {
+  func getMusicList(query: MusicListQueryType) -> Observable<[MusicItem]> {
     Observable.create { observer in
       let task = Task { [weak self] in
         guard let self = self else { return }
