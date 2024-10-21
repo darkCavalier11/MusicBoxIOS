@@ -9,69 +9,29 @@ import UIKit
 import RxSwift
 
 class HomeViewController: UIViewController {
-  private var searchController = UISearchController()
-  private var searchBar = UISearchBar()
+  private var musicSearchFieldController = MusicSearchFieldController()
   private let viewModel = HomeSearchViewModel()
   let disposeBag = DisposeBag()
-  
-  private let searchScreenTableView = SearchScreenTableView()
+  private let musicSearchTypeAheadTableView = MusicSearchTypeAheadTableView()
   
   override func viewDidLoad() {
     super.viewDidLoad()
     navigationItem.title = "Welcome"
-    searchController.searchBar.delegate = self
-    navigationItem.searchController = searchController
-    view.addSubview(searchScreenTableView)
-    bindViewModelToSearchScreenTableView()
-    setupSearchScreenTableViewConstraints()
-  }
-  
-  func bindViewModelToSearchScreenTableView() {
-    searchScreenTableView.delegate = nil
-    searchScreenTableView.dataSource = nil
+    navigationItem.searchController = musicSearchFieldController
+    view.addSubview(musicSearchTypeAheadTableView)
     
-    viewModel.hideSearchView.bind(to: searchScreenTableView.rx.isHidden).disposed(by: disposeBag)
-    viewModel
-      .typeAheadSearchResult
-      .bind(
-        to: searchScreenTableView.rx.items(
-          cellIdentifier: SearchScreenTableView.reuseIdentifier,
-          cellType: SearchScreenTableViewCell.self
-        )
-      ) { row, element, cell in
-        cell.textLabel?.text = element
-      }
-      .disposed(by: disposeBag)
-    
+    musicSearchTypeAheadTableView.bindWithViewModel(viewModel: viewModel)
+    musicSearchFieldController.bindWithViewModel(viewModel: viewModel)
     setupSearchScreenTableViewConstraints()
   }
   
   func setupSearchScreenTableViewConstraints() {
-    searchScreenTableView.translatesAutoresizingMaskIntoConstraints = false
+    musicSearchTypeAheadTableView.translatesAutoresizingMaskIntoConstraints = false
     NSLayoutConstraint.activate([
-      view.topAnchor.constraint(equalTo: searchScreenTableView.topAnchor),
-      view.leadingAnchor.constraint(equalTo: searchScreenTableView.leadingAnchor),
-      view.trailingAnchor.constraint(equalTo: searchScreenTableView.trailingAnchor),
-      view.bottomAnchor.constraint(equalTo: searchScreenTableView.bottomAnchor),
+      view.topAnchor.constraint(equalTo: musicSearchTypeAheadTableView.topAnchor),
+      view.leadingAnchor.constraint(equalTo: musicSearchTypeAheadTableView.leadingAnchor),
+      view.trailingAnchor.constraint(equalTo: musicSearchTypeAheadTableView.trailingAnchor),
+      view.bottomAnchor.constraint(equalTo: musicSearchTypeAheadTableView.bottomAnchor),
     ])
-  }
-}
-
-extension HomeViewController: UISearchBarDelegate {
-  func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-    viewModel.searchTextDidChange(searchText)
-  }
-  
-  func searchBarTextDidBeginEditing(_ searchBar: UISearchBar) {
-    viewModel.becomeFirstResponder()
-  }
-  
-  func searchBarTextDidEndEditing(_ searchBar: UISearchBar) {
-    guard let text = searchBar.text else { return }
-    viewModel.searchButtonTapped(text)
-  }
-  
-  func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
-    viewModel.resignFirstResponder()
   }
 }

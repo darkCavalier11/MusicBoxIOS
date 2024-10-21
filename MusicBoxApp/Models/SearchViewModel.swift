@@ -17,6 +17,7 @@ protocol SearchViewModel {
   func becomeFirstResponder()
   func resignFirstResponder()
   func searchTextDidChange(_ text: String)
+  func getSearchResults(_ text: String)
 }
 
 final class HomeSearchViewModel: SearchViewModel {
@@ -74,7 +75,7 @@ final class HomeSearchViewModel: SearchViewModel {
     }
   }
   
-  func searchButtonTapped(_ text: String) {
+  func getSearchResults(_ text: String) {
     
   }
 }
