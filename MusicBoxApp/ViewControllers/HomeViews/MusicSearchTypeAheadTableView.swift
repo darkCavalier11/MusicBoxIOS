@@ -36,14 +36,6 @@ class MusicSearchTypeAheadTableView: UITableView {
         cell.textLabel?.text = element
       }
       .disposed(by: disposeBag)
-    
-    self
-      .rx
-      .modelSelected(String.self)
-      .bind { query in
-        viewModel.getSearchResults(query)
-      }
-      .disposed(by: disposeBag)
   }
 }
 
