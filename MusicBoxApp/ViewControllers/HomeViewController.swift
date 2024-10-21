@@ -21,11 +21,16 @@ class HomeViewController: UIViewController {
     navigationItem.title = "Welcome"
     searchController.searchBar.delegate = self
     navigationItem.searchController = searchController
-    viewModel.hideSearchView.bind(to: searchScreenTableView.rx.isHidden).disposed(by: disposeBag)
     view.addSubview(searchScreenTableView)
+    bindViewModelToSearchScreenTableView()
+    setupSearchScreenTableViewConstraints()
+  }
+  
+  func bindViewModelToSearchScreenTableView() {
     searchScreenTableView.delegate = nil
     searchScreenTableView.dataSource = nil
     
+    viewModel.hideSearchView.bind(to: searchScreenTableView.rx.isHidden).disposed(by: disposeBag)
     viewModel
       .typeAheadSearchResult
       .bind(
@@ -38,6 +43,10 @@ class HomeViewController: UIViewController {
       }
       .disposed(by: disposeBag)
     
+    setupSearchScreenTableViewConstraints()
+  }
+  
+  func setupSearchScreenTableViewConstraints() {
     searchScreenTableView.translatesAutoresizingMaskIntoConstraints = false
     NSLayoutConstraint.activate([
       view.topAnchor.constraint(equalTo: searchScreenTableView.topAnchor),
