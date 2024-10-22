@@ -16,12 +16,22 @@ class SearchViewController: UIViewController {
   
   override func viewDidLoad() {
     super.viewDidLoad()
+    self.navigationItem.leftBarButtonItem = UIBarButtonItem(
+      image: UIImage(systemName: "chevron.left"),
+      style: .plain,
+      target: self,
+      action: #selector(popViewController)
+    )
     navigationItem.largeTitleDisplayMode = .never
     view.addSubview(musicSearchTypeAheadTableView)
     view.addSubview(musicSearchBar)
     musicSearchTypeAheadTableView.bindWithViewModel(viewModel: searchViewModel)
     musicSearchBar.bindWithViewModel(viewModel: searchViewModel)
     setupSearchScreenTableViewConstraints()
+  }
+  
+  @objc func popViewController() {
+    navigationController?.popViewController(animated: true)
   }
   
   override func viewDidAppear(_ animated: Bool) {
@@ -32,7 +42,7 @@ class SearchViewController: UIViewController {
   func setupSearchScreenTableViewConstraints() {
     musicSearchTypeAheadTableView.translatesAutoresizingMaskIntoConstraints = false
     NSLayoutConstraint.activate([
-      view.topAnchor.constraint(equalTo: musicSearchTypeAheadTableView.topAnchor),
+      musicSearchBar.bottomAnchor.constraint(equalTo: musicSearchTypeAheadTableView.topAnchor),
       view.leadingAnchor.constraint(equalTo: musicSearchTypeAheadTableView.leadingAnchor),
       view.trailingAnchor.constraint(equalTo: musicSearchTypeAheadTableView.trailingAnchor),
       view.bottomAnchor.constraint(equalTo: musicSearchTypeAheadTableView.bottomAnchor),
