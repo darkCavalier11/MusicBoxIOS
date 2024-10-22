@@ -56,14 +56,14 @@ class MusicItemTableViewCell: UITableViewCell {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.numberOfLines = 2
-    label.font = .preferredFont(forTextStyle: .headline)
+    label.font = .preferredCustomFont(forTextStyle: .headline)
     return label
   }()
   
   private var musicPublisherTitle: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.font = .preferredFont(forTextStyle: .caption2)
+    label.font = .preferredCustomFont(forTextStyle: .caption2)
     label.numberOfLines = 1
     label.textColor = .secondaryLabel
     return label
@@ -72,7 +72,7 @@ class MusicItemTableViewCell: UITableViewCell {
   private var musicDuration: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.font = .preferredFont(forTextStyle: .footnote)
+    label.font = .preferredCustomFont(forTextStyle: .caption1)
     label.textColor = .secondaryLabel
     return label
   }()
