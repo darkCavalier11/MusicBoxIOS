@@ -10,7 +10,8 @@ import RxSwift
 
 class HomeViewController: UIViewController {
   private var musicSearchFieldController = MusicSearchFieldController()
-  private let viewModel = HomeSearchViewModel()
+  private let searchViewModel = HomeSearchViewModel()
+  private let homeMusicViewModel = HomeMusicViewModel()
   let disposeBag = DisposeBag()
   private let musicSearchTypeAheadTableView = MusicSearchTypeAheadTableView()
   private let musicItemsTableView = MusicItemsTableView()
@@ -18,17 +19,15 @@ class HomeViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     view.addSubview(musicItemsTableView)
-    musicItemsTableView.delegate = self
-    musicItemsTableView.dataSource = self
     setupMusicItemsTableViewConstraints()
     
     navigationItem.title = "Welcome"
     navigationItem.searchController = musicSearchFieldController
     view.addSubview(musicSearchTypeAheadTableView)
     
-    
-    musicSearchTypeAheadTableView.bindWithViewModel(viewModel: viewModel)
-    musicSearchFieldController.bindWithViewModel(viewModel: viewModel)
+    musicSearchTypeAheadTableView.bindWithViewModel(viewModel: searchViewModel)
+    musicSearchFieldController.bindWithViewModel(viewModel: searchViewModel)
+    musicItemsTableView.bindWithViewModel(viewModel: homeMusicViewModel)
     setupSearchScreenTableViewConstraints()
   }
   
@@ -53,13 +52,3 @@ class HomeViewController: UIViewController {
   }
 }
 
-extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
-  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-    10
-  }
-  
-  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: MusicItemsTableView.reusableIdentifier, for: indexPath)
-    return cell
-  }
-}
