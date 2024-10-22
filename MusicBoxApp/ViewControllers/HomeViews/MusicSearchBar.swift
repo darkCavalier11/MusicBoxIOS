@@ -12,6 +12,7 @@ class MusicSearchBar: UISearchBar {
   private let disposeBag = DisposeBag()
   override init(frame: CGRect) {
     super.init(frame: frame)
+    self.searchTextField.font = .preferredCustomFont(forTextStyle: .body)
   }
   
   required init?(coder: NSCoder) {

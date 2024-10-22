@@ -41,6 +41,7 @@ class MusicSearchTypeAheadTableView: UITableView {
 class SearchScreenTableViewCell: UITableViewCell {
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
+    self.textLabel?.font = .preferredCustomFont(forTextStyle: .body)
   }
   
   required init?(coder: NSCoder) {

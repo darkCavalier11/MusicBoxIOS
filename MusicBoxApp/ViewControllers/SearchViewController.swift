@@ -13,6 +13,7 @@ class SearchViewController: UIViewController {
   private let disposeBag = DisposeBag()
   private let musicSearchTypeAheadTableView = MusicSearchTypeAheadTableView()
   private let musicSearchBar = MusicSearchBar()
+  private let activityIndicator = UIActivityIndicatorView()
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -25,6 +26,10 @@ class SearchViewController: UIViewController {
     navigationItem.largeTitleDisplayMode = .never
     view.addSubview(musicSearchTypeAheadTableView)
     view.addSubview(musicSearchBar)
+    
+    musicSearchBar.addSubview(activityIndicator)
+    activityIndicator.startAnimating()
+    view.addSubview(UIProgressView())
     musicSearchTypeAheadTableView.bindWithViewModel(viewModel: searchViewModel)
     musicSearchBar.bindWithViewModel(viewModel: searchViewModel)
     setupSearchScreenTableViewConstraints()
@@ -49,11 +54,15 @@ class SearchViewController: UIViewController {
     ])
     
     musicSearchBar.translatesAutoresizingMaskIntoConstraints = false
+    activityIndicator.translatesAutoresizingMaskIntoConstraints = false
     NSLayoutConstraint.activate([
       musicSearchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
       musicSearchBar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
       musicSearchBar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
       musicSearchBar.heightAnchor.constraint(equalToConstant: 44),
+      
+      activityIndicator.trailingAnchor.constraint(equalTo: musicSearchBar.searchTextField.trailingAnchor, constant: -5),
+      activityIndicator.centerYAnchor.constraint(equalTo: musicSearchBar.centerYAnchor),
     ])
   }
 }
