@@ -51,4 +51,8 @@ final class HomeMusicViewModel: MusicViewModel {
   }
 }
 
-extension MusicItem: Sendable {}
+extension MusicItem: Sendable {
+  public static var defaultAspectRatio: CGFloat  {
+    360/202
+  }
+}

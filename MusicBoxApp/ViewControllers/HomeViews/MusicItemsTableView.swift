@@ -15,7 +15,7 @@ class MusicItemsTableView: UITableView {
   override init(frame: CGRect, style: UITableView.Style) {
     super.init(frame: frame, style: style)
     register(MusicItemTableViewCell.self, forCellReuseIdentifier: Self.reusableIdentifier)
-    self.rowHeight = 100
+    self.rowHeight = 90
     self.separatorStyle = .none
   }
   
@@ -28,7 +28,7 @@ class MusicItemsTableView: UITableView {
     self.delegate = nil
     
     viewModel
-      .getMusicList(query: .withSearchQuery(query: "Mahua pani"))
+      .getMusicList(query: .withSearchQuery(query: "One Direction songs"))
       .subscribe(on: MainScheduler.instance)
       .bind(
         to: self.rx.items(
@@ -48,13 +48,14 @@ class MusicItemTableViewCell: UITableViewCell {
     imageView.translatesAutoresizingMaskIntoConstraints = false
     imageView.contentMode = .scaleAspectFill
     imageView.clipsToBounds = true
+    imageView.layer.cornerRadius = 6
     return imageView
   }()
   
   private var musicTitle: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.numberOfLines = 1
+    label.numberOfLines = 2
     label.font = .preferredFont(forTextStyle: .headline)
     return label
   }()
@@ -88,7 +89,7 @@ class MusicItemTableViewCell: UITableViewCell {
         guard let imageData = try? Data(contentsOf: url) else { return }
         DispatchQueue.main.async {
           let image = UIImage(data: imageData)
-          self?.musicThumbnail.image = UIImage(data: imageData)
+          self?.musicThumbnail.image = image
         }
       }
     }
@@ -98,35 +99,31 @@ class MusicItemTableViewCell: UITableViewCell {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     let musicCellContainer = UIView()
     musicCellContainer.translatesAutoresizingMaskIntoConstraints = false
-    
+  
+    let textStackView = UIStackView(arrangedSubviews: [musicTitle, musicPublisherTitle, musicDuration])
+    textStackView.axis = .vertical
+    textStackView.spacing = 4
+    textStackView.alignment = .leading
+    textStackView.translatesAutoresizingMaskIntoConstraints = false
 
-    musicCellContainer.addSubview(musicTitle)
-    musicCellContainer.addSubview(musicPublisherTitle)
-    musicCellContainer.addSubview(musicDuration)
+    musicCellContainer.addSubview(textStackView)
     musicCellContainer.addSubview(musicThumbnail)
     contentView.addSubview(musicCellContainer)
     
     NSLayoutConstraint.activate([
-      musicCellContainer.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-      musicCellContainer.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+      musicCellContainer.widthAnchor.constraint(equalTo: contentView.widthAnchor, constant: -16),
+      musicCellContainer.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
       musicCellContainer.topAnchor.constraint(equalTo: contentView.topAnchor),
       musicCellContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
       
       musicThumbnail.centerYAnchor.constraint(equalTo: musicCellContainer.centerYAnchor),
       musicThumbnail.leadingAnchor.constraint(equalTo: musicCellContainer.leadingAnchor),
-      musicThumbnail.heightAnchor.constraint(equalToConstant: 70),
-      musicThumbnail.widthAnchor.constraint(equalToConstant: 70),
+      musicThumbnail.heightAnchor.constraint(equalToConstant: 60),
+      musicThumbnail.widthAnchor.constraint(equalToConstant: 60),
       
-      musicTitle.leadingAnchor.constraint(equalTo: musicThumbnail.trailingAnchor, constant: 10),
-      musicTitle.topAnchor.constraint(equalTo: musicThumbnail.topAnchor),
-      musicTitle.trailingAnchor.constraint(equalTo: musicCellContainer.trailingAnchor),
-      
-      musicPublisherTitle.leadingAnchor.constraint(equalTo: musicTitle.leadingAnchor),
-      musicPublisherTitle.topAnchor.constraint(equalTo: musicTitle.bottomAnchor, constant: 5),
-      musicPublisherTitle.trailingAnchor.constraint(equalTo: musicCellContainer.trailingAnchor),
-      
-      musicDuration.leadingAnchor.constraint(equalTo: musicTitle.leadingAnchor),
-      musicDuration.topAnchor.constraint(equalTo: musicPublisherTitle.bottomAnchor, constant: 5),
+      textStackView.leadingAnchor.constraint(equalTo: musicThumbnail.trailingAnchor, constant: 10),
+      textStackView.trailingAnchor.constraint(equalTo: musicCellContainer.trailingAnchor),
+      textStackView.centerYAnchor.constraint(equalTo: musicCellContainer.centerYAnchor),
     ])
   }
   

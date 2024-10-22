@@ -34,8 +34,7 @@ class MusicSearchFieldController: UISearchController {
     }
     .disposed(by: disposeBag)
     
-    searchBar.rx.searchButtonClicked.bind { [weak self] in
-      guard let text = self?.searchBar.text else { return }
+    searchBar.rx.searchButtonClicked.bind { 
       viewModel.resignFirstResponder()
     }
     .disposed(by: disposeBag)
