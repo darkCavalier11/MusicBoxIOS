@@ -9,36 +9,29 @@ import UIKit
 import RxSwift
 
 class HomeViewController: UIViewController {
-  private var musicSearchFieldController = MusicSearchFieldController()
-  private let searchViewModel = HomeSearchViewModel()
   private let homeMusicViewModel = HomeMusicViewModel()
-  let disposeBag = DisposeBag()
-  private let musicSearchTypeAheadTableView = MusicSearchTypeAheadTableView()
+  private let disposeBag = DisposeBag()
   private let musicItemsTableView = MusicItemsTableView()
   
   override func viewDidLoad() {
     super.viewDidLoad()
     view.addSubview(musicItemsTableView)
     setupMusicItemsTableViewConstraints()
-    
     navigationItem.title = "Welcome"
-    navigationItem.searchController = musicSearchFieldController
-    view.addSubview(musicSearchTypeAheadTableView)
-    
-    musicSearchTypeAheadTableView.bindWithViewModel(viewModel: searchViewModel)
-    musicSearchFieldController.bindWithViewModel(viewModel: searchViewModel)
+    navigationItem.rightBarButtonItems = [
+      UIBarButtonItem(
+        image: UIImage(systemName: "magnifyingglass"),
+        style: .plain,
+        target: self,
+        action: #selector(navigateToSearchViewController)
+      )
+    ]
     musicItemsTableView.bindWithViewModel(viewModel: homeMusicViewModel)
-    setupSearchScreenTableViewConstraints()
   }
   
-  func setupSearchScreenTableViewConstraints() {
-    musicSearchTypeAheadTableView.translatesAutoresizingMaskIntoConstraints = false
-    NSLayoutConstraint.activate([
-      view.topAnchor.constraint(equalTo: musicSearchTypeAheadTableView.topAnchor),
-      view.leadingAnchor.constraint(equalTo: musicSearchTypeAheadTableView.leadingAnchor),
-      view.trailingAnchor.constraint(equalTo: musicSearchTypeAheadTableView.trailingAnchor),
-      view.bottomAnchor.constraint(equalTo: musicSearchTypeAheadTableView.bottomAnchor),
-    ])
+  @objc func navigateToSearchViewController() {
+    let searchViewController = SearchViewController()
+    navigationController?.pushViewController(searchViewController, animated: true)
   }
   
   func setupMusicItemsTableViewConstraints() {

@@ -24,7 +24,6 @@ class MusicSearchTypeAheadTableView: UITableView {
     self.delegate = nil
     self.dataSource = nil
     
-    viewModel.hideSearchView.bind(to: self.rx.isHidden).disposed(by: disposeBag)
     viewModel
       .typeAheadSearchResult
       .bind(

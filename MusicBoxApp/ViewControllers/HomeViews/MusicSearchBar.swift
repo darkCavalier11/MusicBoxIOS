@@ -8,10 +8,10 @@
 import UIKit
 import RxSwift
 
-class MusicSearchFieldController: UISearchController {
+class MusicSearchBar: UISearchBar {
   private let disposeBag = DisposeBag()
-  override init(searchResultsController: UIViewController? = nil) {
-    super.init(searchResultsController: searchResultsController)
+  override init(frame: CGRect) {
+    super.init(frame: frame)
   }
   
   required init?(coder: NSCoder) {
@@ -19,29 +19,29 @@ class MusicSearchFieldController: UISearchController {
   }
   
   func bindWithViewModel(viewModel: SearchViewModel) {
-    searchBar.rx.textDidBeginEditing.bind {
+    self.rx.textDidBeginEditing.bind {
       viewModel.becomeFirstResponder()
     }
     .disposed(by: disposeBag)
     
-    searchBar.rx.textDidEndEditing.bind {
+    self.rx.textDidEndEditing.bind {
       viewModel.resignFirstResponder()
     }
     .disposed(by: disposeBag)
     
-    searchBar.rx.cancelButtonClicked.bind {
+    self.rx.cancelButtonClicked.bind {
       viewModel.resignFirstResponder()
     }
     .disposed(by: disposeBag)
     
-    searchBar.rx.searchButtonClicked.bind { 
+    self.rx.searchButtonClicked.bind {
       viewModel.resignFirstResponder()
     }
     .disposed(by: disposeBag)
     
-    searchBar.searchTextField.rx.controlEvent(.editingChanged)
+    self.searchTextField.rx.controlEvent(.editingChanged)
       .bind { [weak self] in
-        guard let text = self?.searchBar.text else { return }
+        guard let text = self?.text else { return }
         viewModel.searchTextDidChange(text)
       }
       .disposed(by: disposeBag)
