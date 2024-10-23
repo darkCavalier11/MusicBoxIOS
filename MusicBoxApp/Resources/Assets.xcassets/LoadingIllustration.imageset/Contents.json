@@ -1,0 +1,22 @@
+{
+  "images" : [
+    {
+      "filename" : "undraw_Outer_space_re_u9vd-removebg-preview.png",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "undraw_Outer_space_re_u9vd__1_-removebg-preview.png",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
