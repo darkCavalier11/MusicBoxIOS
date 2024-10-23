@@ -14,7 +14,6 @@ class SearchViewController: UIViewController {
   private let musicSearchTypeAheadTableView = MusicSearchTypeAheadTableView()
   private let musicSearchBar = MusicSearchBar()
   
-  
   override func viewDidLoad() {
     super.viewDidLoad()
     self.navigationItem.leftBarButtonItem = UIBarButtonItem(
@@ -27,12 +26,33 @@ class SearchViewController: UIViewController {
     view.addSubview(musicSearchTypeAheadTableView)
     view.addSubview(musicSearchBar)
     musicSearchTypeAheadTableView.bindWithViewModel(viewModel: searchViewModel)
+    
+    musicSearchTypeAheadTableView
+      .rx
+      .modelSelected(String.self).bind { query in
+        
+    }
+    .disposed(by: disposeBag)
+    
+    musicSearchBar
+      .rx
+      .searchButtonClicked
+      .bind { [weak self] in
+        guard let query = self?.musicSearchBar.text else { return }
+      }
+      .disposed(by: disposeBag)
+    
     musicSearchBar.bindWithViewModel(viewModel: searchViewModel)
     setupSearchScreenTableViewConstraints()
   }
   
-  @objc func popViewController() {
+  @objc private func popViewController() {
     navigationController?.popViewController(animated: true)
+  }
+  
+  private func navigateToMusicSearchResultVC(_ query: String) {
+    let musicSearchResultVC = MusicSearchResultViewController()
+    navigationController?.pushViewController(musicSearchResultVC, animated: true)
   }
   
   override func viewDidAppear(_ animated: Bool) {
@@ -58,12 +78,3 @@ class SearchViewController: UIViewController {
     ])
   }
 }
-
-//extension SearchViewController: UISearchControllerDelegate {
-//  func didPresentSearchController(_ searchController: UISearchController) {
-//    DispatchQueue.main.async { [weak self] in
-//      guard let self = self else { return }
-//      self.musicSearchFieldController.becomeFirstResponder()
-//    }
-//  }
-//}

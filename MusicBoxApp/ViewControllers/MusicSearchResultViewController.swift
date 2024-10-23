@@ -9,20 +9,14 @@ import UIKit
 import RxSwift
 
 class MusicSearchResultViewController: UIViewController {
-  weak var homeMusicViewModel: MusicViewModel? {
-    didSet {
-      if let homeMusicViewModel {
-        musicItemsTableView.bindWithViewModel(viewModel: homeMusicViewModel)
-      }
-    }
-  }
-  
+  private let homeMusicViewModel = HomeMusicViewModel()
   private let disposeBag = DisposeBag()
   private let musicItemsTableView = MusicItemsTableView()
   
   override func viewDidLoad() {
     super.viewDidLoad()
     view.addSubview(musicItemsTableView)
+    musicItemsTableView.bindWithViewModel(viewModel: homeMusicViewModel)
     setupMusicItemsTableViewConstraints()
   }
   

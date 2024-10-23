@@ -55,5 +55,4 @@ class MusicSearchBar: UISearchBar {
       }
       .disposed(by: disposeBag)
   }
-  
 }
