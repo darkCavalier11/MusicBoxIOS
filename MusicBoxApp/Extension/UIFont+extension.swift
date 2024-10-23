@@ -10,7 +10,7 @@ import UIKit
 extension UIFont {
   class func preferredCustomFont(
     forTextStyle style: UIFont.TextStyle,
-    fontName: String? = "RethinkSans-Bold",
+    fontName: String? = "RethinkSans-Medium",
     weight: Weight = .regular,
     size: CGFloat? = nil
   ) -> UIFont {
