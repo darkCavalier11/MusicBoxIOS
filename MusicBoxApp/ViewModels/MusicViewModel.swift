@@ -10,7 +10,7 @@ import MusicBox
 import RxSwift
 import RxCocoa
 
-protocol MusicViewModel {
+protocol MusicViewModel: AnyObject {
   var isFetchingMusicList: Observable<Bool> { get }
   func getMusicList(query: MusicListQueryType) -> Observable<[MusicItem]>
 }
