@@ -50,8 +50,7 @@ final class HomeMusicViewModel: MusicViewModel {
               let musicList = await self.mb.musicSession.getMusicSearchResults(query: query)
               observer.onNext(musicList)
             }
-            let musicList = await self.mb.musicSession.getMusicSearchResults(query: "one direction")
-            observer.onNext(musicList)
+            
             self.isFetchingMusicListRelay.accept(false)
           }
           return Disposables.create {

@@ -29,8 +29,8 @@ class SearchViewController: UIViewController {
     
     musicSearchTypeAheadTableView
       .rx
-      .modelSelected(String.self).bind { query in
-        
+      .modelSelected(String.self).bind { [weak self] query in
+        self?.navigateToMusicSearchResultVC(query)
     }
     .disposed(by: disposeBag)
     
@@ -39,6 +39,7 @@ class SearchViewController: UIViewController {
       .searchButtonClicked
       .bind { [weak self] in
         guard let query = self?.musicSearchBar.text else { return }
+        self?.navigateToMusicSearchResultVC(query)
       }
       .disposed(by: disposeBag)
     
@@ -52,6 +53,7 @@ class SearchViewController: UIViewController {
   
   private func navigateToMusicSearchResultVC(_ query: String) {
     let musicSearchResultVC = MusicSearchResultViewController()
+    musicSearchResultVC.query = MusicListQueryType.withSearchQuery(query: query)
     navigationController?.pushViewController(musicSearchResultVC, animated: true)
   }
   

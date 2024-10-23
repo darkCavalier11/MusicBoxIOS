@@ -9,6 +9,14 @@ import UIKit
 import RxSwift
 
 class MusicSearchResultViewController: UIViewController {
+  var query: MusicListQueryType? {
+    didSet {
+      if let query {
+        homeMusicViewModel.setMusicListQuery(query)
+      }
+    }
+  }
+  
   private let homeMusicViewModel = HomeMusicViewModel()
   private let disposeBag = DisposeBag()
   private let musicItemsTableView = MusicItemsTableView()
