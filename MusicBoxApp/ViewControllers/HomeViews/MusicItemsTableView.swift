@@ -15,7 +15,7 @@ class MusicItemsTableView: UITableView {
   override init(frame: CGRect, style: UITableView.Style) {
     super.init(frame: frame, style: style)
     register(MusicItemTableViewCell.self, forCellReuseIdentifier: Self.reusableIdentifier)
-    self.rowHeight = 90
+    self.rowHeight = 110
     self.separatorStyle = .none
   }
   
@@ -118,8 +118,8 @@ class MusicItemTableViewCell: UITableViewCell {
       
       musicThumbnail.centerYAnchor.constraint(equalTo: musicCellContainer.centerYAnchor),
       musicThumbnail.leadingAnchor.constraint(equalTo: musicCellContainer.leadingAnchor),
-      musicThumbnail.heightAnchor.constraint(equalToConstant: 60),
-      musicThumbnail.widthAnchor.constraint(equalToConstant: 60),
+      musicThumbnail.heightAnchor.constraint(equalToConstant: 80),
+      musicThumbnail.widthAnchor.constraint(equalToConstant: 80),
       
       textStackView.leadingAnchor.constraint(equalTo: musicThumbnail.trailingAnchor, constant: 10),
       textStackView.trailingAnchor.constraint(equalTo: musicCellContainer.trailingAnchor),
