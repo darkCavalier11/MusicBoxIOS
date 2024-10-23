@@ -28,7 +28,7 @@ class MusicItemsTableView: UITableView {
     self.delegate = nil
     
     viewModel
-      .getMusicList(query: .withSearchQuery(query: "One Direction songs"))
+      .musicItemList
       .subscribe(on: MainScheduler.instance)
       .bind(
         to: self.rx.items(

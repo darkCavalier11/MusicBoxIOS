@@ -14,6 +14,7 @@ import MusicBox
 final class TestHomeViewModel: MusicViewModel {
   private let testIsFetchingMusicListRelay = BehaviorRelay(value: false)
   private let testMusicListRelay = BehaviorRelay(value: [MusicItem]())
+  private let testMusicQueryTypeRelay = BehaviorRelay(value: MusicListQueryType.defaultMusicList)
   
   private let testMusicItem = MusicItem(
     title: "1",
@@ -28,21 +29,27 @@ final class TestHomeViewModel: MusicViewModel {
     testIsFetchingMusicListRelay.asObservable()
   }
   
-  func getMusicList(query: MusicListQueryType) -> Observable<[MusicItem]> {
-    Observable.create { [weak self] observer in
-      guard let self = self else { return Disposables.create() }
-      self.testIsFetchingMusicListRelay.accept(true)
-      sleep(1)
-      switch query {
-        case .defaultMusicList:
-        observer.onNext([self.testMusicItem])
-        
-        case .withSearchQuery(_):
-        observer.onNext([self.testMusicItem])
+  func setMusicListQuery(_ query: MusicListQueryType) {
+    testMusicQueryTypeRelay.accept(query)
+  }
+  
+  var musicItemList: Observable<[MusicItem]> {
+    testMusicQueryTypeRelay
+      .flatMap { [weak self] queryType in
+        Observable.create { [weak self] observer in
+          guard let self = self else { return Disposables.create() }
+          self.testIsFetchingMusicListRelay.accept(true)
+          sleep(1)
+          switch queryType {
+          case .defaultMusicList:
+            observer.onNext([self.testMusicItem])
+          case .withSearchQuery(_):
+            observer.onNext([self.testMusicItem])
+          }
+          self.testIsFetchingMusicListRelay.accept(false)
+          return Disposables.create()
+        }
       }
-      self.testIsFetchingMusicListRelay.accept(false)
-      return Disposables.create()
-    }
   }
 }
 
@@ -68,10 +75,14 @@ final class MusicViewModelTests: XCTestCase {
       }
     }
     .disposed(by: disposeBag)
+    
     viewModel
-      .getMusicList(query: .defaultMusicList)
-      .bind { _ in}
+      .musicItemList
+      .bind { _ in
+        
+      }
       .disposed(by: disposeBag)
+      
     waitForExpectations(timeout: 2)
   }
   
@@ -79,15 +90,13 @@ final class MusicViewModelTests: XCTestCase {
     let expectation = expectation(
       description: "When searching for default music list it should return some value. Assuming here the user already listened few musics earlier.")
     
-    let query = MusicListQueryType.defaultMusicList
-    
-    viewModel.getMusicList(query: query)
+    viewModel
+      .musicItemList
       .subscribe(onNext: { musicList in
         XCTAssertTrue(!musicList.isEmpty)
         expectation.fulfill()
       })
       .disposed(by: disposeBag)
-    
     waitForExpectations(timeout: 1)
   }
 }

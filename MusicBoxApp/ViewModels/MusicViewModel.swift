@@ -12,7 +12,8 @@ import RxCocoa
 
 protocol MusicViewModel: AnyObject {
   var isFetchingMusicList: Observable<Bool> { get }
-  func getMusicList(query: MusicListQueryType) -> Observable<[MusicItem]>
+  var musicItemList: Observable<[MusicItem]> { get }
+  func setMusicListQuery(_ query: MusicListQueryType)
 }
 
 enum MusicListQueryType {
@@ -23,31 +24,41 @@ enum MusicListQueryType {
 final class HomeMusicViewModel: MusicViewModel {
   let mb = MusicBox()
   private let isFetchingMusicListRelay = BehaviorRelay(value: false)
+  private let musicListQueryTypeRelay = BehaviorRelay(value: MusicListQueryType.defaultMusicList)
   
   var isFetchingMusicList: Observable<Bool> {
     isFetchingMusicListRelay.asObservable()
   }
   
-  func getMusicList(query: MusicListQueryType) -> Observable<[MusicItem]> {
-    Observable.create { observer in
-      let task = Task { [weak self] in
-        guard let self = self else { return }
-        self.isFetchingMusicListRelay.accept(true)
-        switch query {
-        case .defaultMusicList:
-          let musicList = await self.mb.musicSession.getHomeScreenMusicList()
-          observer.onNext(musicList)
-          
-        case .withSearchQuery(query: let query):
-          let musicList = await self.mb.musicSession.getMusicSearchResults(query: query)
-          observer.onNext(musicList)
+  func setMusicListQuery(_ query: MusicListQueryType) {
+    musicListQueryTypeRelay.accept(query)
+  }
+  
+  var musicItemList: Observable<[MusicItem]> {
+    musicListQueryTypeRelay
+      .flatMapLatest { [weak self] query in
+        Observable.create { observer in
+          let task = Task { [weak self] in
+            guard let self = self else { return }
+            self.isFetchingMusicListRelay.accept(true)
+            switch query {
+            case .defaultMusicList:
+              let musicList = await self.mb.musicSession.getHomeScreenMusicList()
+              observer.onNext(musicList)
+              
+            case .withSearchQuery(query: let query):
+              let musicList = await self.mb.musicSession.getMusicSearchResults(query: query)
+              observer.onNext(musicList)
+            }
+            let musicList = await self.mb.musicSession.getMusicSearchResults(query: "one direction")
+            observer.onNext(musicList)
+            self.isFetchingMusicListRelay.accept(false)
+          }
+          return Disposables.create {
+            task.cancel()
+          }
         }
-        self.isFetchingMusicListRelay.accept(false)
       }
-      return Disposables.create {
-        task.cancel()
-      }
-    }
   }
 }
 
