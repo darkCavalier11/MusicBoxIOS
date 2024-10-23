@@ -27,7 +27,9 @@ final class HomeMusicViewModel: MusicViewModel {
   private let musicListQueryTypeRelay = BehaviorRelay(value: MusicListQueryType.defaultMusicList)
   
   var isFetchingMusicList: Observable<Bool> {
-    isFetchingMusicListRelay.asObservable()
+    isFetchingMusicListRelay
+      .share(replay: 1)
+      .asObservable()
   }
   
   func setMusicListQuery(_ query: MusicListQueryType) {

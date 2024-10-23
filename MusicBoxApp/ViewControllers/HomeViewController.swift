@@ -29,6 +29,7 @@ class HomeViewController: UIViewController {
     musicItemsTableView.bindWithViewModel(viewModel: homeMusicViewModel)
     homeMusicViewModel
       .setMusicListQuery(.withSearchQuery(query: "Ed sheeran"))
+      
   }
   
   @objc func navigateToSearchViewController() {
