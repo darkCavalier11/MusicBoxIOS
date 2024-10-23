@@ -12,12 +12,8 @@ import RxCocoa
 @testable import MusicBoxApp
 
 final class TestSearchViewModel: SearchViewModel {
-  private let testHideSearchViewRelay = BehaviorRelay(value: false)
   private let testTypeAheadRelay = BehaviorRelay(value: [String]())
   private let testShowingHUDRelay = BehaviorRelay(value: false)
-  var hideSearchView: Observable<Bool> {
-    testHideSearchViewRelay.asObservable()
-  }
   
   var typeAheadSearchResult: Observable<[String]> {
     testTypeAheadRelay.asObservable()
@@ -25,14 +21,6 @@ final class TestSearchViewModel: SearchViewModel {
   
   var showingHUD: Observable<Bool> {
     testShowingHUDRelay.asObservable()
-  }
-  
-  func becomeFirstResponder() {
-    testHideSearchViewRelay.accept(true)
-  }
-  
-  func resignFirstResponder() {
-    testHideSearchViewRelay.accept(false)
   }
   
   func searchTextDidChange(_ text: String) {
@@ -62,36 +50,8 @@ class SearchViewModelTests: XCTestCase {
     disposeBag = nil
   }
   
-  func testSearchBarBecameFirstResponder() {
-    let expectation = XCTestExpectation(description: "Becoming the first responder should make the focus state to true")
-    viewModel.hideSearchView
-      .bind { state in
-        if state {
-          expectation.fulfill()
-        }
-      }
-      .disposed(by: disposeBag)
-    viewModel.becomeFirstResponder()
-    wait(for: [expectation], timeout: 0.1)
-  }
-  
-  func testSearchBarResignFirstResponder() {
-    let expectation = XCTestExpectation(description: "Resigning the first responder should make the focus state to false")
-    viewModel.becomeFirstResponder()
-    viewModel.hideSearchView
-      .bind { state in
-        if !state {
-          expectation.fulfill()
-        }
-      }
-      .disposed(by: disposeBag)
-    viewModel.resignFirstResponder()
-    wait(for: [expectation], timeout: 0.1)
-  }
-  
   func testTypeAheadResults() {
     let expectation = XCTestExpectation(description: "when added some text the result should be there.")
-    viewModel.becomeFirstResponder()
     viewModel.typeAheadSearchResult.bind { searchResults in
       if !searchResults.isEmpty {
         expectation.fulfill()
@@ -104,7 +64,6 @@ class SearchViewModelTests: XCTestCase {
   
   func testShowingLoadingHUD() {
     let expectation = XCTestExpectation(description: "When fetching the search results the state of showing HUD should be true")
-    viewModel.becomeFirstResponder()
     viewModel.showingHUD.bind { state in
       if state {
         expectation.fulfill()

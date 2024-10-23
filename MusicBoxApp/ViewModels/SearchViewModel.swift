@@ -11,17 +11,13 @@ import RxCocoa
 import MusicBox
 
 protocol SearchViewModel {
-  var hideSearchView: Observable<Bool> { get }
   var showingHUD: Observable<Bool> { get }
   var typeAheadSearchResult: Observable<[String]> { get }
-  func becomeFirstResponder()
-  func resignFirstResponder()
   func searchTextDidChange(_ text: String)
 }
 
 final class HomeSearchViewModel: SearchViewModel {
   private let mb = MusicBox()
-  private let hideSearchViewRelay = BehaviorRelay(value: true)
   private let showingHUDRelay = BehaviorRelay(value: false)
   private let searchTextRelay = BehaviorRelay(value: "")
   
@@ -37,21 +33,8 @@ final class HomeSearchViewModel: SearchViewModel {
       .subscribe(on: MainScheduler.instance)
   }
   
-  var hideSearchView: Observable<Bool> {
-    hideSearchViewRelay.asObservable()
-  }
-  
   var showingHUD: Observable<Bool> {
     showingHUDRelay.asObservable()
-  }
-  
-  func becomeFirstResponder() {
-    hideSearchViewRelay.accept(false)
-  }
-  
-  func resignFirstResponder() {
-    hideSearchViewRelay.accept(true)
-    searchTextRelay.accept("")
   }
   
   func searchTextDidChange(_ text: String) {

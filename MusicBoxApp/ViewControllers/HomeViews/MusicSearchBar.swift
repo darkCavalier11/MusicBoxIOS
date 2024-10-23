@@ -30,26 +30,6 @@ class MusicSearchBar: UISearchBar {
   }
   
   func bindWithViewModel(viewModel: SearchViewModel) {
-    self.rx.textDidBeginEditing.bind {
-      viewModel.becomeFirstResponder()
-    }
-    .disposed(by: disposeBag)
-    
-    self.rx.textDidEndEditing.bind {
-      viewModel.resignFirstResponder()
-    }
-    .disposed(by: disposeBag)
-    
-    self.rx.cancelButtonClicked.bind {
-      viewModel.resignFirstResponder()
-    }
-    .disposed(by: disposeBag)
-    
-    self.rx.searchButtonClicked.bind {
-      viewModel.resignFirstResponder()
-    }
-    .disposed(by: disposeBag)
-    
     self.searchTextField.rx.controlEvent(.editingChanged)
       .bind { [weak self] in
         guard let text = self?.text else { return }
