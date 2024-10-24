@@ -20,7 +20,9 @@ class TabBarController: UITabBarController {
     snc.tabBarItem = UITabBarItem(title: "Downloads", image: UIImage(systemName: "arrow.down.circle"), tag: 2)
     
     viewControllers = [
-      hnc,pnc,snc
+      pnc,hnc,snc
     ]
+    
+    selectedTab = pnc.tab
   }
 }
