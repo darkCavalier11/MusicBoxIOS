@@ -12,7 +12,7 @@ import os
 
 
 public class MusicPlaylistModel: NSManagedObject {
-  static private let logger = Logger(subsystem: "com.youtube.interface", category: "CoreData.UserInternalData")
+  static private let logger = Logger(subsystem: "com.MusicBoxApp.CoreData", category: "MusicPlaylistModel")
   
   public var totalDurationInSeconds: Int {
     guard let musicItems = Array(arrayLiteral: musicItems) as? [MusicItemModel] else { return 0 }

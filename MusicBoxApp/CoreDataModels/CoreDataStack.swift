@@ -10,7 +10,7 @@ import Foundation
 import CoreData
 import os
 
-fileprivate let logger = Logger(subsystem: "com.youtube.interface", category: "CoreDataStack")
+fileprivate let logger = Logger(subsystem: "com.MusicBoxApp.Core", category: "CoreData")
 
 public class CoreDataStack {
   private let modelName: String
