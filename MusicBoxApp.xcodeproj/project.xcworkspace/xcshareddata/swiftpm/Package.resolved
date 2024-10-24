@@ -6,8 +6,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/darkCavalier11/MusicBoxSwift",
       "state" : {
-        "revision" : "ec1a950134f095156a7e8a5580f918c83ec3822f",
-        "version" : "1.0.2"
+        "revision" : "3b531d4f1ce2fdde70f6772e04c4f49e6b414a32",
+        "version" : "1.0.3"
       }
     },
     {
@@ -26,6 +26,15 @@
       "state" : {
         "revision" : "3c2c7e1e72b8abd96eafbae80323c5c1e5317437",
         "version" : "2.7.5"
+      }
+    },
+    {
+      "identity" : "youtubekit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/alexeichhorn/YouTubeKit.git",
+      "state" : {
+        "revision" : "a04805da8111422e1581ca447e2e167808ec2b44",
+        "version" : "0.2.3"
       }
     }
   ],

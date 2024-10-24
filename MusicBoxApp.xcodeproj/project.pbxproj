@@ -7,7 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		955C78532CC518F60066BE43 /* MusicBox in Frameworks */ = {isa = PBXBuildFile; productRef = 955C78522CC518F60066BE43 /* MusicBox */; };
+		951EC65D2CCA707A00E77B2F /* MusicItemModel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951EC6592CCA707A00E77B2F /* MusicItemModel+CoreDataClass.swift */; };
+		951EC65E2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951EC65C2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataProperties.swift */; };
+		951EC65F2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951EC65B2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataClass.swift */; };
+		951EC6602CCA707A00E77B2F /* MusicItemModel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951EC65A2CCA707A00E77B2F /* MusicItemModel+CoreDataProperties.swift */; };
 		955C78552CC51DCC0066BE43 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 955C78542CC51DCC0066BE43 /* RxSwift */; };
 		955C78572CC51DFD0066BE43 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 955C78562CC51DFD0066BE43 /* RxCocoa */; };
 /* End PBXBuildFile section */
@@ -30,6 +33,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		951EC6592CCA707A00E77B2F /* MusicItemModel+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MusicItemModel+CoreDataClass.swift"; path = "MusicBoxApp/CoreDataModels/MusicItemModel+CoreDataClass.swift"; sourceTree = "<group>"; };
+		951EC65A2CCA707A00E77B2F /* MusicItemModel+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MusicItemModel+CoreDataProperties.swift"; path = "MusicBoxApp/CoreDataModels/MusicItemModel+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		951EC65B2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MusicPlaylistModel+CoreDataClass.swift"; path = "MusicBoxApp/CoreDataModels/MusicPlaylistModel+CoreDataClass.swift"; sourceTree = "<group>"; };
+		951EC65C2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "MusicPlaylistModel+CoreDataProperties.swift"; path = "MusicBoxApp/CoreDataModels/MusicPlaylistModel+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		955C77A62CC4BD1E0066BE43 /* MusicBoxApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MusicBoxApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		955C77BF2CC4BD1F0066BE43 /* MusicBoxAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MusicBoxAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		955C77C92CC4BD1F0066BE43 /* MusicBoxAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MusicBoxAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -73,7 +80,6 @@
 			files = (
 				955C78572CC51DFD0066BE43 /* RxCocoa in Frameworks */,
 				955C78552CC51DCC0066BE43 /* RxSwift in Frameworks */,
-				955C78532CC518F60066BE43 /* MusicBox in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,6 +103,10 @@
 		955C779D2CC4BD1E0066BE43 = {
 			isa = PBXGroup;
 			children = (
+				951EC6592CCA707A00E77B2F /* MusicItemModel+CoreDataClass.swift */,
+				951EC65A2CCA707A00E77B2F /* MusicItemModel+CoreDataProperties.swift */,
+				951EC65B2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataClass.swift */,
+				951EC65C2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataProperties.swift */,
 				955C77A82CC4BD1E0066BE43 /* MusicBoxApp */,
 				955C77C22CC4BD1F0066BE43 /* MusicBoxAppTests */,
 				955C77CC2CC4BD1F0066BE43 /* MusicBoxAppUITests */,
@@ -142,7 +152,6 @@
 			);
 			name = MusicBoxApp;
 			packageProductDependencies = (
-				955C78522CC518F60066BE43 /* MusicBox */,
 				955C78542CC51DCC0066BE43 /* RxSwift */,
 				955C78562CC51DFD0066BE43 /* RxCocoa */,
 			);
@@ -230,7 +239,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				955C78462CC4E33E0066BE43 /* XCRemoteSwiftPackageReference "RxSwift" */,
-				955C78512CC518E20066BE43 /* XCRemoteSwiftPackageReference "MusicBoxSwift" */,
+				954C86D72CCA0C8200164F1D /* XCRemoteSwiftPackageReference "MusicBoxSwift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 955C77A72CC4BD1E0066BE43 /* Products */;
@@ -273,6 +282,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				951EC65D2CCA707A00E77B2F /* MusicItemModel+CoreDataClass.swift in Sources */,
+				951EC65E2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataProperties.swift in Sources */,
+				951EC65F2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataClass.swift in Sources */,
+				951EC6602CCA707A00E77B2F /* MusicItemModel+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -593,6 +606,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		954C86D72CCA0C8200164F1D /* XCRemoteSwiftPackageReference "MusicBoxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/darkCavalier11/MusicBoxSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.3;
+			};
+		};
 		955C78462CC4E33E0066BE43 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ReactiveX/RxSwift";
@@ -601,22 +622,9 @@
 				minimumVersion = 6.8.0;
 			};
 		};
-		955C78512CC518E20066BE43 /* XCRemoteSwiftPackageReference "MusicBoxSwift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/darkCavalier11/MusicBoxSwift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.2;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		955C78522CC518F60066BE43 /* MusicBox */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 955C78512CC518E20066BE43 /* XCRemoteSwiftPackageReference "MusicBoxSwift" */;
-			productName = MusicBox;
-		};
 		955C78542CC51DCC0066BE43 /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 955C78462CC4E33E0066BE43 /* XCRemoteSwiftPackageReference "RxSwift" */;

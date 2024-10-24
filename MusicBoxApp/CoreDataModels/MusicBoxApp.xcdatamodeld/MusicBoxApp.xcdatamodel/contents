@@ -1,4 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="false" userDefinedModelVersionIdentifier="">
-    <elements/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23231" systemVersion="24A348" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="MusicItemModel" representedClassName=".MusicItemModel" syncable="YES">
+        <attribute name="largestThumbnail" optional="YES" attributeType="String"/>
+        <attribute name="musicId" optional="YES" attributeType="String"/>
+        <attribute name="publisherTitle" optional="YES" attributeType="String"/>
+        <attribute name="runningDurationInSeconds" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="smallestThumbnail" optional="YES" attributeType="String"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+    </entity>
+    <entity name="MusicPlaylistModel" representedClassName=".MusicPlaylistModel" syncable="YES">
+        <attribute name="id" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="title" optional="YES" attributeType="String"/>
+        <relationship name="musicItems" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="MusicItemModel"/>
+    </entity>
 </model>
