@@ -26,6 +26,8 @@ class MusicSearchResultViewController: UIViewController {
   }()
   
   private let homeMusicViewModel = HomeMusicViewModel()
+  var searchViewModel: SearchViewModel?
+  
   private let disposeBag = DisposeBag()
   private let musicItemsTableView = MusicItemsTableView()
   
@@ -34,6 +36,14 @@ class MusicSearchResultViewController: UIViewController {
     view.addSubview(musicItemsTableView)
     musicItemsTableView.bindWithViewModel(viewModel: homeMusicViewModel)
     view.addSubview(loadingView)
+    
+    switch query {
+    case .withSearchQuery(let query):
+      self.navigationItem.title = query
+    default :
+      break
+    }
+    
     homeMusicViewModel
       .isFetchingMusicList
       .bind { [weak self] isLoading in
@@ -45,6 +55,8 @@ class MusicSearchResultViewController: UIViewController {
     
     setupLoadingViewConstraints()
     setupMusicItemsTableViewConstraints()
+    
+    
     
     UIView.animate(
       withDuration: 0.8,
