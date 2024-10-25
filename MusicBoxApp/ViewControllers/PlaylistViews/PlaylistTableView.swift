@@ -87,14 +87,6 @@ class PlaylistTableViewCell: UITableViewCell {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     
     let containerView = UIView()
-    let stackView = UIStackView()
-    stackView.axis = .vertical
-    stackView.distribution = .fill
-    stackView.addArrangedSubview(playlistTitle)
-    stackView.addArrangedSubview(durationTitle)
-    stackView.addArrangedSubview(artistDesc)
-    
-    stackView.translatesAutoresizingMaskIntoConstraints = false
     
     containerView.translatesAutoresizingMaskIntoConstraints = false
     
@@ -103,7 +95,9 @@ class PlaylistTableViewCell: UITableViewCell {
     containerView.addSubview(playlistImageView1)
     containerView.addSubview(playlistImageView2)
     containerView.addSubview(playlistImageView)
-    containerView.addSubview(stackView)
+    containerView.addSubview(playlistTitle)
+    containerView.addSubview(durationTitle)
+    containerView.addSubview(artistDesc)
     
     
     NSLayoutConstraint.activate([
@@ -127,10 +121,17 @@ class PlaylistTableViewCell: UITableViewCell {
       containerView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
       containerView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
       
-      stackView.leadingAnchor.constraint(equalTo: playlistImageView.trailingAnchor, constant: 50),
-      stackView.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-      stackView.topAnchor.constraint(equalTo: containerView.topAnchor),
-      stackView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor),
+      playlistTitle.topAnchor.constraint(equalTo: playlistImageView.topAnchor),
+      playlistTitle.leadingAnchor.constraint(equalTo: playlistImageView.trailingAnchor, constant: 50),
+      playlistTitle.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+      
+      durationTitle.topAnchor.constraint(equalTo: playlistTitle.bottomAnchor),
+      durationTitle.leadingAnchor.constraint(equalTo: playlistImageView.trailingAnchor, constant: 50),
+      durationTitle.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+      
+      artistDesc.topAnchor.constraint(equalTo: durationTitle.bottomAnchor),
+      artistDesc.leadingAnchor.constraint(equalTo: playlistImageView.trailingAnchor, constant: 50),
+      artistDesc.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
     ])
   }
   
