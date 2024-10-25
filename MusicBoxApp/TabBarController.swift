@@ -13,16 +13,14 @@ class TabBarController: UITabBarController {
     
     let hnc = HomeNavigationController()
     let pnc = PlaylistNavigationController()
-    let snc = SettingsNavigationController()
+    let dnc = DownloadsNavigationController()
     
     hnc.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "music.house"), tag: 0)
     pnc.tabBarItem = UITabBarItem(title: "Playlist", image: UIImage(systemName: "music.note.list"), tag: 1)
-    snc.tabBarItem = UITabBarItem(title: "Downloads", image: UIImage(systemName: "arrow.down.circle"), tag: 2)
+    dnc.tabBarItem = UITabBarItem(title: "Downloads", image: UIImage(systemName: "arrow.down.circle"), tag: 2)
     
     viewControllers = [
-      pnc,hnc,snc
+      hnc,pnc,dnc
     ]
-    
-    selectedTab = pnc.tab
   }
 }
