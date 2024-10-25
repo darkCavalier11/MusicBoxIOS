@@ -27,16 +27,26 @@ class PlaylistViewController: UIViewController {
   private let playlistTableView = PlaylistTableView()
   override func viewDidLoad() {
     super.viewDidLoad()
+    navigationItem.title = "Your playlists"
+    
     playlistTableView.delegate = self
     playlistTableView.dataSource = self
     
-//    view.addSubview(noPlaylistFoundView)
-    navigationItem.title = "Your playlists"
+    
     view.addSubview(playlistTableView)
+    view.addSubview(noPlaylistFoundView)
+    noPlaylistFoundView.isHidden = true
+    
+    
     setupPlaylistTableViewConstraints()
+    setupNoPlaylistFoundViewConstraints()
     
     do {
       try fetchedResultController.performFetch()
+      guard let playlistCount = fetchedResultController.sections?.first?.numberOfObjects, playlistCount > 0 else {
+        noPlaylistFoundView.isHidden = false
+        return
+      }
     } catch {
       print("Unable to init fetchResultController(:) \(error.localizedDescription)")
     }
