@@ -42,6 +42,7 @@ class AddToPlaylistViewController: UIViewController {
     let button = UIButton()
     button.translatesAutoresizingMaskIntoConstraints = false
     button.setTitle("Create and Add to Playlist", for: .normal)
+    button.addTarget(self, action: #selector(createAndAddPlaylistButtonTapped), for: .touchUpInside)
     button.backgroundColor = .accent
     button.layer.cornerRadius = 6
     return button
@@ -64,8 +65,18 @@ class AddToPlaylistViewController: UIViewController {
     return label
   }()
   
+  @objc func createAndAddPlaylistButtonTapped() {
+    guard let title = newPlaylistTextField.text else { return }
+    musicPlaylistService.addNewPlaylist(title: title, musicItems: [])
+    newPlaylistTextField.text = nil
+  }
+  
   private let playlistTableView: UITableView = PlaylistTableView()
   private lazy var coreDataStack = CoreDataStack()
+  private lazy var musicPlaylistService = MusicPlaylistServices(
+    coreDataStack: coreDataStack,
+    context: coreDataStack.managedObjectContext
+  )
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -77,13 +88,18 @@ class AddToPlaylistViewController: UIViewController {
     view.addSubview(playlistTableView)
     view.addSubview(noExistingPlaylistLabel)
     
+    playlistTableView.delegate = self
+    playlistTableView.dataSource = self
+    fetchedResultController.delegate = self
+    noExistingPlaylistLabel.isHidden = true
+    
     do {
       try fetchedResultController.performFetch()
       if fetchedResultController.sections?.isEmpty == true {
         noExistingPlaylistLabel.isHidden = false
       }
     } catch {
-      
+      print("Error NSFetchResultsController \(error.localizedDescription)")
     }
     
     NSLayoutConstraint.activate([
@@ -130,6 +146,10 @@ extension AddToPlaylistViewController: UITableViewDataSource {
 }
 
 extension AddToPlaylistViewController: UITableViewDelegate {
+  
+}
+
+extension AddToPlaylistViewController: NSFetchedResultsControllerDelegate {
   func controllerWillChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
     playlistTableView.beginUpdates()
   }

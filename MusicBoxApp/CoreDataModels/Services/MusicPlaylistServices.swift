@@ -17,7 +17,7 @@ final class MusicPlaylistServices {
     self.context = context
   }
   
-  func addPlaylist(
+  func addNewPlaylist(
     title: String,
     musicItems: [MusicItem]
   ) {

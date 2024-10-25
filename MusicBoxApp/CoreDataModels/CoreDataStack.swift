@@ -13,11 +13,11 @@ import os
 fileprivate let logger = Logger(subsystem: "com.MusicBoxApp.Core", category: "CoreData")
 
 public class CoreDataStack {
-  private let modelName = "MusicBoxApp"
+  static private let modelName = "MusicBoxApp"
   
   init() {}
   
-  lazy var storeContainer: NSPersistentContainer = {
+  static var storeContainer: NSPersistentContainer = {
     let container = NSPersistentContainer(name: modelName)
     container.loadPersistentStores { _, error in
       if let error {
@@ -28,7 +28,7 @@ public class CoreDataStack {
   }()
   
   lazy var managedObjectContext: NSManagedObjectContext = {
-    self.storeContainer.viewContext
+    Self.storeContainer.viewContext
   }()
   
   func saveContext() {

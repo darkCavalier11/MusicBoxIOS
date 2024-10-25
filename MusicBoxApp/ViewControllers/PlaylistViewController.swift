@@ -10,6 +10,11 @@ import CoreData
 
 class PlaylistViewController: UIViewController {
   private lazy var coreDataStack = CoreDataStack()
+  private lazy var musicPlaylistService = MusicPlaylistServices(
+    coreDataStack: coreDataStack,
+    context: coreDataStack.managedObjectContext
+  )
+  
   private lazy var fetchedResultController: NSFetchedResultsController<MusicPlaylistModel> = {
     let fetchRequest = MusicPlaylistModel.fetchRequest()
     let sort = NSSortDescriptor(key: #keyPath(MusicPlaylistModel.title), ascending: true)
@@ -31,6 +36,7 @@ class PlaylistViewController: UIViewController {
     
     playlistTableView.delegate = self
     playlistTableView.dataSource = self
+    fetchedResultController.delegate = self
     
     
     view.addSubview(playlistTableView)
@@ -86,6 +92,15 @@ extension PlaylistViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
     let cell = tableView.dequeueReusableCell(withIdentifier: PlaylistTableView.reusableIdentifier, for: indexPath)
     return cell
+  }
+  
+  func tableView(
+    _ tableView: UITableView,
+    commit editingStyle: UITableViewCell.EditingStyle,
+    forRowAt indexPath: IndexPath
+  ) {
+    let musicModel = self.fetchedResultController.object(at: indexPath)
+    self.musicPlaylistService.removePlaylist(model: musicModel)
   }
 }
 
