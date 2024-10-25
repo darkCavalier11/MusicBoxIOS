@@ -13,11 +13,9 @@ import os
 fileprivate let logger = Logger(subsystem: "com.MusicBoxApp.Core", category: "CoreData")
 
 public class CoreDataStack {
-  private let modelName: String
+  private let modelName = "MusicBoxApp"
   
-  init(modelName: String) {
-    self.modelName = modelName
-  }
+  init() {}
   
   lazy var storeContainer: NSPersistentContainer = {
     let container = NSPersistentContainer(name: modelName)

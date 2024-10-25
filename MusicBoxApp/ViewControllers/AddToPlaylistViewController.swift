@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 class AddToPlaylistViewController: UIViewController {
   private let newPlaylistTextField: UITextField = {
@@ -22,6 +23,19 @@ class AddToPlaylistViewController: UIViewController {
     view.backgroundColor = .quaternaryLabel
     view.layer.cornerRadius = 6
     return view
+  }()
+  
+  private lazy var fetchedResultController: NSFetchedResultsController<MusicPlaylistModel> = {
+    let fetchRequest = MusicPlaylistModel.fetchRequest()
+    let sort = NSSortDescriptor(key: #keyPath(MusicPlaylistModel.title), ascending: true)
+    fetchRequest.sortDescriptors = [sort]
+    
+    return NSFetchedResultsController(
+      fetchRequest: fetchRequest,
+      managedObjectContext: coreDataStack.managedObjectContext,
+      sectionNameKeyPath: nil,
+      cacheName: "com.MusicApp.PlaylistTableView"
+    )
   }()
   
   private let createAndAddPlaylistButton: UIButton = {
@@ -41,6 +55,18 @@ class AddToPlaylistViewController: UIViewController {
     return label
   }()
   
+  private let noExistingPlaylistLabel: UILabel = {
+    let label = UILabel()
+    label.translatesAutoresizingMaskIntoConstraints = false
+    label.text = "No existing playlist(s)"
+    label.textColor = .secondaryLabel
+    label.font = .preferredFont(forTextStyle: .caption1)
+    return label
+  }()
+  
+  private let playlistTableView: UITableView = PlaylistTableView()
+  private lazy var coreDataStack = CoreDataStack()
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     navigationItem.title = "Add to playlist"
@@ -48,6 +74,17 @@ class AddToPlaylistViewController: UIViewController {
     view.addSubview(textFieldcontainerView)
     view.addSubview(createAndAddPlaylistButton)
     view.addSubview(addToPlaylistLabel)
+    view.addSubview(playlistTableView)
+    view.addSubview(noExistingPlaylistLabel)
+    
+    do {
+      try fetchedResultController.performFetch()
+      if fetchedResultController.sections?.isEmpty == true {
+        noExistingPlaylistLabel.isHidden = false
+      }
+    } catch {
+      
+    }
     
     NSLayoutConstraint.activate([
       textFieldcontainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
@@ -65,6 +102,61 @@ class AddToPlaylistViewController: UIViewController {
       
       addToPlaylistLabel.topAnchor.constraint(equalTo: createAndAddPlaylistButton.bottomAnchor, constant: 10),
       addToPlaylistLabel.leadingAnchor.constraint(equalTo: textFieldcontainerView.leadingAnchor),
+      
+      playlistTableView.topAnchor.constraint(equalTo: addToPlaylistLabel.bottomAnchor),
+      playlistTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+      playlistTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+      playlistTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+      
+      noExistingPlaylistLabel.centerXAnchor.constraint(equalTo: playlistTableView.centerXAnchor),
+      noExistingPlaylistLabel.centerYAnchor.constraint(equalTo: playlistTableView.centerYAnchor),
     ])
+  }
+}
+
+extension AddToPlaylistViewController: UITableViewDataSource {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    guard let sectionInfo =
+            fetchedResultController.sections?[section] else {
+      return 0
+    }
+    return sectionInfo.numberOfObjects
+  }
+  
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    let cell = tableView.dequeueReusableCell(withIdentifier: PlaylistTableView.reusableIdentifier, for: indexPath)
+    return cell
+  }
+}
+
+extension AddToPlaylistViewController: UITableViewDelegate {
+  func controllerWillChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
+    playlistTableView.beginUpdates()
+  }
+  
+  func controller(
+    _ controller: NSFetchedResultsController<any NSFetchRequestResult>,
+    didChange anObject: Any,
+    at indexPath: IndexPath?,
+    for type: NSFetchedResultsChangeType,
+    newIndexPath: IndexPath?
+  ) {
+    switch type {
+    case .insert:
+      playlistTableView.insertRows(at: [newIndexPath!], with: .automatic)
+    case .delete:
+      playlistTableView.deleteRows(at: [indexPath!], with: .automatic)
+    case .update:
+      let cell = playlistTableView.cellForRow(at: indexPath!) as! PlaylistTableViewCell
+    case .move:
+      playlistTableView.deleteRows(at: [indexPath!], with: .automatic)
+      playlistTableView.insertRows(at: [newIndexPath!], with: .automatic)
+    @unknown default:
+      print("Unexpected NSFetchedResultChangeType: \(type)")
+    }
+  }
+  
+  func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
+    playlistTableView.endUpdates()
   }
 }

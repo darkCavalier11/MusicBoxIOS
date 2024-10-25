@@ -9,7 +9,7 @@ import UIKit
 import CoreData
 
 class PlaylistViewController: UIViewController {
-  private lazy var coreDataStack = CoreDataStack(modelName: "MusicBoxApp")
+  private lazy var coreDataStack = CoreDataStack()
   private lazy var fetchedResultController: NSFetchedResultsController<MusicPlaylistModel> = {
     let fetchRequest = MusicPlaylistModel.fetchRequest()
     let sort = NSSortDescriptor(key: #keyPath(MusicPlaylistModel.title), ascending: true)

@@ -10,8 +10,8 @@ import CoreData
 @testable import MusicBoxApp
 
 class TestCoreDataStack: CoreDataStack {
-  override init(modelName: String) {
-    super.init(modelName: modelName)
+  override init() {
+    super.init()
     
     let persistentStoreDescription =
     NSPersistentStoreDescription()
@@ -63,7 +63,7 @@ class TestPlaylistModelCoreDataTests: XCTestCase {
   }()
   
   override func setUpWithError() throws {
-    coreDataStack = TestCoreDataStack(modelName: "MusicBoxApp")
+    coreDataStack = TestCoreDataStack()
   }
     
   override func tearDownWithError() throws {
