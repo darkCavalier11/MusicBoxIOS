@@ -7,6 +7,8 @@
 
 import UIKit
 import CoreData
+import RxCocoa
+import RxSwift
 
 class PlaylistViewController: UIViewController {
   private lazy var coreDataStack = CoreDataStack()
@@ -14,6 +16,9 @@ class PlaylistViewController: UIViewController {
     coreDataStack: coreDataStack,
     context: coreDataStack.managedObjectContext
   )
+  
+  private let hideEmptyPlaylistView = BehaviorRelay<Bool>(value: true)
+  private let disposeBag = DisposeBag()
   
   private lazy var fetchedResultController: NSFetchedResultsController<MusicPlaylistModel> = {
     let fetchRequest = MusicPlaylistModel.fetchRequest()
@@ -41,8 +46,10 @@ class PlaylistViewController: UIViewController {
     
     view.addSubview(playlistTableView)
     view.addSubview(noPlaylistFoundView)
-    noPlaylistFoundView.isHidden = true
     
+    hideEmptyPlaylistView
+      .bind(to: noPlaylistFoundView.rx.isHidden)
+      .disposed(by: disposeBag)
     
     setupPlaylistTableViewConstraints()
     setupNoPlaylistFoundViewConstraints()
@@ -50,7 +57,7 @@ class PlaylistViewController: UIViewController {
     do {
       try fetchedResultController.performFetch()
       guard let playlistCount = fetchedResultController.sections?.first?.numberOfObjects, playlistCount > 0 else {
-        noPlaylistFoundView.isHidden = false
+        hideEmptyPlaylistView.accept(false)
         return
       }
     } catch {
@@ -121,6 +128,10 @@ extension PlaylistViewController: NSFetchedResultsControllerDelegate {
       playlistTableView.insertRows(at: [newIndexPath!], with: .automatic)
     case .delete:
       playlistTableView.deleteRows(at: [indexPath!], with: .automatic)
+      guard let count = controller.fetchedObjects?.count, count > 0 else {
+        hideEmptyPlaylistView.accept(false)
+        return
+      }
     case .update:
       let cell = playlistTableView.cellForRow(at: indexPath!) as! PlaylistTableViewCell
     case .move:
