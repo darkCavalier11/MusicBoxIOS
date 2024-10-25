@@ -33,12 +33,21 @@ class AddToPlaylistViewController: UIViewController {
     return button
   }()
   
+  private let addToPlaylistLabel: UILabel = {
+    let label = UILabel()
+    label.translatesAutoresizingMaskIntoConstraints = false
+    label.text = "Add to existing playlist(s)"
+    label.font = .preferredCustomFont(forTextStyle: .title3)
+    return label
+  }()
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     navigationItem.title = "Add to playlist"
     textFieldcontainerView.addSubview(newPlaylistTextField)
     view.addSubview(textFieldcontainerView)
     view.addSubview(createAndAddPlaylistButton)
+    view.addSubview(addToPlaylistLabel)
     
     NSLayoutConstraint.activate([
       textFieldcontainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
@@ -53,6 +62,9 @@ class AddToPlaylistViewController: UIViewController {
       createAndAddPlaylistButton.widthAnchor.constraint(equalTo: textFieldcontainerView.widthAnchor),
       createAndAddPlaylistButton.heightAnchor.constraint(equalToConstant: 40),
       createAndAddPlaylistButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+      
+      addToPlaylistLabel.topAnchor.constraint(equalTo: createAndAddPlaylistButton.bottomAnchor, constant: 10),
+      addToPlaylistLabel.leadingAnchor.constraint(equalTo: textFieldcontainerView.leadingAnchor),
     ])
   }
 }
