@@ -19,7 +19,7 @@ public class CoreDataStack {
     self.modelName = modelName
   }
   
-  private lazy var storeContainer: NSPersistentContainer = {
+  lazy var storeContainer: NSPersistentContainer = {
     let container = NSPersistentContainer(name: modelName)
     container.loadPersistentStores { _, error in
       if let error {

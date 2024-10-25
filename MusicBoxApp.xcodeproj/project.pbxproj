@@ -11,9 +11,9 @@
 		951EC65E2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951EC65C2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataProperties.swift */; };
 		951EC65F2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951EC65B2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataClass.swift */; };
 		951EC6602CCA707A00E77B2F /* MusicItemModel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951EC65A2CCA707A00E77B2F /* MusicItemModel+CoreDataProperties.swift */; };
-		951EC66C2CCA732C00E77B2F /* MusicBox in Frameworks */ = {isa = PBXBuildFile; productRef = 951EC66B2CCA732C00E77B2F /* MusicBox */; };
 		955C78552CC51DCC0066BE43 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 955C78542CC51DCC0066BE43 /* RxSwift */; };
 		955C78572CC51DFD0066BE43 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 955C78562CC51DFD0066BE43 /* RxCocoa */; };
+		95EB3D962CCB71B600350A9C /* MusicBox in Frameworks */ = {isa = PBXBuildFile; productRef = 95EB3D952CCB71B600350A9C /* MusicBox */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -81,7 +81,7 @@
 			files = (
 				955C78572CC51DFD0066BE43 /* RxCocoa in Frameworks */,
 				955C78552CC51DCC0066BE43 /* RxSwift in Frameworks */,
-				951EC66C2CCA732C00E77B2F /* MusicBox in Frameworks */,
+				95EB3D962CCB71B600350A9C /* MusicBox in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -156,7 +156,7 @@
 			packageProductDependencies = (
 				955C78542CC51DCC0066BE43 /* RxSwift */,
 				955C78562CC51DFD0066BE43 /* RxCocoa */,
-				951EC66B2CCA732C00E77B2F /* MusicBox */,
+				95EB3D952CCB71B600350A9C /* MusicBox */,
 			);
 			productName = MusicBoxApp;
 			productReference = 955C77A62CC4BD1E0066BE43 /* MusicBoxApp.app */;
@@ -242,7 +242,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				955C78462CC4E33E0066BE43 /* XCRemoteSwiftPackageReference "RxSwift" */,
-				954C86D72CCA0C8200164F1D /* XCRemoteSwiftPackageReference "MusicBoxSwift" */,
+				95EB3D942CCB71B100350A9C /* XCRemoteSwiftPackageReference "MusicBoxSwift" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 955C77A72CC4BD1E0066BE43 /* Products */;
@@ -609,14 +609,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		954C86D72CCA0C8200164F1D /* XCRemoteSwiftPackageReference "MusicBoxSwift" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/darkCavalier11/MusicBoxSwift.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 1.0.3;
-			};
-		};
 		955C78462CC4E33E0066BE43 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/ReactiveX/RxSwift";
@@ -625,14 +617,17 @@
 				minimumVersion = 6.8.0;
 			};
 		};
+		95EB3D942CCB71B100350A9C /* XCRemoteSwiftPackageReference "MusicBoxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/darkCavalier11/MusicBoxSwift";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		951EC66B2CCA732C00E77B2F /* MusicBox */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = 954C86D72CCA0C8200164F1D /* XCRemoteSwiftPackageReference "MusicBoxSwift" */;
-			productName = MusicBox;
-		};
 		955C78542CC51DCC0066BE43 /* RxSwift */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 955C78462CC4E33E0066BE43 /* XCRemoteSwiftPackageReference "RxSwift" */;
@@ -642,6 +637,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 955C78462CC4E33E0066BE43 /* XCRemoteSwiftPackageReference "RxSwift" */;
 			productName = RxCocoa;
+		};
+		95EB3D952CCB71B600350A9C /* MusicBox */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 95EB3D942CCB71B100350A9C /* XCRemoteSwiftPackageReference "MusicBoxSwift" */;
+			productName = MusicBox;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

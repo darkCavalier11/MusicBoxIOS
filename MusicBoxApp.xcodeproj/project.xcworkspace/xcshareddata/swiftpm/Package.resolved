@@ -1,13 +1,13 @@
 {
-  "originHash" : "1574fb9b4c6d71035974c10c5ed2565b99926abc123e55ec1cedd2a84f62aead",
+  "originHash" : "5eac3a32cf070ed39f10cf168c0c01210684f92f393da165080e404b358baa76",
   "pins" : [
     {
       "identity" : "musicboxswift",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/darkCavalier11/MusicBoxSwift",
       "state" : {
-        "revision" : "3b531d4f1ce2fdde70f6772e04c4f49e6b414a32",
-        "version" : "1.0.3"
+        "branch" : "main",
+        "revision" : "5dd7ff5651f29606774026cd9b98ff8093fc7ec8"
       }
     },
     {
