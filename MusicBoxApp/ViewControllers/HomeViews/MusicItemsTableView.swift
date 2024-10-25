@@ -77,6 +77,38 @@ class MusicItemTableViewCell: UITableViewCell {
     return label
   }()
   
+  private var menuButton: UIButton = {
+    let button = UIButton()
+    button.translatesAutoresizingMaskIntoConstraints = false
+    button.tintColor = .secondaryLabel
+    button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
+    button.menu = UIMenu(
+      title: "More",
+      children: [
+        UIAction(
+          title: "Add to Favourites",
+          image: UIImage(systemName: "heart")
+        ) { _ in
+          
+        },
+        UIAction(
+          title: "Add to playlist",
+          image: UIImage(systemName: "music.note.list")
+        ) { _ in
+          
+        },
+        UIAction(
+          title: "Download",
+          image: UIImage(systemName: "arrow.down.circle")
+        ) { _ in
+          
+        },
+      ]
+    )
+    button.showsMenuAsPrimaryAction = true
+    return button
+  }()
+  
   var musicItem: MusicItem? {
     didSet {
       guard let musicItem = musicItem else { return }
@@ -99,7 +131,7 @@ class MusicItemTableViewCell: UITableViewCell {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     let musicCellContainer = UIView()
     musicCellContainer.translatesAutoresizingMaskIntoConstraints = false
-  
+    
     let textStackView = UIStackView(arrangedSubviews: [musicTitle, musicPublisherTitle, musicDuration])
     textStackView.axis = .vertical
     textStackView.spacing = 4
@@ -108,6 +140,7 @@ class MusicItemTableViewCell: UITableViewCell {
 
     musicCellContainer.addSubview(textStackView)
     musicCellContainer.addSubview(musicThumbnail)
+    musicCellContainer.addSubview(menuButton)
     contentView.addSubview(musicCellContainer)
     
     NSLayoutConstraint.activate([
@@ -121,8 +154,11 @@ class MusicItemTableViewCell: UITableViewCell {
       musicThumbnail.heightAnchor.constraint(equalToConstant: 80),
       musicThumbnail.widthAnchor.constraint(equalToConstant: 80),
       
+      menuButton.trailingAnchor.constraint(equalTo: musicCellContainer.trailingAnchor),
+      menuButton.centerYAnchor.constraint(equalTo: musicCellContainer.centerYAnchor),
+      
       textStackView.leadingAnchor.constraint(equalTo: musicThumbnail.trailingAnchor, constant: 10),
-      textStackView.trailingAnchor.constraint(equalTo: musicCellContainer.trailingAnchor),
+      textStackView.trailingAnchor.constraint(equalTo: menuButton.leadingAnchor),
       textStackView.centerYAnchor.constraint(equalTo: musicCellContainer.centerYAnchor),
     ])
   }
