@@ -19,14 +19,21 @@ public class MusicPlaylistModel: NSManagedObject {
     return musicItems.reduce(0) { $0 + Int($1.runningDurationInSeconds) }
   }
   
-  public var top3ArtistNames: [String] {
-    var top3ArtistNames = Set<String>()
-    guard let musicItems = Array(arrayLiteral: musicItems) as? [MusicItemModel] else { return [] }
+  public var artistDesc: String {
+    var artistSet = Set<String>()
+    guard let musicItems = Array(arrayLiteral: musicItems) as? [MusicItemModel] else { return "-" }
     for item in musicItems {
-      if top3ArtistNames.count >= 3 { break }
-      top3ArtistNames.insert(item.publisherTitle ?? "-")
+      artistSet.insert(item.publisherTitle ?? "-")
     }
-    return Array(top3ArtistNames).sorted()
+    let artists = Array(artistSet)
+    if musicItems.count == 1 {
+      return artists[0]
+    } else if musicItems.count == 2 {
+      return artists[0] + ", " + artists[1]
+    } else if musicItems.count == 3 {
+      return artists[0] + ", " + artists[1] + ", " + artists[2]
+    }
+    return artists[0] + ", " + artists[1] + ", " + artists[2] + " and others."
   }
   
   public var top3ThumbnailURLs: [URL] {

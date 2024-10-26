@@ -22,8 +22,8 @@ class PlaylistTableView: UITableView {
 }
 
 class PlaylistTableViewCell: UITableViewCell {
-  private let centerImageView: UIImageView = {
-    let imageView = UIImageView()
+  private let centerImageView: UIAsyncImageView = {
+    let imageView = UIAsyncImageView()
     imageView.translatesAutoresizingMaskIntoConstraints = false
     imageView.image = UIImage(named: "OnboardingLogo")
     imageView.contentMode = .scaleAspectFill
@@ -34,8 +34,8 @@ class PlaylistTableViewCell: UITableViewCell {
     return imageView
   }()
   
-  private let rightImageView: UIImageView = {
-    let imageView = UIImageView()
+  private let rightImageView: UIAsyncImageView = {
+    let imageView = UIAsyncImageView()
     imageView.translatesAutoresizingMaskIntoConstraints = false
     imageView.image = UIImage(named: "OnboardingLogo")
     imageView.contentMode = .scaleAspectFill
@@ -45,10 +45,9 @@ class PlaylistTableViewCell: UITableViewCell {
     return imageView
   }()
   
-  private let leftImageView: UIImageView = {
-    let imageView = UIImageView()
+  private let leftImageView: UIAsyncImageView = {
+    let imageView = UIAsyncImageView()
     imageView.translatesAutoresizingMaskIntoConstraints = false
-    imageView.image = UIImage(named: "OnboardingLogo")
     imageView.contentMode = .scaleAspectFill
     imageView.clipsToBounds = true
     imageView.transform = CGAffineTransform(translationX: -20, y: 0).rotated(by: -Double.pi / 15)
@@ -83,10 +82,31 @@ class PlaylistTableViewCell: UITableViewCell {
     return label
   }()
   
+  private let totalTrackLabel: UILabel = {
+    let label = UILabel()
+    label.translatesAutoresizingMaskIntoConstraints = false
+    label.text = "13 tracks"
+    label.font = .preferredCustomFont(forTextStyle: .caption1, weight: .bold)
+    return label
+  }()
+  
   var musicPlaylistModel: MusicPlaylistModel? {
     didSet {
       guard let musicPlaylistModel = musicPlaylistModel else { return }
       let images = musicPlaylistModel.top3ThumbnailURLs
+      playlistTitle.text = musicPlaylistModel.title
+      durationTitle.text = "Total Duration: " + musicPlaylistModel.totalDurationInSeconds.convertToDuration()
+      if images.count > 1 {
+        centerImageView.imageURL = images[0]
+      }
+      if images.count == 2 {
+        leftImageView.imageURL = images[1]
+      }
+      if images.count == 3 {
+        rightImageView.imageURL = images[2]
+      }
+      artistDesc.text = musicPlaylistModel.artistDesc
+      artistDesc.text = "\(musicPlaylistModel.musicItems?.count ?? 0) Tracks"
     }
   }
   
@@ -105,6 +125,7 @@ class PlaylistTableViewCell: UITableViewCell {
     containerView.addSubview(playlistTitle)
     containerView.addSubview(durationTitle)
     containerView.addSubview(artistDesc)
+    containerView.addSubview(totalTrackLabel)
     
     
     NSLayoutConstraint.activate([
@@ -139,6 +160,9 @@ class PlaylistTableViewCell: UITableViewCell {
       artistDesc.topAnchor.constraint(equalTo: durationTitle.bottomAnchor),
       artistDesc.leadingAnchor.constraint(equalTo: centerImageView.trailingAnchor, constant: 50),
       artistDesc.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+      
+      totalTrackLabel.topAnchor.constraint(equalTo: artistDesc.bottomAnchor),
+      totalTrackLabel.leadingAnchor.constraint(equalTo: centerImageView.trailingAnchor, constant: 50),
     ])
   }
   
