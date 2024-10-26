@@ -8,6 +8,9 @@
 import UIKit
 import CoreData
 import MusicBox
+import RxSwift
+import RxCocoa
+
 
 class AddToPlaylistViewController: UIViewController {
   private let newPlaylistTextField: UITextField = {
@@ -81,6 +84,8 @@ class AddToPlaylistViewController: UIViewController {
     coreDataStack: coreDataStack,
     context: coreDataStack.managedObjectContext
   )
+  private let hideEmptyPlaylistView = BehaviorRelay<Bool>(value: true)
+  private let disposeBag = DisposeBag()
   
   var musicItem: MusicItem?
   
@@ -97,16 +102,7 @@ class AddToPlaylistViewController: UIViewController {
     playlistTableView.delegate = self
     playlistTableView.dataSource = self
     fetchedResultController.delegate = self
-    noExistingPlaylistLabel.isHidden = true
-    
-    do {
-      try fetchedResultController.performFetch()
-      if fetchedResultController.sections?.isEmpty == true {
-        noExistingPlaylistLabel.isHidden = false
-      }
-    } catch {
-      print("Error NSFetchResultsController \(error.localizedDescription)")
-    }
+
     
     NSLayoutConstraint.activate([
       textFieldcontainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 30),
@@ -133,6 +129,20 @@ class AddToPlaylistViewController: UIViewController {
       noExistingPlaylistLabel.centerXAnchor.constraint(equalTo: playlistTableView.centerXAnchor),
       noExistingPlaylistLabel.centerYAnchor.constraint(equalTo: playlistTableView.centerYAnchor),
     ])
+    
+    hideEmptyPlaylistView
+      .bind(to: noExistingPlaylistLabel.rx.isHidden)
+      .disposed(by: disposeBag)
+    
+    do {
+      try fetchedResultController.performFetch()
+      guard let playlistCount = fetchedResultController.sections?.first?.numberOfObjects, playlistCount > 0 else {
+        hideEmptyPlaylistView.accept(false)
+        return
+      }
+    } catch {
+      print("Error NSFetchResultsController \(error.localizedDescription)")
+    }
   }
 }
 
@@ -179,10 +189,15 @@ extension AddToPlaylistViewController: NSFetchedResultsControllerDelegate {
     switch type {
     case .insert:
       playlistTableView.insertRows(at: [newIndexPath!], with: .automatic)
+      hideEmptyPlaylistView.accept(true)
       let cell = playlistTableView.cellForRow(at: newIndexPath!) as! PlaylistTableViewCell
       cell.musicPlaylistModel = controller.object(at: newIndexPath!) as? MusicPlaylistModel
     case .delete:
       playlistTableView.deleteRows(at: [indexPath!], with: .automatic)
+      guard let count = controller.fetchedObjects?.count, count > 0 else {
+        hideEmptyPlaylistView.accept(false)
+        return
+      }
     case .update:
       let cell = playlistTableView.cellForRow(at: indexPath!) as! PlaylistTableViewCell
       cell.musicPlaylistModel = controller.object(at: indexPath!) as? MusicPlaylistModel
