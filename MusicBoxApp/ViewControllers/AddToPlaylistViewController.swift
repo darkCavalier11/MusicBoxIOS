@@ -167,7 +167,12 @@ extension AddToPlaylistViewController: UITableViewDataSource {
   func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
     guard let musicItem = musicItem else { return }
     let model = fetchedResultController.object(at: indexPath)
-    self.musicPlaylistService.addToPlaylist(model: model, musicItem: musicItem)
+    let addedToPlaylist = self.musicPlaylistService.addToPlaylist(model: model, musicItem: musicItem)
+    if addedToPlaylist {
+      showToast(text: "Added \(musicItem.title) to \"\(model.title ?? "")\"")
+    } else {
+      showToast(text: "\(musicItem.title) already in \"\(model.title ?? "")\"")
+    }
   }
 }
 
