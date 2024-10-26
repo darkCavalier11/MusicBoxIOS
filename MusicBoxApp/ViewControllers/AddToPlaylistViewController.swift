@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import MusicBox
 
 class AddToPlaylistViewController: UIViewController {
   private let newPlaylistTextField: UITextField = {
@@ -67,7 +68,10 @@ class AddToPlaylistViewController: UIViewController {
   
   @objc func createAndAddPlaylistButtonTapped() {
     guard let title = newPlaylistTextField.text else { return }
-    musicPlaylistService.addNewPlaylist(title: title, musicItems: [])
+    musicPlaylistService.addNewPlaylist(
+      title: title,
+      musicItems: musicItem != nil ? [musicItem!] : []
+    )
     newPlaylistTextField.text = nil
   }
   
@@ -77,6 +81,8 @@ class AddToPlaylistViewController: UIViewController {
     coreDataStack: coreDataStack,
     context: coreDataStack.managedObjectContext
   )
+  
+  var musicItem: MusicItem?
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -145,6 +151,12 @@ extension AddToPlaylistViewController: UITableViewDataSource {
     }
     cell.musicPlaylistModel = fetchedResultController.object(at: indexPath)
     return cell
+  }
+  
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    guard let musicItem = musicItem else { return }
+    let model = fetchedResultController.object(at: indexPath)
+    self.musicPlaylistService.addToPlaylist(model: model, musicItem: musicItem)
   }
 }
 
