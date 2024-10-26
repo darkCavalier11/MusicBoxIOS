@@ -91,13 +91,13 @@ class PlaylistTableViewCell: UITableViewCell {
       let images = musicPlaylistModel.top3ThumbnailURLs
       playlistTitle.text = musicPlaylistModel.title
       durationTitle.text = "Total Duration: " + musicPlaylistModel.totalDurationInSeconds.convertToDuration()
-      if images.count == 1 {
+      if images.count >= 1 {
         centerImageView.imageURL = images[0]
       }
-      if images.count == 2 {
+      if images.count >= 2 {
         leftImageView.imageURL = images[1]
       }
-      if images.count == 3 {
+      if images.count >= 3 {
         rightImageView.imageURL = images[2]
       }
       artistDesc.text = musicPlaylistModel.artistDesc
