@@ -42,6 +42,12 @@ class MusicItemsTableView: UITableView {
   }
 }
 
+protocol MusicItemTableViewCellDelegate: AnyObject {
+  func navigateToAddToPlaylistScreen(for musicItem: MusicItem)
+  func addToFavorite(for musicItem: MusicItem)
+  func startDownload(for musicItem: MusicItem)
+}
+
 class MusicItemTableViewCell: UITableViewCell {
   private var musicThumbnail: UIImageView = {
     let imageView = UIImageView()
@@ -52,7 +58,7 @@ class MusicItemTableViewCell: UITableViewCell {
     return imageView
   }()
   
-  private var musicTitle: UILabel = {
+  private lazy var musicTitle: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.numberOfLines = 2
@@ -60,7 +66,7 @@ class MusicItemTableViewCell: UITableViewCell {
     return label
   }()
   
-  private var musicPublisherTitle: UILabel = {
+  private lazy var musicPublisherTitle: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.font = .preferredCustomFont(forTextStyle: .caption2)
@@ -69,7 +75,7 @@ class MusicItemTableViewCell: UITableViewCell {
     return label
   }()
   
-  private var musicDuration: UILabel = {
+  private lazy var musicDuration: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.font = .preferredCustomFont(forTextStyle: .caption1)
@@ -109,6 +115,8 @@ class MusicItemTableViewCell: UITableViewCell {
     return button
   }()
   
+  weak var delegate: MusicItemTableViewCellDelegate?
+  
   var musicItem: MusicItem? {
     didSet {
       guard let musicItem = musicItem else { return }
@@ -126,23 +134,52 @@ class MusicItemTableViewCell: UITableViewCell {
       }
     }
   }
-  
-  override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-    super.init(style: style, reuseIdentifier: reuseIdentifier)
-    let musicCellContainer = UIView()
-    musicCellContainer.translatesAutoresizingMaskIntoConstraints = false
     
-    let textStackView = UIStackView(arrangedSubviews: [musicTitle, musicPublisherTitle, musicDuration])
+  private lazy var musicCellContainer = UIView()
+  let textStackView: UIStackView = {
+    let textStackView = UIStackView()
     textStackView.axis = .vertical
     textStackView.spacing = 4
     textStackView.alignment = .leading
     textStackView.translatesAutoresizingMaskIntoConstraints = false
+    return textStackView
+  }()
+  override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+    super.init(style: style, reuseIdentifier: reuseIdentifier)
+    
+   
 
+    textStackView.addArrangedSubview(musicTitle)
+    textStackView.addArrangedSubview(musicPublisherTitle)
+    textStackView.addArrangedSubview(musicDuration)
+    
+    musicCellContainer.translatesAutoresizingMaskIntoConstraints = false
     musicCellContainer.addSubview(textStackView)
     musicCellContainer.addSubview(musicThumbnail)
     musicCellContainer.addSubview(menuButton)
     contentView.addSubview(musicCellContainer)
-    
+  }
+  
+  func setupButtonMenuItems() {
+    let menu = UIMenu(
+      children: [
+        UIAction(title: "Add to Favourite") { [weak self] _ in
+          guard let musicItem = self?.musicItem else { return }
+          self?.delegate?.addToFavorite(for: musicItem)
+        },
+        UIAction(title: "Add to Playlist") { [weak self] _ in
+          guard let musicItem = self?.musicItem else { return }
+          self?.delegate?.navigateToAddToPlaylistScreen(for: musicItem)
+        },
+        UIAction(title: "Start Download") { [weak self] _ in
+          guard let musicItem = self?.musicItem else { return }
+          self?.delegate?.startDownload(for: musicItem)
+        }
+      ]
+    )
+  }
+  
+  func setupConstraints() {
     NSLayoutConstraint.activate([
       musicCellContainer.widthAnchor.constraint(equalTo: contentView.widthAnchor, constant: -16),
       musicCellContainer.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),

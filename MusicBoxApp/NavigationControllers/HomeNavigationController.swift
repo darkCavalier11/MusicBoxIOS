@@ -11,6 +11,6 @@ class HomeNavigationController: UINavigationController {
   override func viewDidLoad() {
     super.viewDidLoad()
     navigationBar.prefersLargeTitles = true
-    viewControllers = [AddToPlaylistViewController()]
+    viewControllers = [HomeViewController()]
   }
 }
