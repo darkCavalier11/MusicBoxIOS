@@ -10,7 +10,7 @@ class UIAsyncImageView: UIImageView {
   var imageURL: URL? {
     didSet {
       guard let imageURL else { return }
-      DispatchQueue.main.async { [weak self] in
+      DispatchQueue.global().async { [weak self] in
         guard let imagData = try? Data(contentsOf: imageURL) else { return }
         DispatchQueue.main.async {
           self?.image = UIImage(data: imagData)

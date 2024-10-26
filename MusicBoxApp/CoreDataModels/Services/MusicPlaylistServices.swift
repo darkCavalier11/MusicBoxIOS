@@ -51,15 +51,22 @@ final class MusicPlaylistServices {
     musicItem: MusicItem
   ) {
     let musicItemModel = MusicItemModel(context: context)
+    musicItemModel.title = musicItem.title
+    musicItemModel.runningDurationInSeconds = Int64(musicItem.runningDurationInSeconds)
+    musicItemModel.publisherTitle = musicItem.publisherTitle
+    musicItemModel.largestThumbnail = musicItem.largestThumbnail
+    musicItemModel.smallestThumbnail = musicItem.smallestThumbnail
+    musicItemModel.musicId = musicItem.musicId
+    
     model.addToMusicItems(musicItemModel)
     coreDataStack.saveContext()
   }
   
   func removeFromPlaylist(
     model: MusicPlaylistModel,
-    musicItem: MusicItemModel
+    musicItemModel: MusicItemModel
   ) {
-    model.addToMusicItems(musicItem)
+    model.addToMusicItems(musicItemModel)
     coreDataStack.saveContext()
   }
 }

@@ -41,13 +41,13 @@ class MusicItemsTableView: UITableView {
       ) { row, musicItem, cell in
         let menu = UIMenu(
           children: [
-            UIAction(title: "Add to Favourite") { [weak self] _ in
+            UIAction(title: "Add to Favourite", image: UIImage(systemName: "heart")) { [weak self] _ in
               self?.actionDelegate?.addToFavorite(for: musicItem)
             },
-            UIAction(title: "Add to Playlist") { [weak self] _ in
+            UIAction(title: "Add to Playlist", image: UIImage(systemName: "music.note.list")) { [weak self] _ in
               self?.actionDelegate?.navigateToAddToPlaylistScreen(for: musicItem)
             },
-            UIAction(title: "Start Download") { [weak self] _ in
+            UIAction(title: "Start Download", image: UIImage(systemName: "arrow.down.circle")) { [weak self] _ in
               self?.actionDelegate?.startDownload(for: musicItem)
             }
           ]

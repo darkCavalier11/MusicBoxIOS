@@ -26,11 +26,11 @@ public class MusicPlaylistModel: NSManagedObject {
       artistSet.insert(item.publisherTitle ?? "-")
     }
     let artists = Array(artistSet)
-    if musicItems.count == 1 {
+    if artists.count == 1 {
       return artists[0]
-    } else if musicItems.count == 2 {
+    } else if artists.count == 2 {
       return artists[0] + ", " + artists[1]
-    } else if musicItems.count == 3 {
+    } else if artists.count == 3 {
       return artists[0] + ", " + artists[1] + ", " + artists[2]
     }
     return artists[0] + ", " + artists[1] + ", " + artists[2] + " and others."
