@@ -97,7 +97,10 @@ extension PlaylistViewController: UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: PlaylistTableView.reusableIdentifier, for: indexPath)
+    guard let cell = tableView.dequeueReusableCell(withIdentifier: PlaylistTableView.reusableIdentifier, for: indexPath) as? PlaylistTableViewCell else {
+      return UITableViewCell()
+    }
+    cell.musicPlaylistModel = fetchedResultController.object(at: indexPath)
     return cell
   }
   
@@ -127,6 +130,8 @@ extension PlaylistViewController: NSFetchedResultsControllerDelegate {
     case .insert:
       playlistTableView.insertRows(at: [newIndexPath!], with: .automatic)
       hideEmptyPlaylistView.accept(true)
+      let cell = playlistTableView.cellForRow(at: newIndexPath!) as! PlaylistTableViewCell
+      cell.musicPlaylistModel = controller.object(at: newIndexPath!) as? MusicPlaylistModel
     case .delete:
       playlistTableView.deleteRows(at: [indexPath!], with: .automatic)
       guard let count = controller.fetchedObjects?.count, count > 0 else {
@@ -135,6 +140,7 @@ extension PlaylistViewController: NSFetchedResultsControllerDelegate {
       }
     case .update:
       let cell = playlistTableView.cellForRow(at: indexPath!) as! PlaylistTableViewCell
+      cell.musicPlaylistModel = controller.object(at: indexPath!) as? MusicPlaylistModel
     case .move:
       playlistTableView.deleteRows(at: [indexPath!], with: .automatic)
       playlistTableView.insertRows(at: [newIndexPath!], with: .automatic)

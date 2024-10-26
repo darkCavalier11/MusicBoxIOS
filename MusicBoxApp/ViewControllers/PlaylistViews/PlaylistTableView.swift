@@ -106,7 +106,7 @@ class PlaylistTableViewCell: UITableViewCell {
         rightImageView.imageURL = images[2]
       }
       artistDesc.text = musicPlaylistModel.artistDesc
-      artistDesc.text = "\(musicPlaylistModel.musicItems?.count ?? 0) Tracks"
+      totalTrackLabel.text = "\(musicPlaylistModel.musicItems?.count ?? 0) Tracks"
     }
   }
   

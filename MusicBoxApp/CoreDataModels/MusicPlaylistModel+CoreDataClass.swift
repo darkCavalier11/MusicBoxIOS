@@ -21,7 +21,7 @@ public class MusicPlaylistModel: NSManagedObject {
   
   public var artistDesc: String {
     var artistSet = Set<String>()
-    guard let musicItems = Array(arrayLiteral: musicItems) as? [MusicItemModel] else { return "-" }
+    guard let musicItems = Array(arrayLiteral: musicItems) as? [MusicItemModel] else { return "No Artists" }
     for item in musicItems {
       artistSet.insert(item.publisherTitle ?? "-")
     }
