@@ -49,7 +49,7 @@ final class MusicPlaylistServices {
   func addToPlaylist(
     model: MusicPlaylistModel,
     musicItem: MusicItem
-  ) {
+  ) -> Bool {
     let musicItemModel = MusicItemModel(context: context)
     musicItemModel.title = musicItem.title
     musicItemModel.runningDurationInSeconds = Int64(musicItem.runningDurationInSeconds)
@@ -57,16 +57,20 @@ final class MusicPlaylistServices {
     musicItemModel.largestThumbnail = musicItem.largestThumbnail
     musicItemModel.smallestThumbnail = musicItem.smallestThumbnail
     musicItemModel.musicId = musicItem.musicId
-    
+    let alreadyExist = (model.musicItems as? Set<MusicItemModel>)?.contains(where: { $0.musicId == musicItem.musicId })
+    if alreadyExist == true {
+      return false
+    }
     model.addToMusicItems(musicItemModel)
     coreDataStack.saveContext()
+    return true
   }
   
   func removeFromPlaylist(
     model: MusicPlaylistModel,
     musicItemModel: MusicItemModel
   ) {
-    model.addToMusicItems(musicItemModel)
+    model.removeFromMusicItems(musicItemModel)
     coreDataStack.saveContext()
   }
 }

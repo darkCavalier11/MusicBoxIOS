@@ -39,46 +39,38 @@ class TestCoreDataStack: CoreDataStack {
 
 class TestPlaylistModelCoreDataTests: XCTestCase {
   var coreDataStack: TestCoreDataStack!
-  var playlistModel: MusicPlaylistModel!
+  var playlistService: MusicPlaylistServices!
   
-  lazy var musicItem1: MusicItemModel = {
+  lazy var musicItem1: MusicItem = {
     let musicItem = MusicItem(title: "Test Music Item 1", publisherTitle: "Test Publisher 1", runningDurationInSeconds: 100, musicId: "A")
-    let m = MusicItemModel(musicItem, context: coreDataStack.managedObjectContext)!
-    return m
+    return musicItem
   }()
-  lazy var musicItem2: MusicItemModel = {
+  lazy var musicItem2: MusicItem = {
     let musicItem = MusicItem(title: "Test Music Item 2", publisherTitle: "Test Publisher 2", runningDurationInSeconds: 250, musicId: "B")
-    let m = MusicItemModel(musicItem, context: coreDataStack.managedObjectContext)!
-    return m
+    return musicItem
   }()
-  lazy var musicItem3: MusicItemModel = {
+  lazy var musicItem3: MusicItem = {
     let musicItem = MusicItem(title: "Test Music Item 3", publisherTitle: "Test Publisher 3", runningDurationInSeconds: 250, musicId: "C")
-    let m = MusicItemModel(musicItem, context: coreDataStack.managedObjectContext)!
-    return m
+    return musicItem
   }()
   
   override func setUpWithError() throws {
     coreDataStack = TestCoreDataStack()
+    playlistService = MusicPlaylistServices(coreDataStack: coreDataStack, context: coreDataStack.managedObjectContext)
   }
     
   override func tearDownWithError() throws {
     coreDataStack = nil
+    playlistService = nil
   }
   
   func testAddPlaylist() throws {
-    playlistModel = MusicPlaylistModel(context: coreDataStack.managedObjectContext)
     let request = MusicPlaylistModel.fetchRequest()
     let result = try? coreDataStack.managedObjectContext.fetch(request)
-    let nonNullResults = result?.compactMap { $0.id != nil ? $0 : nil }
-    XCTAssert(nonNullResults!.isEmpty)
+    XCTAssertNotNil(result)
+    XCTAssert(result!.isEmpty)
     
-    playlistModel.id = UUID()
-    playlistModel.title = "Test Playlist"
-    playlistModel.addToMusicItems(musicItem1)
-    playlistModel.addToMusicItems(musicItem2)
-    playlistModel.addToMusicItems(musicItem3)
-    
-    coreDataStack.saveContext()
+    playlistService.addNewPlaylist(title: "Test Playlist", musicItems: [musicItem1, musicItem2, musicItem3])
     
     let fetchedPlaylist = try? coreDataStack.managedObjectContext.fetch(request)
     XCTAssert(fetchedPlaylist?.isEmpty == false)
@@ -88,78 +80,42 @@ class TestPlaylistModelCoreDataTests: XCTestCase {
   }
   
   func testRemovePlaylist() throws {
-    playlistModel = MusicPlaylistModel(context: coreDataStack.managedObjectContext)
+    playlistService.addNewPlaylist(title: "Test Playlist", musicItems: [musicItem1, musicItem2, musicItem3])
     let request = MusicPlaylistModel.fetchRequest()
-    let result = try? coreDataStack.managedObjectContext.fetch(request)
-    let nonNullResults = result?.compactMap { $0.id != nil ? $0 : nil }
-    XCTAssert(nonNullResults!.isEmpty)
-    
-    playlistModel.id = UUID()
-    playlistModel.title = "Test Playlist"
-    playlistModel.addToMusicItems(musicItem1)
-    playlistModel.addToMusicItems(musicItem2)
-    playlistModel.addToMusicItems(musicItem3)
-    
-    coreDataStack.saveContext()
-    
-    coreDataStack.managedObjectContext.delete(playlistModel)
-    
-    let newResult = try? coreDataStack.managedObjectContext.fetch(request)
-    let newNonNullResults = newResult?.compactMap { $0.id != nil ? $0 : nil }
-    XCTAssert(newNonNullResults!.isEmpty)
+    let allPlaylists = try? coreDataStack.managedObjectContext.fetch(request)
+    XCTAssert(allPlaylists?.count == 1)
+    playlistService.removePlaylist(model: allPlaylists!.first!)
+    let newPlaylists = try? coreDataStack.managedObjectContext.fetch(request)
+    XCTAssert(newPlaylists?.isEmpty == true)
   }
   
   func testAddToPlaylist() throws {
-    playlistModel = MusicPlaylistModel(context: coreDataStack.managedObjectContext)
+    playlistService.addNewPlaylist(title: "Test Playlist", musicItems: [musicItem1, musicItem2, musicItem3])
     let request = MusicPlaylistModel.fetchRequest()
-    let result = try? coreDataStack.managedObjectContext.fetch(request)
-    let nonNullResults = result?.compactMap { $0.id != nil ? $0 : nil }
-    XCTAssert(nonNullResults!.isEmpty)
+    let allPlaylists = try? coreDataStack.managedObjectContext.fetch(request)
+    XCTAssert(allPlaylists?.count == 1)
     
-    playlistModel.id = UUID()
-    playlistModel.title = "Test Playlist"
-    coreDataStack.saveContext()
-    var newResult = try? coreDataStack.managedObjectContext.fetch(request)
-    var newNonNullResults = newResult?.compactMap { $0.id != nil ? $0 : nil }
-    XCTAssert(newNonNullResults!.count == 1)
-    XCTAssert(newNonNullResults!.first?.musicItems?.count == 0)
+    let model = allPlaylists!.first!
+    let addedDuplicate = playlistService.addToPlaylist(model: model, musicItem: musicItem1)
+    XCTAssert(addedDuplicate == false)
     
-    playlistModel.addToMusicItems(musicItem1)
-    XCTAssert(playlistModel.musicItems?.count == 1)
-    newResult = try? coreDataStack.managedObjectContext.fetch(request)
-    newNonNullResults = newResult?.compactMap { $0.id != nil ? $0 : nil }
-    XCTAssert(newNonNullResults!.count == 1)
-    XCTAssert(newNonNullResults!.first?.musicItems?.count == 1)
+    let newMusicItem = MusicItem(title: "Test Music Item 4", publisherTitle: "Test Publisher 4", runningDurationInSeconds: 50, musicId: "D")
+    let addedNewMusicItem = playlistService.addToPlaylist(model: model, musicItem: newMusicItem)
+    XCTAssert(addedNewMusicItem)
   }
   
   func testRemoveFromPlaylist() throws {
-    playlistModel = MusicPlaylistModel(context: coreDataStack.managedObjectContext)
+    playlistService.addNewPlaylist(title: "Test Playlist", musicItems: [musicItem1, musicItem2, musicItem3])
     let request = MusicPlaylistModel.fetchRequest()
-    let result = try? coreDataStack.managedObjectContext.fetch(request)
-    let nonNullResults = result?.compactMap { $0.id != nil ? $0 : nil }
-    XCTAssert(nonNullResults!.isEmpty)
+    let allPlaylists = try? coreDataStack.managedObjectContext.fetch(request)
+    XCTAssert(allPlaylists?.count == 1)
     
-    playlistModel.id = UUID()
-    playlistModel.title = "Test Playlist"
-    playlistModel.addToMusicItems(musicItem1)
-    playlistModel.addToMusicItems(musicItem2)
-    
-    coreDataStack.saveContext()
-    
-    var newResult = try? coreDataStack.managedObjectContext.fetch(request)
-    var newNonNullResults = newResult?.compactMap { $0.id != nil ? $0 : nil }
-    XCTAssert(newNonNullResults!.count == 1)
-    XCTAssert(newNonNullResults!.first?.musicItems?.count == 2)
-    
-    playlistModel.removeFromMusicItems(musicItem1)
-    XCTAssert(playlistModel.musicItems?.count == 1)
-    newResult = try? coreDataStack.managedObjectContext.fetch(request)
-    newNonNullResults = newResult?.compactMap { $0.id != nil ? $0 : nil }
-    XCTAssert(newNonNullResults!.count == 1)
-    XCTAssert(newNonNullResults!.first?.musicItems?.count == 1)
-    let allMusicItems = newNonNullResults?.first?.musicItems?.allObjects as? [MusicItemModel]
-    XCTAssertNotNil(allMusicItems)
-    XCTAssert(allMusicItems?.first == musicItem2)
+    let model = allPlaylists!.first!
+    let musicItemModels = allPlaylists!.first!.musicItems!.allObjects as! [MusicItemModel]
+    playlistService.removeFromPlaylist(model: model, musicItemModel: musicItemModels.first!)
+    let newPlaylists = try? coreDataStack.managedObjectContext.fetch(request)
+    XCTAssert(newPlaylists?.count == 1)
+    XCTAssert(newPlaylists!.first!.musicItems?.count == 2)
   }
 }
     
