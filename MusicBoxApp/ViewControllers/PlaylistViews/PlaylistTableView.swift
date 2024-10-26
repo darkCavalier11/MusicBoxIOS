@@ -22,7 +22,7 @@ class PlaylistTableView: UITableView {
 }
 
 class PlaylistTableViewCell: UITableViewCell {
-  private let playlistImageView: UIImageView = {
+  private let centerImageView: UIImageView = {
     let imageView = UIImageView()
     imageView.translatesAutoresizingMaskIntoConstraints = false
     imageView.image = UIImage(named: "OnboardingLogo")
@@ -34,7 +34,7 @@ class PlaylistTableViewCell: UITableViewCell {
     return imageView
   }()
   
-  private let playlistImageView1: UIImageView = {
+  private let rightImageView: UIImageView = {
     let imageView = UIImageView()
     imageView.translatesAutoresizingMaskIntoConstraints = false
     imageView.image = UIImage(named: "OnboardingLogo")
@@ -45,7 +45,7 @@ class PlaylistTableViewCell: UITableViewCell {
     return imageView
   }()
   
-  private let playlistImageView2: UIImageView = {
+  private let leftImageView: UIImageView = {
     let imageView = UIImageView()
     imageView.translatesAutoresizingMaskIntoConstraints = false
     imageView.image = UIImage(named: "OnboardingLogo")
@@ -83,6 +83,13 @@ class PlaylistTableViewCell: UITableViewCell {
     return label
   }()
   
+  var musicPlaylistModel: MusicPlaylistModel? {
+    didSet {
+      guard let musicPlaylistModel = musicPlaylistModel else { return }
+      let images = musicPlaylistModel.top3ThumbnailURLs
+    }
+  }
+  
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     
@@ -92,45 +99,45 @@ class PlaylistTableViewCell: UITableViewCell {
     
     contentView.addSubview(containerView)
     
-    containerView.addSubview(playlistImageView1)
-    containerView.addSubview(playlistImageView2)
-    containerView.addSubview(playlistImageView)
+    containerView.addSubview(rightImageView)
+    containerView.addSubview(leftImageView)
+    containerView.addSubview(centerImageView)
     containerView.addSubview(playlistTitle)
     containerView.addSubview(durationTitle)
     containerView.addSubview(artistDesc)
     
     
     NSLayoutConstraint.activate([
-      playlistImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-      playlistImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-      playlistImageView.widthAnchor.constraint(equalToConstant: 75),
-      playlistImageView.heightAnchor.constraint(equalToConstant: 75),
+      centerImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+      centerImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+      centerImageView.widthAnchor.constraint(equalToConstant: 75),
+      centerImageView.heightAnchor.constraint(equalToConstant: 75),
       
-      playlistImageView1.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-      playlistImageView1.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-      playlistImageView1.widthAnchor.constraint(equalToConstant: 75),
-      playlistImageView1.heightAnchor.constraint(equalToConstant: 75),
+      rightImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+      rightImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+      rightImageView.widthAnchor.constraint(equalToConstant: 75),
+      rightImageView.heightAnchor.constraint(equalToConstant: 75),
       
-      playlistImageView2.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-      playlistImageView2.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-      playlistImageView2.widthAnchor.constraint(equalToConstant: 75),
-      playlistImageView2.heightAnchor.constraint(equalToConstant: 75),
+      leftImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
+      leftImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+      leftImageView.widthAnchor.constraint(equalToConstant: 75),
+      leftImageView.heightAnchor.constraint(equalToConstant: 75),
       
       containerView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.8),
       containerView.heightAnchor.constraint(equalTo: contentView.heightAnchor),
       containerView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
       containerView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
       
-      playlistTitle.topAnchor.constraint(equalTo: playlistImageView.topAnchor),
-      playlistTitle.leadingAnchor.constraint(equalTo: playlistImageView.trailingAnchor, constant: 50),
+      playlistTitle.topAnchor.constraint(equalTo: centerImageView.topAnchor),
+      playlistTitle.leadingAnchor.constraint(equalTo: centerImageView.trailingAnchor, constant: 50),
       playlistTitle.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
       
       durationTitle.topAnchor.constraint(equalTo: playlistTitle.bottomAnchor),
-      durationTitle.leadingAnchor.constraint(equalTo: playlistImageView.trailingAnchor, constant: 50),
+      durationTitle.leadingAnchor.constraint(equalTo: centerImageView.trailingAnchor, constant: 50),
       durationTitle.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
       
       artistDesc.topAnchor.constraint(equalTo: durationTitle.bottomAnchor),
-      artistDesc.leadingAnchor.constraint(equalTo: playlistImageView.trailingAnchor, constant: 50),
+      artistDesc.leadingAnchor.constraint(equalTo: centerImageView.trailingAnchor, constant: 50),
       artistDesc.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
     ])
   }
