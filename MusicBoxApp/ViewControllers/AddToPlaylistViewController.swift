@@ -93,6 +93,7 @@ class AddToPlaylistViewController: UIViewController {
     super.viewDidLoad()
     navigationItem.title = "Add to playlist"
     textFieldcontainerView.addSubview(newPlaylistTextField)
+    view.backgroundColor = .systemBackground
     view.addSubview(textFieldcontainerView)
     view.addSubview(createAndAddPlaylistButton)
     view.addSubview(addToPlaylistLabel)
@@ -190,8 +191,8 @@ extension AddToPlaylistViewController: NSFetchedResultsControllerDelegate {
     case .insert:
       playlistTableView.insertRows(at: [newIndexPath!], with: .automatic)
       hideEmptyPlaylistView.accept(true)
-      let cell = playlistTableView.cellForRow(at: newIndexPath!) as! PlaylistTableViewCell
-      cell.musicPlaylistModel = controller.object(at: newIndexPath!) as? MusicPlaylistModel
+      let cell = playlistTableView.cellForRow(at: newIndexPath!) as? PlaylistTableViewCell
+      cell?.musicPlaylistModel = controller.object(at: newIndexPath!) as? MusicPlaylistModel
     case .delete:
       playlistTableView.deleteRows(at: [indexPath!], with: .automatic)
       guard let count = controller.fetchedObjects?.count, count > 0 else {

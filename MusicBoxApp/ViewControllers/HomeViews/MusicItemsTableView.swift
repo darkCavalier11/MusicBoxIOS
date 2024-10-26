@@ -12,6 +12,9 @@ import RxSwift
 class MusicItemsTableView: UITableView {
   static let reusableIdentifier = "MusicItemTableViewCell"
   private let disposeBag = DisposeBag()
+  
+  weak var actionDelegate: MusicItemTableViewActionDelegate?
+  
   override init(frame: CGRect, style: UITableView.Style) {
     super.init(frame: frame, style: style)
     register(MusicItemTableViewCell.self, forCellReuseIdentifier: Self.reusableIdentifier)
@@ -36,13 +39,27 @@ class MusicItemsTableView: UITableView {
           cellType: MusicItemTableViewCell.self
         )
       ) { row, musicItem, cell in
+        let menu = UIMenu(
+          children: [
+            UIAction(title: "Add to Favourite") { [weak self] _ in
+              self?.actionDelegate?.addToFavorite(for: musicItem)
+            },
+            UIAction(title: "Add to Playlist") { [weak self] _ in
+              self?.actionDelegate?.navigateToAddToPlaylistScreen(for: musicItem)
+            },
+            UIAction(title: "Start Download") { [weak self] _ in
+              self?.actionDelegate?.startDownload(for: musicItem)
+            }
+          ]
+        )
+        cell.menuButton.menu = menu
         cell.musicItem = musicItem
       }
       .disposed(by: disposeBag)
   }
 }
 
-protocol MusicItemTableViewCellDelegate: AnyObject {
+protocol MusicItemTableViewActionDelegate: AnyObject {
   func navigateToAddToPlaylistScreen(for musicItem: MusicItem)
   func addToFavorite(for musicItem: MusicItem)
   func startDownload(for musicItem: MusicItem)
@@ -83,39 +100,14 @@ class MusicItemTableViewCell: UITableViewCell {
     return label
   }()
   
-  private var menuButton: UIButton = {
+  var menuButton: UIButton = {
     let button = UIButton()
     button.translatesAutoresizingMaskIntoConstraints = false
     button.tintColor = .secondaryLabel
     button.setImage(UIImage(systemName: "ellipsis"), for: .normal)
-    button.menu = UIMenu(
-      title: "More",
-      children: [
-        UIAction(
-          title: "Add to Favourites",
-          image: UIImage(systemName: "heart")
-        ) { _ in
-          
-        },
-        UIAction(
-          title: "Add to playlist",
-          image: UIImage(systemName: "music.note.list")
-        ) { _ in
-          
-        },
-        UIAction(
-          title: "Download",
-          image: UIImage(systemName: "arrow.down.circle")
-        ) { _ in
-          
-        },
-      ]
-    )
     button.showsMenuAsPrimaryAction = true
     return button
   }()
-  
-  weak var delegate: MusicItemTableViewCellDelegate?
   
   var musicItem: MusicItem? {
     didSet {
@@ -146,8 +138,6 @@ class MusicItemTableViewCell: UITableViewCell {
   }()
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
-    
-   
 
     textStackView.addArrangedSubview(musicTitle)
     textStackView.addArrangedSubview(musicPublisherTitle)
@@ -158,25 +148,7 @@ class MusicItemTableViewCell: UITableViewCell {
     musicCellContainer.addSubview(musicThumbnail)
     musicCellContainer.addSubview(menuButton)
     contentView.addSubview(musicCellContainer)
-  }
-  
-  func setupButtonMenuItems() {
-    let menu = UIMenu(
-      children: [
-        UIAction(title: "Add to Favourite") { [weak self] _ in
-          guard let musicItem = self?.musicItem else { return }
-          self?.delegate?.addToFavorite(for: musicItem)
-        },
-        UIAction(title: "Add to Playlist") { [weak self] _ in
-          guard let musicItem = self?.musicItem else { return }
-          self?.delegate?.navigateToAddToPlaylistScreen(for: musicItem)
-        },
-        UIAction(title: "Start Download") { [weak self] _ in
-          guard let musicItem = self?.musicItem else { return }
-          self?.delegate?.startDownload(for: musicItem)
-        }
-      ]
-    )
+    setupConstraints()
   }
   
   func setupConstraints() {

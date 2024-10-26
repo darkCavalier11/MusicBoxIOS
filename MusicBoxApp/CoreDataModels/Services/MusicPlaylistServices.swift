@@ -26,9 +26,13 @@ final class MusicPlaylistServices {
     musicPlaylistModel.id = UUID()
     
     musicItems.forEach { item in
-      guard let model = MusicItemModel(item, context: context) else {
-        return
-      }
+      let model = MusicItemModel(context: context)
+      model.title = item.title
+      model.runningDurationInSeconds = Int64(item.runningDurationInSeconds)
+      model.publisherTitle = item.publisherTitle
+      model.largestThumbnail = item.largestThumbnail
+      model.smallestThumbnail = item.smallestThumbnail
+      model.musicId = item.musicId
       musicPlaylistModel.addToMusicItems(model)
     }
     
@@ -46,7 +50,7 @@ final class MusicPlaylistServices {
     model: MusicPlaylistModel,
     musicItem: MusicItem
   ) {
-    guard let musicItemModel = MusicItemModel(musicItem, context: context) else { return }
+    let musicItemModel = MusicItemModel(context: context)
     model.addToMusicItems(musicItemModel)
     coreDataStack.saveContext()
   }

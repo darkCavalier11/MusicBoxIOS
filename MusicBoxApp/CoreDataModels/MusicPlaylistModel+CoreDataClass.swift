@@ -15,13 +15,13 @@ public class MusicPlaylistModel: NSManagedObject {
   static private let logger = Logger(subsystem: "com.MusicBoxApp.CoreData", category: "MusicPlaylistModel")
   
   public var totalDurationInSeconds: Int {
-    guard let musicItems = Array(arrayLiteral: musicItems) as? [MusicItemModel] else { return 0 }
+    guard let musicItems = musicItems?.allObjects as? [MusicItemModel] else { return 0 }
     return musicItems.reduce(0) { $0 + Int($1.runningDurationInSeconds) }
   }
   
   public var artistDesc: String {
     var artistSet = Set<String>()
-    guard let musicItems = Array(arrayLiteral: musicItems) as? [MusicItemModel] else { return "No Artists" }
+    guard let musicItems = musicItems?.allObjects as? [MusicItemModel] else { return "No Artists" }
     for item in musicItems {
       artistSet.insert(item.publisherTitle ?? "-")
     }
@@ -38,7 +38,7 @@ public class MusicPlaylistModel: NSManagedObject {
   
   public var top3ThumbnailURLs: [URL] {
     var top3ThumbnailURLs: [URL] = []
-    guard let musicItems = Array(arrayLiteral: musicItems) as? [MusicItemModel] else { return [] }
+    guard let musicItems = musicItems?.allObjects as? [MusicItemModel] else { return [] }
     for item in musicItems {
       if top3ThumbnailURLs.count == 3 { break }
       guard item.smallestThumbnail != nil,
@@ -48,11 +48,5 @@ public class MusicPlaylistModel: NSManagedObject {
       top3ThumbnailURLs.append(thumbnailURL)
     }
     return top3ThumbnailURLs
-  }
-  
-  public func deletePlaylist(_ playlist: MusicPlaylistModel, context: NSManagedObjectContext) {
-    context.delete(playlist)
-    Self.logger.log("Deleting playlist: \(playlist.title ?? "-")")
-    try? context.save()
   }
 }

@@ -7,17 +7,79 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "0DDFC45C-0661-4498-BC2A-2486167E96BE"
+            uuid = "A614C8B0-7CEB-489D-B2BA-43054CB60EA0"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "MusicBoxApp/ViewControllers/PlaylistViews/PlaylistTableView.swift"
+            filePath = "MusicBoxApp/CoreDataModels/Services/MusicPlaylistServices.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
-            landmarkName = "musicPlaylistModel"
-            landmarkType = "24">
+            startingLineNumber = "53"
+            endingLineNumber = "53"
+            landmarkName = "addToPlaylist(model:musicItem:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "92191235-185A-49E6-A1BD-8ADF19EC311C"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MusicBoxApp/ViewControllers/AddToPlaylistViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "74"
+            endingLineNumber = "74"
+            landmarkName = "createAndAddPlaylistButtonTapped()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "AEC24B7A-3C80-426F-B8E8-4838F4C1F41A"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "MusicBoxApp/CoreDataModels/Services/MusicPlaylistServices.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "36"
+            endingLineNumber = "36"
+            landmarkName = "addNewPlaylist(title:musicItems:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "AEC24B7A-3C80-426F-B8E8-4838F4C1F41A - 11470edfb60be0f3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "MusicBoxApp.MusicPlaylistServices.removePlaylist(model: MusicBoxApp.MusicPlaylistModel) -&gt; ()"
+                  moduleName = "MusicBoxApp.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sumit/Documents/ios/Projects/MusicBoxApp/MusicBoxApp/CoreDataModels/Services/MusicPlaylistServices.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "38"
+                  endingLineNumber = "38">
+               </Location>
+               <Location
+                  uuid = "AEC24B7A-3C80-426F-B8E8-4838F4C1F41A - 2376b0b9b36662f8"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (MusicBox.MusicItem) -&gt; () in MusicBoxApp.MusicPlaylistServices.addNewPlaylist(title: Swift.String, musicItems: Swift.Array&lt;MusicBox.MusicItem&gt;) -&gt; ()"
+                  moduleName = "MusicBoxApp.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/sumit/Documents/ios/Projects/MusicBoxApp/MusicBoxApp/CoreDataModels/Services/MusicPlaylistServices.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "36"
+                  endingLineNumber = "36">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

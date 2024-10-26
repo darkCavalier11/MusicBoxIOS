@@ -8,6 +8,7 @@
 import XCTest
 import CoreData
 @testable import MusicBoxApp
+import MusicBox
 
 class TestCoreDataStack: CoreDataStack {
   override init() {
@@ -31,7 +32,7 @@ class TestCoreDataStack: CoreDataStack {
       }
     }
     
-    self.storeContainer = container
+    Self.storeContainer = container
   }
 }
 
@@ -41,24 +42,18 @@ class TestPlaylistModelCoreDataTests: XCTestCase {
   var playlistModel: MusicPlaylistModel!
   
   lazy var musicItem1: MusicItemModel = {
-    let m = MusicItemModel(context: coreDataStack.managedObjectContext)
-    m.title = "Test Music Item 1"
-    m.publisherTitle = "Test Publisher 1"
-    m.runningDurationInSeconds = 100
+    let musicItem = MusicItem(title: "Test Music Item 1", publisherTitle: "Test Publisher 1", runningDurationInSeconds: 100, musicId: "A")
+    let m = MusicItemModel(musicItem, context: coreDataStack.managedObjectContext)!
     return m
   }()
   lazy var musicItem2: MusicItemModel = {
-    let m = MusicItemModel(context: coreDataStack.managedObjectContext)
-    m.title = "Test Music Item 2"
-    m.publisherTitle = "Test Publisher 2"
-    m.runningDurationInSeconds = 250
+    let musicItem = MusicItem(title: "Test Music Item 2", publisherTitle: "Test Publisher 2", runningDurationInSeconds: 250, musicId: "B")
+    let m = MusicItemModel(musicItem, context: coreDataStack.managedObjectContext)!
     return m
   }()
   lazy var musicItem3: MusicItemModel = {
-    let m = MusicItemModel(context: coreDataStack.managedObjectContext)
-    m.title = "Test Music Item 3"
-    m.publisherTitle = "Test Publisher 3"
-    m.runningDurationInSeconds = 50
+    let musicItem = MusicItem(title: "Test Music Item 3", publisherTitle: "Test Publisher 3", runningDurationInSeconds: 250, musicId: "C")
+    let m = MusicItemModel(musicItem, context: coreDataStack.managedObjectContext)!
     return m
   }()
   

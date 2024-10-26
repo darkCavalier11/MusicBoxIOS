@@ -7,6 +7,7 @@
 
 import UIKit
 import RxSwift
+import MusicBox
 
 class HomeViewController: UIViewController {
   private let homeMusicViewModel = HomeMusicViewModel()
@@ -16,6 +17,8 @@ class HomeViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     view.addSubview(musicItemsTableView)
+    musicItemsTableView.actionDelegate = self
+    
     setupMusicItemsTableViewConstraints()
     navigationItem.title = "Welcome"
     navigationItem.rightBarButtonItems = [
@@ -48,3 +51,18 @@ class HomeViewController: UIViewController {
   }
 }
 
+extension HomeViewController: MusicItemTableViewActionDelegate {
+  func navigateToAddToPlaylistScreen(for musicItem: MusicItem) {
+    let addToPlaylistVC = AddToPlaylistViewController()
+    addToPlaylistVC.musicItem = musicItem
+    navigationController?.present(addToPlaylistVC, animated: true)
+  }
+  
+  func addToFavorite(for musicItem: MusicItem) {
+    // TODO: -
+  }
+  
+  func startDownload(for musicItem: MusicItem) {
+    // TODO: -
+  }
+}
