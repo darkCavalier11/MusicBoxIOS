@@ -11,6 +11,6 @@ class DownloadsNavigationController: UINavigationController {
   override func viewDidLoad() {
     super.viewDidLoad()
     navigationBar.prefersLargeTitles = true
-    viewControllers = [SettingsViewController()]
+    viewControllers = [DownloadsViewController()]
   }
 }
