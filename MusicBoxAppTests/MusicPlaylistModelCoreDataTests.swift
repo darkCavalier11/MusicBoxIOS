@@ -111,11 +111,23 @@ class TestPlaylistModelCoreDataTests: XCTestCase {
     XCTAssert(allPlaylists?.count == 1)
     
     let model = allPlaylists!.first!
-    let musicItemModels = allPlaylists!.first!.musicItems!.allObjects as! [MusicItemModel]
-    playlistService.removeFromPlaylist(model: model, musicItemModel: musicItemModels.first!)
+    playlistService.removeFromPlaylist(model: model, index: 0)
     let newPlaylists = try? coreDataStack.managedObjectContext.fetch(request)
     XCTAssert(newPlaylists?.count == 1)
     XCTAssert(newPlaylists!.first!.musicItems?.count == 2)
+  }
+  
+  func testGetMusicPlaylistById() {
+    playlistService.addNewPlaylist(title: "Test Playlist", musicItems: [musicItem1, musicItem2, musicItem3])
+    let request = MusicPlaylistModel.fetchRequest()
+    let allPlaylists = try? coreDataStack.managedObjectContext.fetch(request)
+    XCTAssert(allPlaylists?.count == 1)
+    
+    let model = allPlaylists!.first!
+    let fetchedPlaylist = playlistService.getMusicPlaylistById(model.id!)
+    
+    XCTAssertNotNil(fetchedPlaylist)
+    XCTAssert(fetchedPlaylist?.id == model.id)
   }
 }
     

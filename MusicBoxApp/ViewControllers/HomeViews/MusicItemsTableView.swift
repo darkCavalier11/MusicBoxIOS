@@ -53,6 +53,8 @@ class MusicItemsTableView: UITableView {
         cell.musicItem = musicItem
       }
       .disposed(by: disposeBag)
+    
+    
   }
 }
 

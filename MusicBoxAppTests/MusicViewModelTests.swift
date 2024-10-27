@@ -12,6 +12,18 @@ import RxCocoa
 import MusicBox
 
 final class TestHomeViewModel: MusicViewModel {
+  func dismissMusicItem(musicPlaylistModel: MusicBoxApp.MusicPlaylistModel, index: Int, onDismissed: (() -> Void)?) {
+    
+  }
+  
+  func addMusicToPlaylist(controller: UINavigationController, musicItem: MusicItem) {
+    
+  }
+  
+  func startDowloadingMusic(_ musicItem: MusicItem) {
+    
+  }
+  
   private let testIsFetchingMusicListRelay = BehaviorRelay(value: false)
   private let testMusicListRelay = BehaviorRelay(value: [MusicItem]())
   private let testMusicQueryTypeRelay = BehaviorRelay(value: MusicListQueryType.defaultMusicList)
@@ -44,6 +56,8 @@ final class TestHomeViewModel: MusicViewModel {
           case .defaultMusicList:
             observer.onNext([self.testMusicItem])
           case .withSearchQuery(_):
+            observer.onNext([self.testMusicItem])
+          case .playlist(id: let id):
             observer.onNext([self.testMusicItem])
           }
           self.testIsFetchingMusicListRelay.accept(false)

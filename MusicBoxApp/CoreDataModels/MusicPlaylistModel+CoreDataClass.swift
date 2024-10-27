@@ -26,7 +26,9 @@ public class MusicPlaylistModel: NSManagedObject {
       artistSet.insert(item.publisherTitle ?? "-")
     }
     let artists = Array(artistSet)
-    if artists.count == 1 {
+    if artists.isEmpty {
+      return "No Artists"
+    } else if artists.count == 1 {
       return artists[0]
     } else if artists.count == 2 {
       return artists[0] + ", " + artists[1]

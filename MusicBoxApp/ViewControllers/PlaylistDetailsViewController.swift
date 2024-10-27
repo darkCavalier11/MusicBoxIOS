@@ -7,6 +7,7 @@
 
 import UIKit
 import MusicBox
+import RxSwift
 
 class PlaylistDetailsViewController: UIViewController {
   private let viewModel = MusicListViewModel()
@@ -22,12 +23,32 @@ class PlaylistDetailsViewController: UIViewController {
   weak var playlistService: MusicPlaylistServices?
   
   private let musicItemsTableView = MusicItemsTableView()
+  private let disposeBag = DisposeBag()
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     view.addSubview(musicItemsTableView)
     musicItemsTableView.bindWithViewModel(viewModel: viewModel)
     musicItemsTableView.actionDelegate = self
     setupMusicItemsTableViewConstraints()
+    
+    musicItemsTableView
+      .rx
+      .itemDeleted
+      .bind { [weak self] indexPath in
+        guard let self else { return }
+        guard let musicPlaylistModel = self.musicPlaylistModel else { return }
+        self.viewModel.dismissMusicItem(
+          musicPlaylistModel: musicPlaylistModel,
+          index: indexPath.row
+        ) { [weak self] in
+          guard let id = self?.musicPlaylistModel?.id else { return }
+          self?
+            .viewModel
+            .setMusicListQuery(.playlist(id: id))
+        }
+      }
+      .disposed(by: disposeBag)
   }
   
   func setupMusicItemsTableViewConstraints() {

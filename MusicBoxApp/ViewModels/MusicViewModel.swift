@@ -15,7 +15,7 @@ protocol MusicViewModel: AnyObject {
   var isFetchingMusicList: Observable<Bool> { get }
   var musicItemList: Observable<[MusicItem]> { get }
   func setMusicListQuery(_ query: MusicListQueryType)
-  func dismissMusicItem(musicPlaylistModel: MusicPlaylistModel, musicItem: MusicItem)
+  func dismissMusicItem(musicPlaylistModel: MusicPlaylistModel, index: Int, onDismissed: (()->Void)?)
   func addMusicToPlaylist(controller: UINavigationController, musicItem: MusicItem)
   func startDowloadingMusic(_ musicItem: MusicItem)
 }
@@ -97,9 +97,13 @@ final class MusicListViewModel: MusicViewModel {
     // TODO: -
   }
   
-  func dismissMusicItem(musicPlaylistModel: MusicPlaylistModel, musicItem: MusicItem) {
-    playlistService.removeFromPlaylist(model: musicPlaylistModel, musicItemModel: musicItem)
-    
+  func dismissMusicItem(
+    musicPlaylistModel: MusicPlaylistModel,
+    index: Int,
+    onDismissed: (() -> Void)? = nil
+  ) {
+    playlistService.removeFromPlaylist(model: musicPlaylistModel, index: index)
+    onDismissed?()
   }
 }
 
