@@ -31,24 +31,6 @@ class PlaylistDetailsViewController: UIViewController {
     musicItemsTableView.bindWithViewModel(viewModel: viewModel)
     musicItemsTableView.actionDelegate = self
     setupMusicItemsTableViewConstraints()
-    
-    musicItemsTableView
-      .rx
-      .itemDeleted
-      .bind { [weak self] indexPath in
-        guard let self else { return }
-        guard let musicPlaylistModel = self.musicPlaylistModel else { return }
-        self.viewModel.dismissMusicItem(
-          musicPlaylistModel: musicPlaylistModel,
-          index: indexPath.row
-        ) { [weak self] in
-          guard let id = self?.musicPlaylistModel?.id else { return }
-          self?
-            .viewModel
-            .setMusicListQuery(.playlist(id: id))
-        }
-      }
-      .disposed(by: disposeBag)
   }
   
   func setupMusicItemsTableViewConstraints() {
