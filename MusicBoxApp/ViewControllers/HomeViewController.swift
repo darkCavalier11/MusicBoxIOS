@@ -37,7 +37,8 @@ class HomeViewController: UIViewController {
   
   @objc func navigateToSearchViewController() {
     let searchViewController = SearchViewController()
-    navigationController?.pushViewController(searchViewController, animated: true)
+//    navigationController?.pushViewController(searchViewController, animated: true)
+    showToast(text: "Hello")
   }
   
   func setupMusicItemsTableViewConstraints() {
