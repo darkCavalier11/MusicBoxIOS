@@ -112,6 +112,13 @@ extension PlaylistViewController: UITableViewDataSource {
     let musicModel = self.fetchedResultController.object(at: indexPath)
     self.musicPlaylistService.removePlaylist(model: musicModel)
   }
+  
+  func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+    let playlistDetailVC = PlaylistDetailsViewController()
+    playlistDetailVC.musicPlaylistModel = fetchedResultController.object(at: indexPath)
+    playlistDetailVC.playlistService = musicPlaylistService
+    navigationController?.pushViewController(playlistDetailVC, animated: true)
+  }
 }
 
 extension PlaylistViewController: NSFetchedResultsControllerDelegate {

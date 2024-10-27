@@ -16,6 +16,7 @@ class PlaylistDetailsViewController: UIViewController {
       guard let musicPlaylistModel else { return }
       guard let musicItemModels = musicPlaylistModel.musicItems?.allObjects as? [MusicItemModel] else { return }
       viewModel.setMusicListQuery(.withPrePopulatedItems(musicItemModels: musicItemModels))
+      title = musicPlaylistModel.title
     }
   }
   
@@ -24,6 +25,7 @@ class PlaylistDetailsViewController: UIViewController {
   private let musicItemsTableView = MusicItemsTableView()
   override func viewDidLoad() {
     super.viewDidLoad()
+    view.addSubview(musicItemsTableView)
     musicItemsTableView.bindWithViewModel(viewModel: viewModel)
     musicItemsTableView.actionDelegate = self
     setupMusicItemsTableViewConstraints()

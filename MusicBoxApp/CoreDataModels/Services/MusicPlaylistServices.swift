@@ -68,8 +68,12 @@ final class MusicPlaylistServices {
   
   func removeFromPlaylist(
     model: MusicPlaylistModel,
-    musicItemModel: MusicItemModel
+    musicItemModel: MusicItem
   ) {
+    guard let musicItemModel = model.musicItems?.first(where: { item in
+      guard let currentModel = item as? MusicItemModel else { return false }
+      return currentModel.musicId == musicItemModel.musicId
+    }) as? MusicItemModel else { return }
     model.removeFromMusicItems(musicItemModel)
     coreDataStack.saveContext()
   }
