@@ -9,22 +9,31 @@ import Foundation
 import MusicBox
 import RxSwift
 import RxCocoa
+import UIKit
 
 protocol MusicViewModel: AnyObject {
   var isFetchingMusicList: Observable<Bool> { get }
   var musicItemList: Observable<[MusicItem]> { get }
-  func setMusicListQuery(_ query: MusicListQueryType) 
+  func setMusicListQuery(_ query: MusicListQueryType)
+  func addMusicToPlaylist(controller: UINavigationController, musicItem: MusicItem)
+  func startDowloadingMusic(_ musicItem: MusicItem)
 }
 
 enum MusicListQueryType {
   case defaultMusicList
   case withSearchQuery(query: String)
+  case withPrePopulatedItems(musicItemModels: [MusicItemModel])
 }
 
 final class MusicListViewModel: MusicViewModel {
   let mb = MusicBox()
   private let isFetchingMusicListRelay = BehaviorRelay(value: false)
   private let musicListQueryTypeRelay = BehaviorRelay(value: MusicListQueryType.defaultMusicList)
+  private lazy var coreDataStack = CoreDataStack()
+  private lazy var playlistService = MusicPlaylistServices(
+    coreDataStack: coreDataStack,
+    context: coreDataStack.managedObjectContext
+  )
   
   var isFetchingMusicList: Observable<Bool> {
     isFetchingMusicListRelay
@@ -51,6 +60,18 @@ final class MusicListViewModel: MusicViewModel {
             case .withSearchQuery(query: let query):
               let musicList = await self.mb.musicSession.getMusicSearchResults(query: query)
               observer.onNext(musicList)
+              
+            case .withPrePopulatedItems(musicItemModels: let musicItemModels):
+              observer.onNext(musicItemModels.map {
+                MusicItem(
+                  title: $0.title ?? "",
+                  publisherTitle: $0.publisherTitle ?? "-",
+                  runningDurationInSeconds: Int($0.runningDurationInSeconds),
+                  musicId: $0.musicId ?? "",
+                  smallestThumbnail: $0.smallestThumbnail,
+                  largestThumbnail: $0.largestThumbnail
+                )
+              })
             }
             
             self.isFetchingMusicListRelay.accept(false)
@@ -60,6 +81,16 @@ final class MusicListViewModel: MusicViewModel {
           }
         }
       }
+  }
+  
+  func addMusicToPlaylist(controller: UINavigationController, musicItem: MusicItem) {
+    let addToPlaylistVC = AddToPlaylistViewController()
+    addToPlaylistVC.musicItem = musicItem
+    controller.present(addToPlaylistVC, animated: true)
+  }
+  
+  func startDowloadingMusic(_ musicItem: MusicItem) {
+    // TODO: -
   }
 }
 

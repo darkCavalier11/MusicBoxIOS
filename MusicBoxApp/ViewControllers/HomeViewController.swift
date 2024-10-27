@@ -53,13 +53,8 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController: MusicItemTableViewActionDelegate {
   func navigateToAddToPlaylistScreen(for musicItem: MusicItem) {
-    let addToPlaylistVC = AddToPlaylistViewController()
-    addToPlaylistVC.musicItem = musicItem
-    navigationController?.present(addToPlaylistVC, animated: true)
-  }
-  
-  func addToFavorite(for musicItem: MusicItem) {
-    // TODO: -
+    guard let navigationController else { return }
+    homeMusicViewModel.addMusicToPlaylist(controller: navigationController, musicItem: musicItem)
   }
   
   func startDownload(for musicItem: MusicItem) {
