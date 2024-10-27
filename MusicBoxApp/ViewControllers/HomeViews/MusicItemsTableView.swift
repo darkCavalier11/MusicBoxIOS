@@ -41,9 +41,6 @@ class MusicItemsTableView: UITableView {
       ) { row, musicItem, cell in
         let menu = UIMenu(
           children: [
-            UIAction(title: "Add to Favourite", image: UIImage(systemName: "heart")) { [weak self] _ in
-              self?.actionDelegate?.addToFavorite(for: musicItem)
-            },
             UIAction(title: "Add to Playlist", image: UIImage(systemName: "music.note.list")) { [weak self] _ in
               self?.actionDelegate?.navigateToAddToPlaylistScreen(for: musicItem)
             },
@@ -61,7 +58,6 @@ class MusicItemsTableView: UITableView {
 
 protocol MusicItemTableViewActionDelegate: AnyObject {
   func navigateToAddToPlaylistScreen(for musicItem: MusicItem)
-  func addToFavorite(for musicItem: MusicItem)
   func startDownload(for musicItem: MusicItem)
 }
 

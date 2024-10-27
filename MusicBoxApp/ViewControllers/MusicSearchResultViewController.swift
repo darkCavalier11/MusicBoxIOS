@@ -7,6 +7,7 @@
 
 import UIKit
 import RxSwift
+import MusicBox
 
 class MusicSearchResultViewController: UIViewController {
   var query: MusicListQueryType? {
@@ -25,7 +26,7 @@ class MusicSearchResultViewController: UIViewController {
     return imageView
   }()
   
-  private let homeMusicViewModel = HomeMusicViewModel()
+  private let homeMusicViewModel = MusicListViewModel()
   var searchViewModel: SearchViewModel?
   
   private let disposeBag = DisposeBag()
@@ -35,6 +36,7 @@ class MusicSearchResultViewController: UIViewController {
     super.viewDidLoad()
     view.addSubview(musicItemsTableView)
     musicItemsTableView.bindWithViewModel(viewModel: homeMusicViewModel)
+    musicItemsTableView.actionDelegate = self
     view.addSubview(loadingView)
     
     switch query {
@@ -56,8 +58,6 @@ class MusicSearchResultViewController: UIViewController {
     setupLoadingViewConstraints()
     setupMusicItemsTableViewConstraints()
     
-    
-    
     UIView.animate(
       withDuration: 0.8,
       delay: 0,
@@ -66,11 +66,6 @@ class MusicSearchResultViewController: UIViewController {
       self.loadingView.transform = CGAffineTransform(scaleX: 1.2, y: 1.2)
     } completion: { _ in
     }
-  }
-  
-  @objc func navigateToSearchViewController() {
-    let searchViewController = SearchViewController()
-    navigationController?.pushViewController(searchViewController, animated: true)
   }
   
   func setupMusicItemsTableViewConstraints() {
@@ -91,5 +86,17 @@ class MusicSearchResultViewController: UIViewController {
       loadingView.widthAnchor.constraint(equalToConstant: 150),
       loadingView.heightAnchor.constraint(equalToConstant: 150),
     ])
+  }
+}
+
+extension MusicSearchResultViewController: MusicItemTableViewActionDelegate {
+  func navigateToAddToPlaylistScreen(for musicItem: MusicItem) {
+    let addToPlaylistVC = AddToPlaylistViewController()
+    addToPlaylistVC.musicItem = musicItem
+    navigationController?.present(addToPlaylistVC, animated: true)
+  }
+  
+  func startDownload(for musicItem: MusicItem) {
+    // TODO: -
   }
 }

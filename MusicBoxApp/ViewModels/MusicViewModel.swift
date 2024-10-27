@@ -13,7 +13,7 @@ import RxCocoa
 protocol MusicViewModel: AnyObject {
   var isFetchingMusicList: Observable<Bool> { get }
   var musicItemList: Observable<[MusicItem]> { get }
-  func setMusicListQuery(_ query: MusicListQueryType)
+  func setMusicListQuery(_ query: MusicListQueryType) 
 }
 
 enum MusicListQueryType {
@@ -21,7 +21,7 @@ enum MusicListQueryType {
   case withSearchQuery(query: String)
 }
 
-final class HomeMusicViewModel: MusicViewModel {
+final class MusicListViewModel: MusicViewModel {
   let mb = MusicBox()
   private let isFetchingMusicListRelay = BehaviorRelay(value: false)
   private let musicListQueryTypeRelay = BehaviorRelay(value: MusicListQueryType.defaultMusicList)

@@ -10,7 +10,7 @@ import RxSwift
 import MusicBox
 
 class HomeViewController: UIViewController {
-  private let homeMusicViewModel = HomeMusicViewModel()
+  private let homeMusicViewModel = MusicListViewModel()
   private let disposeBag = DisposeBag()
   private let musicItemsTableView = MusicItemsTableView()
   
