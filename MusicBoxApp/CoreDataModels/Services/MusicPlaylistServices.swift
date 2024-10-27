@@ -17,6 +17,20 @@ final class MusicPlaylistServices {
     self.context = context
   }
   
+  func getMusicPlaylistById(
+    _ id: UUID
+  ) -> MusicPlaylistModel? {
+    let request = MusicPlaylistModel.fetchRequest()
+    request.predicate = NSPredicate(
+      format: "%K == %@",
+      (\MusicPlaylistModel.id)._kvcKeyPathString!,
+      id as NSUUID
+    )
+    
+    guard let musicModel = try? context.fetch(request), musicModel.count > 0 else { return nil }
+    return musicModel.first
+  }
+  
   func addNewPlaylist(
     title: String,
     musicItems: [MusicItem]

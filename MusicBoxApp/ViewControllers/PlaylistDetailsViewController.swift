@@ -13,9 +13,8 @@ class PlaylistDetailsViewController: UIViewController {
   
   weak var musicPlaylistModel: MusicPlaylistModel? {
     didSet {
-      guard let musicPlaylistModel else { return }
-      guard let musicItemModels = musicPlaylistModel.musicItems?.allObjects as? [MusicItemModel] else { return }
-      viewModel.setMusicListQuery(.withPrePopulatedItems(musicItemModels: musicItemModels))
+      guard let musicPlaylistModel, let id = musicPlaylistModel.id else { return }
+      viewModel.setMusicListQuery(.playlist(id: id))
       title = musicPlaylistModel.title
     }
   }

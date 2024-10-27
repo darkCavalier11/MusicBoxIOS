@@ -15,6 +15,7 @@ protocol MusicViewModel: AnyObject {
   var isFetchingMusicList: Observable<Bool> { get }
   var musicItemList: Observable<[MusicItem]> { get }
   func setMusicListQuery(_ query: MusicListQueryType)
+  func dismissMusicItem(musicPlaylistModel: MusicPlaylistModel, musicItem: MusicItem)
   func addMusicToPlaylist(controller: UINavigationController, musicItem: MusicItem)
   func startDowloadingMusic(_ musicItem: MusicItem)
 }
@@ -22,7 +23,7 @@ protocol MusicViewModel: AnyObject {
 enum MusicListQueryType {
   case defaultMusicList
   case withSearchQuery(query: String)
-  case withPrePopulatedItems(musicItemModels: [MusicItemModel])
+  case playlist(id: UUID)
 }
 
 final class MusicListViewModel: MusicViewModel {
@@ -61,8 +62,11 @@ final class MusicListViewModel: MusicViewModel {
               let musicList = await self.mb.musicSession.getMusicSearchResults(query: query)
               observer.onNext(musicList)
               
-            case .withPrePopulatedItems(musicItemModels: let musicItemModels):
-              observer.onNext(musicItemModels.map {
+            case .playlist(id: let id):
+              let model = playlistService.getMusicPlaylistById(id)
+              let musicItems = model?.musicItems?.allObjects as? [MusicItemModel]
+              guard let musicItems else { return }
+              observer.onNext(musicItems.map {
                 MusicItem(
                   title: $0.title ?? "",
                   publisherTitle: $0.publisherTitle ?? "-",
@@ -91,6 +95,11 @@ final class MusicListViewModel: MusicViewModel {
   
   func startDowloadingMusic(_ musicItem: MusicItem) {
     // TODO: -
+  }
+  
+  func dismissMusicItem(musicPlaylistModel: MusicPlaylistModel, musicItem: MusicItem) {
+    playlistService.removeFromPlaylist(model: musicPlaylistModel, musicItemModel: musicItem)
+    
   }
 }
 
