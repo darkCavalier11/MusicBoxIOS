@@ -1,5 +1,5 @@
 {
-  "originHash" : "5eac3a32cf070ed39f10cf168c0c01210684f92f393da165080e404b358baa76",
+  "originHash" : "27adef72a4a3ea363f8cbcfdcd5949955909ca701043dda05fcac1871ce4f9a0",
   "pins" : [
     {
       "identity" : "musicboxswift",
@@ -7,7 +7,7 @@
       "location" : "https://github.com/darkCavalier11/MusicBoxSwift",
       "state" : {
         "branch" : "main",
-        "revision" : "5dd7ff5651f29606774026cd9b98ff8093fc7ec8"
+        "revision" : "3b6d32dee00fbbb92bd3cacb24f98f5555efa6ae"
       }
     },
     {

@@ -27,6 +27,7 @@ final class TestHomeViewModel: MusicViewModel {
   private let testIsFetchingMusicListRelay = BehaviorRelay(value: false)
   private let testMusicListRelay = BehaviorRelay(value: [MusicItem]())
   private let testMusicQueryTypeRelay = BehaviorRelay(value: MusicListQueryType.defaultMusicList)
+  private let testMusicPlayingStatusRelay = BehaviorRelay(value: MusicPlayingStatus.idle)
   
   private let testMusicItem = MusicItem(
     title: "1",
@@ -41,8 +42,16 @@ final class TestHomeViewModel: MusicViewModel {
     testIsFetchingMusicListRelay.asObservable()
   }
   
+  var musicPlayingStatus: Observable<MusicPlayingStatus> {
+    testMusicPlayingStatusRelay.asObservable()
+  }
+  
   func setMusicListQuery(_ query: MusicListQueryType) {
     testMusicQueryTypeRelay.accept(query)
+  }
+  
+  func playMusicItem(musicItem: MusicItem) {
+    testMusicPlayingStatusRelay.accept(.initialising(musicItem))
   }
   
   var musicItemList: Observable<[MusicItem]> {
@@ -111,6 +120,32 @@ final class MusicViewModelTests: XCTestCase {
         expectation.fulfill()
       })
       .disposed(by: disposeBag)
+    waitForExpectations(timeout: 1)
+  }
+  
+  func testMusicPlayingStatus() {
+    let expectation1 = expectation(description: "At begin the state of music item should be idle")
+    let expectation2 = expectation(description: "When music item selected, the status of music item should be initialising")
+ 
+    let testMusicItem = MusicItem(title: "Test", publisherTitle: "ABCD", runningDurationInSeconds: 10, musicId: "123")
+    viewModel
+      .musicPlayingStatus
+      .subscribe(
+        onNext: { status in
+        switch status {
+        case .initialising(let musicItem):
+          if musicItem.musicId == testMusicItem.musicId {
+            expectation2.fulfill()
+          }
+        case .idle:
+          expectation1.fulfill()
+        default:
+          XCTFail()
+        }
+      })
+      .disposed(by: disposeBag)
+      
+    viewModel.playMusicItem(musicItem: testMusicItem)
     waitForExpectations(timeout: 1)
   }
 }

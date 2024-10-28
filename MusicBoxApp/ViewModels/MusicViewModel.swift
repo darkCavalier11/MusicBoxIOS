@@ -14,10 +14,21 @@ import UIKit
 protocol MusicViewModel: AnyObject {
   var isFetchingMusicList: Observable<Bool> { get }
   var musicItemList: Observable<[MusicItem]> { get }
+  var musicPlayingStatus: Observable<MusicPlayingStatus> { get }
+  
+  func playMusicItem(musicItem: MusicItem)
   func setMusicListQuery(_ query: MusicListQueryType)
   func dismissMusicItem(musicPlaylistModel: MusicPlaylistModel, index: Int, onDismissed: (()->Void)?)
   func addMusicToPlaylist(controller: UINavigationController, musicItem: MusicItem)
   func startDowloadingMusic(_ musicItem: MusicItem)
+  
+}
+
+enum MusicPlayingStatus {
+  case playing(MusicItem)
+  case paused(MusicItem)
+  case idle
+  case initialising(MusicItem)
 }
 
 enum MusicListQueryType {
@@ -30,7 +41,10 @@ final class MusicListViewModel: MusicViewModel {
   let mb = MusicBox()
   private let isFetchingMusicListRelay = BehaviorRelay(value: false)
   private let musicListQueryTypeRelay = BehaviorRelay(value: MusicListQueryType.defaultMusicList)
+  private lazy var musicPlayingStatusRelay: BehaviorRelay<MusicPlayingStatus> = .init(value: .idle)
+  
   private lazy var coreDataStack = CoreDataStack()
+
   private lazy var playlistService = MusicPlaylistServices(
     coreDataStack: coreDataStack,
     context: coreDataStack.managedObjectContext
@@ -87,6 +101,10 @@ final class MusicListViewModel: MusicViewModel {
       }
   }
   
+  var musicPlayingStatus: Observable<MusicPlayingStatus> {
+    musicPlayingStatusRelay.asObservable()
+  }
+  
   func addMusicToPlaylist(controller: UINavigationController, musicItem: MusicItem) {
     let addToPlaylistVC = AddToPlaylistViewController()
     addToPlaylistVC.musicItem = musicItem
@@ -104,6 +122,10 @@ final class MusicListViewModel: MusicViewModel {
   ) {
     playlistService.removeFromPlaylist(model: musicPlaylistModel, index: index)
     onDismissed?()
+  }
+  
+  func playMusicItem(musicItem: MusicItem) {
+    musicPlayingStatusRelay.accept(.initialising(musicItem))
   }
 }
 
