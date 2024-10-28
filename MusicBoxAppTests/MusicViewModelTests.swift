@@ -28,6 +28,7 @@ final class TestHomeViewModel: MusicViewModel {
   private let testMusicListRelay = BehaviorRelay(value: [MusicItem]())
   private let testMusicQueryTypeRelay = BehaviorRelay(value: MusicListQueryType.defaultMusicList)
   private let testMusicPlayingStatusRelay = BehaviorRelay(value: MusicPlayingStatus.idle)
+  private let testSelectedMusicItemRelay = BehaviorRelay<MusicItem?>(value: nil)
   
   private let testMusicItem = MusicItem(
     title: "1",
@@ -51,7 +52,12 @@ final class TestHomeViewModel: MusicViewModel {
   }
   
   func playMusicItem(musicItem: MusicItem) {
-    testMusicPlayingStatusRelay.accept(.initialising(musicItem))
+    testMusicPlayingStatusRelay.accept(.initialising)
+    testSelectedMusicItemRelay.accept(musicItem)
+  }
+  
+  var selectedMusicItem: Observable<MusicItem?> {
+    testSelectedMusicItemRelay.asObservable()
   }
   
   var musicItemList: Observable<[MusicItem]> {
@@ -66,7 +72,7 @@ final class TestHomeViewModel: MusicViewModel {
             observer.onNext([self.testMusicItem])
           case .withSearchQuery(_):
             observer.onNext([self.testMusicItem])
-          case .playlist(id: let id):
+          case .playlist(id: _):
             observer.onNext([self.testMusicItem])
           }
           self.testIsFetchingMusicListRelay.accept(false)
@@ -133,10 +139,8 @@ final class MusicViewModelTests: XCTestCase {
       .subscribe(
         onNext: { status in
         switch status {
-        case .initialising(let musicItem):
-          if musicItem.musicId == testMusicItem.musicId {
+        case .initialising:
             expectation2.fulfill()
-          }
         case .idle:
           expectation1.fulfill()
         default:
@@ -146,6 +150,27 @@ final class MusicViewModelTests: XCTestCase {
       .disposed(by: disposeBag)
       
     viewModel.playMusicItem(musicItem: testMusicItem)
+    waitForExpectations(timeout: 1)
+  }
+  
+  func testSelectedMusic() {
+    let expectation = expectation(description: "When played music item should be valid one")
+    
+    let testMusicItem = MusicItem(title: "Test", publisherTitle: "ABCD", runningDurationInSeconds: 10, musicId: "123")
+    viewModel
+      .selectedMusicItem
+      .subscribe(
+        onNext: { musicItem in
+          print(musicItem)
+          if musicItem?.musicId == testMusicItem.musicId {
+            expectation.fulfill()
+          }
+        })
+      .disposed(by: disposeBag)
+    
+    viewModel.playMusicItem(
+      musicItem: testMusicItem
+    )
     waitForExpectations(timeout: 1)
   }
 }

@@ -15,6 +15,7 @@ protocol MusicViewModel: AnyObject {
   var isFetchingMusicList: Observable<Bool> { get }
   var musicItemList: Observable<[MusicItem]> { get }
   var musicPlayingStatus: Observable<MusicPlayingStatus> { get }
+  var selectedMusicItem: Observable<MusicItem?> { get }
   
   func playMusicItem(musicItem: MusicItem)
   func setMusicListQuery(_ query: MusicListQueryType)
@@ -25,10 +26,10 @@ protocol MusicViewModel: AnyObject {
 }
 
 enum MusicPlayingStatus {
-  case playing(MusicItem)
-  case paused(MusicItem)
+  case playing
+  case paused
   case idle
-  case initialising(MusicItem)
+  case initialising
 }
 
 enum MusicListQueryType {
@@ -42,6 +43,7 @@ final class MusicListViewModel: MusicViewModel {
   private let isFetchingMusicListRelay = BehaviorRelay(value: false)
   private let musicListQueryTypeRelay = BehaviorRelay(value: MusicListQueryType.defaultMusicList)
   private lazy var musicPlayingStatusRelay: BehaviorRelay<MusicPlayingStatus> = .init(value: .idle)
+  private let selectedMusicItemRelay = BehaviorRelay<MusicItem?>(value: nil)
   
   private lazy var coreDataStack = CoreDataStack()
 
@@ -100,6 +102,9 @@ final class MusicListViewModel: MusicViewModel {
         }
       }
   }
+  var selectedMusicItem: Observable<MusicItem?> {
+    selectedMusicItemRelay.asObservable()
+  }
   
   var musicPlayingStatus: Observable<MusicPlayingStatus> {
     musicPlayingStatusRelay.asObservable()
@@ -125,7 +130,8 @@ final class MusicListViewModel: MusicViewModel {
   }
   
   func playMusicItem(musicItem: MusicItem) {
-    musicPlayingStatusRelay.accept(.initialising(musicItem))
+    musicPlayingStatusRelay.accept(.initialising)
+    selectedMusicItemRelay.accept(musicItem)
   }
 }
 
