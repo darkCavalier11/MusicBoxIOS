@@ -6,8 +6,12 @@
 //
 
 import UIKit
+import RxSwift
+import MusicBox
 
-class MusicPlayingBarView: UIView {  
+class MusicPlayingBarView: UIView {
+  private let disposebag = DisposeBag()
+  
   override init(frame: CGRect) {
     super.init(frame: frame)
     self.translatesAutoresizingMaskIntoConstraints = false
@@ -22,6 +26,10 @@ class MusicPlayingBarView: UIView {
     stackView.axis = .vertical
     stackView.addArrangedSubview(musicTitleLabel)
     stackView.addArrangedSubview(musicArtistLabel)
+    
+    let tapGestureRecognizer = UITapGestureRecognizer()
+    tapGestureRecognizer.addTarget(self, action: #selector(handleTapGestureRecognizer))
+    self.addGestureRecognizer(tapGestureRecognizer)
     
     self.addSubview(imageView)
     self.addSubview(stackView)
@@ -52,17 +60,56 @@ class MusicPlayingBarView: UIView {
     ])
   }
   
+  @objc func handleTapGestureRecognizer() {
+    print("Tapped")
+  }
+  
   required init?(coder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
   
-  private let imageView: UIImageView = {
-    let imageView = UIImageView()
+  func bindWithViewModel(viewModel: MusicViewModel) {
+    viewModel
+      .selectedMusicItem
+      .bind { musicItem in
+        DispatchQueue.main.async { [weak self] in
+          if musicItem == nil {
+            self?.isHidden = true
+            return
+          }
+          self?.imageView.imageURL = URL(string: musicItem?.smallestThumbnail ?? MusicItem.defaultSmallestThumbnail)
+          self?.musicTitleLabel.text = musicItem?.title
+          self?.musicArtistLabel.text = musicItem?.publisherTitle
+        }
+      }
+      .disposed(by: disposebag)
+    
+    viewModel
+      .musicPlayingStatus
+      .bind { status in
+        DispatchQueue.main.async { [weak self] in
+          guard let self else { return }
+          switch status {
+          case .idle, .initialising:
+            self.nextMusicButton.isEnabled = false
+            self.playPauseButton.isEnabled = false
+          case .playing:
+            self.playPauseButton.setImage(UIImage(systemName: "pause"), for: .normal)
+          case .paused:
+            self.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+          @unknown default:
+            break
+          }
+        }
+      }
+      .disposed(by: disposebag)
+  }
+  
+  private let imageView: UIAsyncImageView = {
+    let imageView = UIAsyncImageView()
     imageView.translatesAutoresizingMaskIntoConstraints = false
-    imageView.image = UIImage(named: "music_playing_bar")
     imageView.clipsToBounds = true
     imageView.layer.cornerRadius = 8
-    imageView.image = UIImage(named: "NoPlaylistFound")
     imageView.contentMode = .scaleAspectFill
     return imageView
   }()
