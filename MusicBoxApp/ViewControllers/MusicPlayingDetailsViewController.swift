@@ -111,6 +111,17 @@ class MusicPlayingDetailsViewController: UIViewController {
     return button
   }()
   
+  private let addToPlaylistButton: UIButton = {
+    let button = UIButton()
+    button.translatesAutoresizingMaskIntoConstraints = false
+    let image = UIImage(systemName: "music.note.list")
+    button.setImage(image, for: .normal)
+    button.layer.cornerRadius = 20
+    button.clipsToBounds = true
+    button.configuration = .borderedTinted()
+    return button
+  }()
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     view.addSubview(musicThumbnail)
@@ -119,6 +130,7 @@ class MusicPlayingDetailsViewController: UIViewController {
     view.addSubview(progressBar)
     view.addSubview(stackView)
     view.addSubview(dismissButton)
+    view.addSubview(addToPlaylistButton)
 
     
     stackView.addArrangedSubview(previousMusicButton)
@@ -153,6 +165,11 @@ class MusicPlayingDetailsViewController: UIViewController {
       dismissButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 25),
       dismissButton.widthAnchor.constraint(equalToConstant: 30),
       dismissButton.heightAnchor.constraint(equalToConstant: 30),
+      
+      addToPlaylistButton.trailingAnchor.constraint(equalTo: musicThumbnail.trailingAnchor),
+      addToPlaylistButton.bottomAnchor.constraint(equalTo: musicThumbnail.topAnchor, constant: -10),
+      addToPlaylistButton.widthAnchor.constraint(equalToConstant: 40),
+      addToPlaylistButton.heightAnchor.constraint(equalToConstant: 40),
     ])
   }
 }
