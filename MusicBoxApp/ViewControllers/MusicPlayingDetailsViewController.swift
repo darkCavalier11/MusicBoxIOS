@@ -23,8 +23,10 @@ class MusicPlayingDetailsViewController: UIViewController {
     let imageView = UIAsyncImageView()
     imageView.translatesAutoresizingMaskIntoConstraints = false
     // TODO: - Place a placeholder image
+    imageView.image = UIImage(systemName: "music.note")
     imageView.imageURL = URL(string: musicItem.largestThumbnail)
     imageView.contentMode = .scaleAspectFill
+    imageView.backgroundColor = .accent.withAlphaComponent(0.1)
     imageView.clipsToBounds = true
     imageView.layer.cornerRadius = 12
     return imageView
@@ -141,8 +143,21 @@ class MusicPlayingDetailsViewController: UIViewController {
     button.layer.cornerRadius = 20
     button.clipsToBounds = true
     button.configuration = .borderedTinted()
+    button.addTarget(
+      self,
+      action: #selector(handleNextMusicListTap),
+      for: .touchUpInside
+    )
     return button
   }()
+  
+  @objc func handleNextMusicListTap() {
+    let nextSuggestedMusicListVC = NextSuggestedMusicItemsViewController()
+    navigationController?.present(
+      nextSuggestedMusicListVC,
+      animated: true
+    )
+  }
   
   override func viewDidLoad() {
     super.viewDidLoad()
@@ -166,8 +181,8 @@ class MusicPlayingDetailsViewController: UIViewController {
   func setupConstraints() {
     NSLayoutConstraint.activate([
       musicThumbnail.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-      musicThumbnail.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -100),
-      musicThumbnail.widthAnchor.constraint(lessThanOrEqualTo: view.widthAnchor, multiplier: 0.8),
+      musicThumbnail.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -50),
+      musicThumbnail.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
       musicThumbnail.heightAnchor.constraint(equalTo: musicThumbnail.widthAnchor),
       
       musicTitle.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -181,7 +196,7 @@ class MusicPlayingDetailsViewController: UIViewController {
       progressBar.widthAnchor.constraint(equalTo: musicThumbnail.widthAnchor),
       
       stackView.widthAnchor.constraint(equalTo: musicThumbnail.widthAnchor),
-      stackView.heightAnchor.constraint(equalToConstant: 40),
+      stackView.heightAnchor.constraint(equalToConstant: 80),
       stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
       stackView.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 10),
       

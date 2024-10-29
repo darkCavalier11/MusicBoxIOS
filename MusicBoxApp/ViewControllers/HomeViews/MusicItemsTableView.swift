@@ -18,6 +18,7 @@ class MusicItemsTableView: UITableView {
   override init(frame: CGRect, style: UITableView.Style) {
     super.init(frame: frame, style: style)
     register(MusicItemTableViewCell.self, forCellReuseIdentifier: Self.reusableIdentifier)
+    self.translatesAutoresizingMaskIntoConstraints = false
     self.rowHeight = 110
     self.separatorStyle = .none
   }
