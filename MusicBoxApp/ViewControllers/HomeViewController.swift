@@ -35,6 +35,7 @@ class HomeViewController: UIViewController {
     homeMusicViewModel
       .setMusicListQuery(.withSearchQuery(query: "Ed sheeran"))
       
+    musicPlayingBarView.bindWithViewModel(viewModel: homeMusicViewModel)
     NSLayoutConstraint.activate([
       musicPlayingBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
       musicPlayingBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),

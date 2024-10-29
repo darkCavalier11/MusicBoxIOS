@@ -54,7 +54,18 @@ class MusicItemsTableView: UITableView {
       }
       .disposed(by: disposeBag)
     
-    
+    self
+      .rx
+      .itemSelected
+      .subscribe(on: MainScheduler.instance)
+      .bind { indexPath in
+        guard let cell = self.cellForRow(at: indexPath) as? MusicItemTableViewCell,
+        let musicItem = cell.musicItem else {
+          return
+        }
+        viewModel.playMusicItem(musicItem: musicItem)
+      }
+      .disposed(by: disposeBag)
   }
 }
 

@@ -51,7 +51,7 @@ class MusicPlayingBarView: UIView {
       nextMusicButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
       
       playPauseButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-      playPauseButton.leadingAnchor.constraint(equalTo: self.trailingAnchor, constant: -50),
+      playPauseButton.leadingAnchor.constraint(equalTo: self.trailingAnchor, constant: -60),
       
       progressBar.leadingAnchor.constraint(equalTo: self.leadingAnchor),
       progressBar.trailingAnchor.constraint(equalTo: self.trailingAnchor),
@@ -77,6 +77,7 @@ class MusicPlayingBarView: UIView {
             self?.isHidden = true
             return
           }
+          self?.isHidden = false
           self?.imageView.imageURL = URL(string: musicItem?.smallestThumbnail ?? MusicItem.defaultSmallestThumbnail)
           self?.musicTitleLabel.text = musicItem?.title
           self?.musicArtistLabel.text = musicItem?.publisherTitle
@@ -93,6 +94,7 @@ class MusicPlayingBarView: UIView {
           case .idle, .initialising:
             self.nextMusicButton.isEnabled = false
             self.playPauseButton.isEnabled = false
+            self.progressBar.progress = 0.0
           case .playing:
             self.playPauseButton.setImage(UIImage(systemName: "pause"), for: .normal)
           case .paused:
@@ -117,7 +119,6 @@ class MusicPlayingBarView: UIView {
   private let musicTitleLabel: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.text = "Chiring Chiring Chiring Chiring Chiring Chiring Chiring Chiring Chiring Chiring Chiring Chiring"
     label.font = .preferredCustomFont(forTextStyle: .body, fontName: UIFont.RethinkSans.bold.rawValue)
     label.textColor = .label
     return label
@@ -126,7 +127,6 @@ class MusicPlayingBarView: UIView {
   private let musicArtistLabel: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.text = "Huamne Sagar Huamne SagarHuamne Sagar Huamne Sagar Huamne Sagar Huamne Sagar Huamne Sagar Huamne Sagar"
     label.font = .preferredCustomFont(forTextStyle: .caption2)
     label.textColor = .secondaryLabel
     return label
@@ -158,7 +158,6 @@ class MusicPlayingBarView: UIView {
   private let progressBar: UIProgressView = {
     let progressBar = UIProgressView()
     progressBar.translatesAutoresizingMaskIntoConstraints = false
-    progressBar.progress = 0.63
     progressBar.progressTintColor = .accent
     return progressBar
   }()
