@@ -21,6 +21,8 @@ class MusicPlayingBarView: UIView {
     
     self.addSubview(imageView)
     self.addSubview(stackView)
+    self.addSubview(playPauseButton)
+    self.addSubview(nextMusicButton)
     
     NSLayoutConstraint.activate([
       imageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 5),
@@ -30,7 +32,13 @@ class MusicPlayingBarView: UIView {
       
       stackView.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 5),
       stackView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-      stackView.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5)
+      stackView.trailingAnchor.constraint(lessThanOrEqualTo: playPauseButton.leadingAnchor, constant: -10),
+      
+      nextMusicButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5),
+      nextMusicButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+      
+      playPauseButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+      playPauseButton.leadingAnchor.constraint(equalTo: self.trailingAnchor, constant: -50)
     ])
   }
   
@@ -52,7 +60,7 @@ class MusicPlayingBarView: UIView {
   private let musicTitleLabel: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.text = "Chiring Chiring"
+    label.text = "Chiring Chiring Chiring Chiring Chiring Chiring Chiring Chiring Chiring Chiring Chiring Chiring"
     label.font = .preferredCustomFont(forTextStyle: .body, fontName: UIFont.RethinkSans.bold.rawValue)
     label.textColor = .label
     return label
@@ -61,10 +69,33 @@ class MusicPlayingBarView: UIView {
   private let musicArtistLabel: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.text = "Huamne Sagar"
+    label.text = "Huamne Sagar Huamne SagarHuamne Sagar Huamne Sagar Huamne Sagar Huamne Sagar Huamne Sagar Huamne Sagar"
     label.font = .preferredCustomFont(forTextStyle: .caption2)
     label.textColor = .secondaryLabel
     return label
+  }()
+  
+  private let playPauseButton: UIButton = {
+    let button = UIButton()
+    button.translatesAutoresizingMaskIntoConstraints = false
+    button.imageView?.contentMode = .scaleAspectFit
+    button.setImage(
+      UIImage(systemName: "play.fill"),
+      for: .normal
+    )
+    button.tintColor = .label
+    return button
+  }()
+  
+  private let nextMusicButton: UIButton = {
+    let button = UIButton()
+    button.translatesAutoresizingMaskIntoConstraints = false
+    button.setImage(
+      UIImage(systemName: "forward.fill"),
+      for: .normal
+    )
+    button.tintColor = .label
+    return button
   }()
 }
 
