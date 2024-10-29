@@ -31,4 +31,11 @@ extension UIFont {
     // 4
     return metrics.scaledFont(for: fontToScale)
   }
+  
+  enum RethinkSans: String {
+    case regular = "RethinkSans-Regular"
+    case medium = "RethinkSans-Medium"
+    case extraBold = "RethinkSans-ExtraBold"
+    case bold = "RethinkSans-Bold"
+  }
 }

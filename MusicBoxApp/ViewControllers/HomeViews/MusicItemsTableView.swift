@@ -81,7 +81,7 @@ class MusicItemTableViewCell: UITableViewCell {
     return label
   }()
   
-  private lazy var musicPublisherTitle: UILabel = {
+  private lazy var musicArtistTitle: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.font = .preferredCustomFont(forTextStyle: .caption2)
@@ -111,7 +111,7 @@ class MusicItemTableViewCell: UITableViewCell {
     didSet {
       guard let musicItem = musicItem else { return }
       musicTitle.text = musicItem.title
-      musicPublisherTitle.text = musicItem.publisherTitle
+      musicArtistTitle.text = musicItem.publisherTitle
       musicDuration.text = musicItem.runningDurationInSeconds.convertToDuration()
 
       DispatchQueue.global().async { [weak self] in
@@ -138,7 +138,7 @@ class MusicItemTableViewCell: UITableViewCell {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
 
     textStackView.addArrangedSubview(musicTitle)
-    textStackView.addArrangedSubview(musicPublisherTitle)
+    textStackView.addArrangedSubview(musicArtistTitle)
     textStackView.addArrangedSubview(musicDuration)
     
     musicCellContainer.translatesAutoresizingMaskIntoConstraints = false
