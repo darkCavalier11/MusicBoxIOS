@@ -9,7 +9,7 @@ import UIKit
 import RxSwift
 import MusicBox
 
-class MusicPlayingBarView: UIView {
+class MusicPlayingBarThumbnailView: UIView {
   private let disposebag = DisposeBag()
   
   override init(frame: CGRect) {

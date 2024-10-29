@@ -1,5 +1,5 @@
 {
-  "originHash" : "27adef72a4a3ea363f8cbcfdcd5949955909ca701043dda05fcac1871ce4f9a0",
+  "originHash" : "686d7f7c376fdf131e8a4b0a5a541f9d8346524b721ed303762cf5f4cc17636b",
   "pins" : [
     {
       "identity" : "musicboxswift",
@@ -26,6 +26,15 @@
       "state" : {
         "revision" : "3c2c7e1e72b8abd96eafbae80323c5c1e5317437",
         "version" : "2.7.5"
+      }
+    },
+    {
+      "identity" : "swinject",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Swinject/Swinject",
+      "state" : {
+        "revision" : "be9dbcc7b86811bc131539a20c6f9c2d3e56919f",
+        "version" : "2.9.1"
       }
     },
     {
