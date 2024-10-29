@@ -11,7 +11,11 @@ class MusicPlayingBarView: UIView {
   override init(frame: CGRect) {
     super.init(frame: frame)
     self.translatesAutoresizingMaskIntoConstraints = false
-    self.backgroundColor = .red
+    self.backgroundColor = .systemBackground
+    self.layer.shadowColor = UIColor.accent.cgColor
+    self.layer.shadowOffset = CGSize(width: 0, height: -8)
+    self.layer.shadowOpacity = 0.2
+    self.layer.shadowRadius = 8
     
     let stackView = UIStackView()
     stackView.translatesAutoresizingMaskIntoConstraints = false
