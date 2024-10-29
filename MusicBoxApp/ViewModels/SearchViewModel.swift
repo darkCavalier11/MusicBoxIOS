@@ -16,7 +16,7 @@ protocol SearchViewModel {
   func searchTextDidChange(_ text: String)
 }
 
-final class HomeSearchViewModel: SearchViewModel {
+final class MusicSearchViewModel: SearchViewModel {
   private let mb = MusicBox()
   private let showingHUDRelay = BehaviorRelay(value: false)
   private let searchTextRelay = BehaviorRelay(value: "")

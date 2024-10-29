@@ -10,7 +10,7 @@ import RxSwift
 import MusicBox
 
 class HomeViewController: UIViewController {
-  private let homeMusicViewModel = MusicListViewModel()
+  private let homeMusicViewModel = MusicSessionViewModel()
   private let disposeBag = DisposeBag()
   private let musicItemsTableView = MusicItemsTableView()
   private let musicPlayingBarView = MusicPlayingBarView()
@@ -31,7 +31,9 @@ class HomeViewController: UIViewController {
         action: #selector(navigateToSearchViewController)
       )
     ]
-    musicItemsTableView.bindWithViewModel(viewModel: homeMusicViewModel)
+    musicItemsTableView.bindWithViewModel(
+      viewModel: homeMusicViewModel
+    )
     homeMusicViewModel
       .setMusicListQuery(.withSearchQuery(query: "Ed sheeran"))
       

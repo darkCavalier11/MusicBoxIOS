@@ -9,7 +9,7 @@ import UIKit
 import RxSwift
 
 class SearchViewController: UIViewController {
-  private let searchViewModel = HomeSearchViewModel()
+  private let searchViewModel = MusicSearchViewModel()
   private let disposeBag = DisposeBag()
   private let musicSearchTypeAheadTableView = MusicSearchTypeAheadTableView()
   private let musicSearchBar = MusicSearchBar()
@@ -25,7 +25,7 @@ class SearchViewController: UIViewController {
     navigationItem.largeTitleDisplayMode = .never
     view.addSubview(musicSearchTypeAheadTableView)
     view.addSubview(musicSearchBar)
-    musicSearchTypeAheadTableView.bindWithViewModel(viewModel: searchViewModel)
+    
     
     musicSearchTypeAheadTableView
       .rx
@@ -43,6 +43,7 @@ class SearchViewController: UIViewController {
       }
       .disposed(by: disposeBag)
     
+    musicSearchTypeAheadTableView.bindWithViewModel(viewModel: searchViewModel)
     musicSearchBar.bindWithViewModel(viewModel: searchViewModel)
     setupSearchScreenTableViewConstraints()
   }

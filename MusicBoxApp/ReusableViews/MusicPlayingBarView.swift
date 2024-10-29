@@ -61,7 +61,7 @@ class MusicPlayingBarView: UIView {
   }
   
   @objc func handleTapGestureRecognizer() {
-    print("Tapped")
+    
   }
   
   required init?(coder: NSCoder) {

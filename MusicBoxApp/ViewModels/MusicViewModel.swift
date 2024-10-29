@@ -38,7 +38,7 @@ enum MusicListQueryType {
   case playlist(id: UUID)
 }
 
-final class MusicListViewModel: MusicViewModel {
+final class MusicSessionViewModel: MusicViewModel {
   let mb = MusicBox()
   private let isFetchingMusicListRelay = BehaviorRelay(value: false)
   private let musicListQueryTypeRelay = BehaviorRelay(value: MusicListQueryType.defaultMusicList)

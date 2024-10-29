@@ -13,7 +13,7 @@ class MusicSearchResultViewController: UIViewController {
   var query: MusicListQueryType? {
     didSet {
       if let query {
-        homeMusicViewModel.setMusicListQuery(query)
+        searchResultViewModel.setMusicListQuery(query)
       }
     }
   }
@@ -26,7 +26,7 @@ class MusicSearchResultViewController: UIViewController {
     return imageView
   }()
   
-  private let homeMusicViewModel = MusicListViewModel()
+  private let searchResultViewModel = MusicSessionViewModel()
   var searchViewModel: SearchViewModel?
   
   private let disposeBag = DisposeBag()
@@ -35,7 +35,7 @@ class MusicSearchResultViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
     view.addSubview(musicItemsTableView)
-    musicItemsTableView.bindWithViewModel(viewModel: homeMusicViewModel)
+    musicItemsTableView.bindWithViewModel(viewModel: searchResultViewModel)
     musicItemsTableView.actionDelegate = self
     view.addSubview(loadingView)
     
@@ -46,7 +46,7 @@ class MusicSearchResultViewController: UIViewController {
       break
     }
     
-    homeMusicViewModel
+    searchResultViewModel
       .isFetchingMusicList
       .bind { [weak self] isLoading in
         DispatchQueue.main.async {
@@ -92,7 +92,7 @@ class MusicSearchResultViewController: UIViewController {
 extension MusicSearchResultViewController: MusicItemTableViewActionDelegate {
   func navigateToAddToPlaylistScreen(for musicItem: MusicItem) {
     guard let navigationController else { return }
-    homeMusicViewModel.addMusicToPlaylist(controller: navigationController, musicItem: musicItem)
+    searchResultViewModel.addMusicToPlaylist(controller: navigationController, musicItem: musicItem)
   }
   
   func startDownload(for musicItem: MusicItem) {
