@@ -133,6 +133,17 @@ class MusicPlayingDetailsViewController: UIViewController {
     return button
   }()
   
+  private let nextMusicItemsButton: UIButton = {
+    let button = UIButton()
+    button.translatesAutoresizingMaskIntoConstraints = false
+    let image = UIImage(systemName: "list.dash")
+    button.setImage(image, for: .normal)
+    button.layer.cornerRadius = 20
+    button.clipsToBounds = true
+    button.configuration = .borderedTinted()
+    return button
+  }()
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     view.addSubview(musicThumbnail)
@@ -143,6 +154,7 @@ class MusicPlayingDetailsViewController: UIViewController {
     view.addSubview(dismissButton)
     view.addSubview(addToPlaylistButton)
     view.addSubview(downloadMusicButton)
+    view.addSubview(nextMusicItemsButton)
 
     
     stackView.addArrangedSubview(previousMusicButton)
@@ -178,15 +190,20 @@ class MusicPlayingDetailsViewController: UIViewController {
       dismissButton.widthAnchor.constraint(equalToConstant: 30),
       dismissButton.heightAnchor.constraint(equalToConstant: 30),
       
-      downloadMusicButton.trailingAnchor.constraint(equalTo: musicThumbnail.trailingAnchor),
-      downloadMusicButton.bottomAnchor.constraint(equalTo: musicThumbnail.topAnchor, constant: -10),
-      downloadMusicButton.widthAnchor.constraint(equalToConstant: 40),
-      downloadMusicButton.heightAnchor.constraint(equalToConstant: 40),
+      nextMusicItemsButton.trailingAnchor.constraint(equalTo: musicThumbnail.trailingAnchor),
+      nextMusicItemsButton.bottomAnchor.constraint(equalTo: musicThumbnail.topAnchor, constant: -10),
+      nextMusicItemsButton.widthAnchor.constraint(equalToConstant: 40),
+      nextMusicItemsButton.heightAnchor.constraint(equalToConstant: 40),
+      
+      downloadMusicButton.heightAnchor.constraint(equalTo: nextMusicItemsButton.heightAnchor),
+      downloadMusicButton.widthAnchor.constraint(equalTo: nextMusicItemsButton.widthAnchor),
+      downloadMusicButton.trailingAnchor.constraint(equalTo: nextMusicItemsButton.leadingAnchor, constant: -10),
+      downloadMusicButton.topAnchor.constraint(equalTo: nextMusicItemsButton.topAnchor),
       
       addToPlaylistButton.heightAnchor.constraint(equalTo: downloadMusicButton.heightAnchor),
       addToPlaylistButton.widthAnchor.constraint(equalTo: downloadMusicButton.widthAnchor),
       addToPlaylistButton.trailingAnchor.constraint(equalTo: downloadMusicButton.leadingAnchor, constant: -10),
-      addToPlaylistButton.topAnchor.constraint(equalTo: downloadMusicButton.topAnchor)
+      addToPlaylistButton.topAnchor.constraint(equalTo: downloadMusicButton.topAnchor),
     ])
   }
 }
