@@ -27,22 +27,28 @@ class MusicPlayingBarView: UIView {
     self.addSubview(stackView)
     self.addSubview(playPauseButton)
     self.addSubview(nextMusicButton)
+    self.addSubview(progressBar)
     
     NSLayoutConstraint.activate([
       imageView.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 5),
       imageView.topAnchor.constraint(equalTo: self.topAnchor, constant: 5),
-      imageView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -5),
+      imageView.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -10),
       imageView.widthAnchor.constraint(equalTo: imageView.heightAnchor),
       
       stackView.leadingAnchor.constraint(equalTo: imageView.trailingAnchor, constant: 5),
-      stackView.centerYAnchor.constraint(equalTo: self.centerYAnchor),
+      stackView.centerYAnchor.constraint(equalTo: self.centerYAnchor, constant: -5),
       stackView.trailingAnchor.constraint(lessThanOrEqualTo: playPauseButton.leadingAnchor, constant: -10),
       
       nextMusicButton.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5),
       nextMusicButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
       
       playPauseButton.centerYAnchor.constraint(equalTo: self.centerYAnchor),
-      playPauseButton.leadingAnchor.constraint(equalTo: self.trailingAnchor, constant: -50)
+      playPauseButton.leadingAnchor.constraint(equalTo: self.trailingAnchor, constant: -50),
+      
+      progressBar.leadingAnchor.constraint(equalTo: self.leadingAnchor),
+      progressBar.trailingAnchor.constraint(equalTo: self.trailingAnchor),
+      progressBar.bottomAnchor.constraint(equalTo: self.bottomAnchor),
+      progressBar.heightAnchor.constraint(equalToConstant: 5),
     ])
   }
   
@@ -100,6 +106,14 @@ class MusicPlayingBarView: UIView {
     )
     button.tintColor = .label
     return button
+  }()
+  
+  private let progressBar: UIProgressView = {
+    let progressBar = UIProgressView()
+    progressBar.translatesAutoresizingMaskIntoConstraints = false
+    progressBar.progress = 0.63
+    progressBar.progressTintColor = .accent
+    return progressBar
   }()
 }
 
