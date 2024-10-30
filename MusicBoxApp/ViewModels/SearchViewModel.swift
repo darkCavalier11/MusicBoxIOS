@@ -17,7 +17,10 @@ protocol SearchViewModel {
 }
 
 final class MusicSearchViewModel: SearchViewModel {
-  private let mb = MusicBox()
+  private let musicBox: MusicBox
+  init(musicBox: MusicBox) {
+    self.musicBox = musicBox
+  }
   private let showingHUDRelay = BehaviorRelay(value: false)
   private let searchTextRelay = BehaviorRelay(value: "")
   
@@ -46,7 +49,7 @@ final class MusicSearchViewModel: SearchViewModel {
       let task = Task { [weak self] in
         self?.showingHUDRelay.accept(true)
         defer { self?.showingHUDRelay.accept(false) }
-        guard let results = await self?.mb.musicSession.getTypeAheadSearchResult(query: query) else {
+        guard let results = await self?.musicBox.musicSession.getTypeAheadSearchResult(query: query) else {
           return
         }
         observer.onNext(results)

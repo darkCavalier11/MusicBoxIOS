@@ -25,6 +25,10 @@ extension Container {
       let coreDataStack = r.resolve(CoreDataStack.self)!
       return MusicBrowsingViewModel(musicBox: musicBox, coreDataStack: coreDataStack)
     }
+    container.register(SearchViewModel.self) { r in
+      let musicBox = r.resolve(MusicBox.self)!
+      return MusicSearchViewModel(musicBox: musicBox)
+    }
     return container
   }()
 }

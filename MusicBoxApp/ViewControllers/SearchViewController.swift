@@ -7,9 +7,10 @@
 
 import UIKit
 import RxSwift
+import Swinject
 
 class SearchViewController: UIViewController {
-  private let searchViewModel = MusicSearchViewModel()
+  private let searchViewModel = Container.sharedContainer.resolve(SearchViewModel.self)!
   private let disposeBag = DisposeBag()
   private let musicSearchTypeAheadTableView = MusicSearchTypeAheadTableView()
   private let musicSearchBar = MusicSearchBar()

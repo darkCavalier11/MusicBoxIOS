@@ -33,8 +33,8 @@ enum MusicListQueryType {
 }
 
 final class MusicBrowsingViewModel: BrowsingViewModel {
-  let musicBox: MusicBox
-  let coreDataStack: CoreDataStack
+  private let musicBox: MusicBox
+  private let coreDataStack: CoreDataStack
   
   init(musicBox: MusicBox, coreDataStack: CoreDataStack) {
     self.musicBox = musicBox
