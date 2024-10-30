@@ -12,7 +12,10 @@ import Swinject
 
 class MusicPlayingDetailsViewController: UIViewController {
   private let disposeBag = DisposeBag()
-  private let viewModel = Container.sharedContainer.resolve(PlayingViewModel.self)!
+  private let playingViewModel = Container.sharedContainer.resolve(PlayingViewModel.self)!
+  private let browsingViewModel = Container.sharedContainer.resolve(BrowsingViewModel.self)!
+  private var selectedMusicItem: MusicItem? = nil
+  
   private lazy var musicThumbnail: UIAsyncImageView = {
     let imageView = UIAsyncImageView()
     imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -116,8 +119,14 @@ class MusicPlayingDetailsViewController: UIViewController {
     button.layer.cornerRadius = 20
     button.clipsToBounds = true
     button.configuration = .borderedTinted()
+    button.addTarget(self, action: #selector(handleAddToPlaylist), for: .touchUpInside)
     return button
   }()
+  
+  @objc func handleAddToPlaylist() {
+    guard let selectedMusicItem else { return }
+    browsingViewModel.addMusicToPlaylist(controller: self, musicItem: selectedMusicItem)
+  }
   
   private let downloadMusicButton: UIButton = {
     let button = UIButton()
@@ -155,18 +164,19 @@ class MusicPlayingDetailsViewController: UIViewController {
   }
   
   private func bindWithViewModel() {
-    viewModel
+    playingViewModel
       .selectedMusicItem
       .observe(on: MainScheduler.instance)
       .bind { [weak self] musicItem in
         guard let musicItem else { return }
+        self?.selectedMusicItem = musicItem
         self?.musicTitle.text = musicItem.title
         self?.musicArtist.text = musicItem.publisherTitle
         self?.musicThumbnail.imageURL = URL(string: musicItem.largestThumbnail)
       }
       .disposed(by: disposeBag)
     
-    viewModel
+    playingViewModel
       .musicPlayingStatus
       .observe(on: MainScheduler.instance)
       .bind { [weak self] status in
