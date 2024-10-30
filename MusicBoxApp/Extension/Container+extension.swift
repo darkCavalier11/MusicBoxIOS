@@ -20,17 +20,20 @@ extension Container {
     container.register(PlayingViewModel.self) { _ in
       MusicPlayingViewModel()
     }
+    .inObjectScope(.container)
     container.register(BrowsingViewModel.self) { r in
       let musicBox = r.resolve(MusicBox.self)!
       let coreDataStack = r.resolve(CoreDataStack.self)!
-      return MusicBrowsingViewModel(musicBox: musicBox, coreDataStack: coreDataStack)
+      let playingViewModel = r.resolve(PlayingViewModel.self)!
+      return MusicBrowsingViewModel(
+        musicBox: musicBox,
+        coreDataStack: coreDataStack,
+        playingViewModel: playingViewModel
+      )
     }
     container.register(SearchViewModel.self) { r in
       let musicBox = r.resolve(MusicBox.self)!
       return MusicSearchViewModel(musicBox: musicBox)
-    }
-    container.register(PlayingViewModel.self) { r in
-      return MusicPlayingViewModel()
     }
     return container
   }()

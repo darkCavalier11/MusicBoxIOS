@@ -14,11 +14,9 @@ class HomeViewController: UIViewController {
   private let homeMusicViewModel = Container.sharedContainer.resolve(BrowsingViewModel.self)!
   private let disposeBag = DisposeBag()
   private let musicItemsTableView = MusicItemsTableView()
-  private let musicPlayingBarView = MusicPlayingBarThumbnailView()
   override func viewDidLoad() {
     super.viewDidLoad()
     view.addSubview(musicItemsTableView)
-    view.addSubview(musicPlayingBarView)
     
     musicItemsTableView.actionDelegate = self
     
@@ -39,13 +37,6 @@ class HomeViewController: UIViewController {
       .setMusicListQuery(.withSearchQuery(query: "Ed sheeran"))
       
 //    musicPlayingBarView.bindWithViewModel(viewModel: homeMusicViewModel)
-    
-    NSLayoutConstraint.activate([
-      musicPlayingBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-      musicPlayingBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-      musicPlayingBarView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-      musicPlayingBarView.heightAnchor.constraint(equalToConstant: 80)
-    ])
   }
   
   @objc func navigateToSearchViewController() {

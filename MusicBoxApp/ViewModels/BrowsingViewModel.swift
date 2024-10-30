@@ -35,10 +35,16 @@ enum MusicListQueryType {
 final class MusicBrowsingViewModel: BrowsingViewModel {
   private let musicBox: MusicBox
   private let coreDataStack: CoreDataStack
+  let playingViewModel: PlayingViewModel
   
-  init(musicBox: MusicBox, coreDataStack: CoreDataStack) {
+  init(
+    musicBox: MusicBox,
+    coreDataStack: CoreDataStack,
+    playingViewModel: PlayingViewModel
+  ) {
     self.musicBox = musicBox
     self.coreDataStack = coreDataStack
+    self.playingViewModel = playingViewModel
   }
   
   private let isFetchingMusicListRelay = BehaviorRelay(value: false)
