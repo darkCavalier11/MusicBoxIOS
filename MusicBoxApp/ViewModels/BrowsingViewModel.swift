@@ -11,15 +11,9 @@ import RxSwift
 import RxCocoa
 import UIKit
 
-protocol MusicViewModel: AnyObject {
+protocol BrowsingViewModel: AnyObject {
   var isFetchingMusicList: Observable<Bool> { get }
   var musicItemList: Observable<[MusicItem]> { get }
-  var musicPlayingStatus: Observable<MusicPlayingStatus> { get }
-  var selectedMusicItem: Observable<MusicItem?> { get }
-  
-  func playMusicItem(musicItem: MusicItem)
-  func setMusicListQuery(_ query: MusicListQueryType)
-  func dismissMusicItem(musicPlaylistModel: MusicPlaylistModel, index: Int, onDismissed: (()->Void)?)
   func addMusicToPlaylist(controller: UINavigationController, musicItem: MusicItem)
   func startDowloadingMusic(_ musicItem: MusicItem)
   
@@ -38,12 +32,10 @@ enum MusicListQueryType {
   case playlist(id: UUID)
 }
 
-final class MusicSessionViewModel: MusicViewModel {
+final class MusicBrowsingViewModel: BrowsingViewModel {
   let mb = MusicBox()
   private let isFetchingMusicListRelay = BehaviorRelay(value: false)
   private let musicListQueryTypeRelay = BehaviorRelay(value: MusicListQueryType.defaultMusicList)
-  private lazy var musicPlayingStatusRelay: BehaviorRelay<MusicPlayingStatus> = .init(value: .idle)
-  private let selectedMusicItemRelay = BehaviorRelay<MusicItem?>(value: nil)
   
   private lazy var coreDataStack = CoreDataStack()
 
@@ -102,13 +94,7 @@ final class MusicSessionViewModel: MusicViewModel {
         }
       }
   }
-  var selectedMusicItem: Observable<MusicItem?> {
-    selectedMusicItemRelay.asObservable()
-  }
-  
-  var musicPlayingStatus: Observable<MusicPlayingStatus> {
-    musicPlayingStatusRelay.asObservable()
-  }
+
   
   func addMusicToPlaylist(controller: UINavigationController, musicItem: MusicItem) {
     let addToPlaylistVC = AddToPlaylistViewController()
@@ -118,20 +104,6 @@ final class MusicSessionViewModel: MusicViewModel {
   
   func startDowloadingMusic(_ musicItem: MusicItem) {
     // TODO: -
-  }
-  
-  func dismissMusicItem(
-    musicPlaylistModel: MusicPlaylistModel,
-    index: Int,
-    onDismissed: (() -> Void)? = nil
-  ) {
-    playlistService.removeFromPlaylist(model: musicPlaylistModel, index: index)
-    onDismissed?()
-  }
-  
-  func playMusicItem(musicItem: MusicItem) {
-    musicPlayingStatusRelay.accept(.initialising)
-    selectedMusicItemRelay.accept(musicItem)
   }
 }
 

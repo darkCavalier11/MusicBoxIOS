@@ -68,7 +68,7 @@ class MusicPlayingBarThumbnailView: UIView {
     fatalError("init(coder:) has not been implemented")
   }
   
-  func bindWithViewModel(viewModel: MusicViewModel) {
+  func bindWithViewModel(viewModel: PlayingViewModel) {
     viewModel
       .selectedMusicItem
       .bind { musicItem in

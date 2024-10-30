@@ -13,7 +13,7 @@ import os
 fileprivate let logger = Logger(subsystem: "com.MusicBoxApp.Core", category: "CoreData")
 
 public class CoreDataStack {
-  static private let modelName = "MusicBoxApp"
+  static let modelName = "MusicBoxApp"
   
   init() {}
   

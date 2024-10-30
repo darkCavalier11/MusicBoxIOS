@@ -19,7 +19,7 @@ class TestCoreDataStack: CoreDataStack {
     persistentStoreDescription.type = NSInMemoryStoreType
     
     let container = NSPersistentContainer(
-      name: "MusicBoxApp"
+      name: Self.modelName
     )
     
     container.persistentStoreDescriptions =

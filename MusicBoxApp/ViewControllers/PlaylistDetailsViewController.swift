@@ -10,7 +10,7 @@ import MusicBox
 import RxSwift
 
 class PlaylistDetailsViewController: UIViewController {
-  private let viewModel = MusicSessionViewModel()
+  private let viewModel = MusicBrowsingViewModel()
   
   weak var musicPlaylistModel: MusicPlaylistModel? {
     didSet {

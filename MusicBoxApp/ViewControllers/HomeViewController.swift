@@ -10,7 +10,7 @@ import RxSwift
 import MusicBox
 
 class HomeViewController: UIViewController {
-  private let homeMusicViewModel = MusicSessionViewModel()
+  private let homeMusicViewModel = MusicBrowsingViewModel()
   private let disposeBag = DisposeBag()
   private let musicItemsTableView = MusicItemsTableView()
   private let musicPlayingBarView = MusicPlayingBarThumbnailView()
@@ -37,7 +37,7 @@ class HomeViewController: UIViewController {
     homeMusicViewModel
       .setMusicListQuery(.withSearchQuery(query: "Ed sheeran"))
       
-    musicPlayingBarView.bindWithViewModel(viewModel: homeMusicViewModel)
+//    musicPlayingBarView.bindWithViewModel(viewModel: homeMusicViewModel)
     
     NSLayoutConstraint.activate([
       musicPlayingBarView.leadingAnchor.constraint(equalTo: view.leadingAnchor),

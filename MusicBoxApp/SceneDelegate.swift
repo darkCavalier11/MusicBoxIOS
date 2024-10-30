@@ -11,16 +11,6 @@ import Swinject
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
   
   var window: UIWindow?
-  let container: Container = {
-    let contatiner = Container()
-    contatiner.register(MusicViewModel.self) { _ in
-      MusicSessionViewModel()
-    }
-    contatiner.register(SearchViewModel.self) { _ in
-      MusicSearchViewModel()
-    }
-    return contatiner
-  }()
 
 
   func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {

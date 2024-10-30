@@ -26,7 +26,7 @@ class MusicSearchResultViewController: UIViewController {
     return imageView
   }()
   
-  private let searchResultViewModel = MusicSessionViewModel()
+  private let searchResultViewModel = MusicBrowsingViewModel()
   var searchViewModel: SearchViewModel?
   
   private let disposeBag = DisposeBag()

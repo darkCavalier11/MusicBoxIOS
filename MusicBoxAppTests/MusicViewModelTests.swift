@@ -11,11 +11,7 @@ import RxSwift
 import RxCocoa
 import MusicBox
 
-final class TestHomeViewModel: MusicViewModel {
-  func dismissMusicItem(musicPlaylistModel: MusicBoxApp.MusicPlaylistModel, index: Int, onDismissed: (() -> Void)?) {
-    
-  }
-  
+final class TestHomeViewModel: BrowsingViewModel {
   func addMusicToPlaylist(controller: UINavigationController, musicItem: MusicItem) {
     
   }

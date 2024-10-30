@@ -27,7 +27,7 @@ class MusicItemsTableView: UITableView {
     fatalError("init(coder:) has not been implemented")
   }
   
-  func bindWithViewModel(viewModel: MusicViewModel) {
+  func bindWithViewModel(viewModel: BrowsingViewModel) {
     self.dataSource = nil
     self.delegate = nil
     
@@ -64,7 +64,7 @@ class MusicItemsTableView: UITableView {
         let musicItem = cell.musicItem else {
           return
         }
-        viewModel.playMusicItem(musicItem: musicItem)
+//        viewModel.playMusicItem(musicItem: musicItem)
       }
       .disposed(by: disposeBag)
   }

@@ -8,7 +8,7 @@ import UIKit
 
 class NextSuggestedMusicItemsViewController: UIViewController {
   let musicItemsTableView = MusicItemsTableView()
-  let musicViewModel = MusicSessionViewModel()
+  let musicViewModel = MusicBrowsingViewModel()
   override func viewDidLoad() {
     super.viewDidLoad()
     navigationController?.title = "Next Suggested Music"

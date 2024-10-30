@@ -22,7 +22,6 @@ class MusicPlayingDetailsViewController: UIViewController {
   private lazy var musicThumbnail: UIAsyncImageView = {
     let imageView = UIAsyncImageView()
     imageView.translatesAutoresizingMaskIntoConstraints = false
-    // TODO: - Place a placeholder image
     imageView.image = UIImage(systemName: "music.note")
     imageView.imageURL = URL(string: musicItem.largestThumbnail)
     imageView.contentMode = .scaleAspectFill
