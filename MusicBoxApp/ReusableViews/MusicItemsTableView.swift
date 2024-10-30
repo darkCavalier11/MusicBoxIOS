@@ -52,6 +52,8 @@ class MusicItemsTableView: UITableView {
         )
         cell.menuButton.menu = menu
         cell.musicItem = musicItem
+        cell.selectionStyle = .none
+        cell.bindWithViewModel(viewModel: viewModel.playingViewModel)
       }
       .disposed(by: disposeBag)
     
@@ -138,6 +140,7 @@ class MusicItemTableViewCell: UITableViewCell {
   }
     
   private lazy var musicCellContainer = UIView()
+  private let disposeBag = DisposeBag()
   let textStackView: UIStackView = {
     let textStackView = UIStackView()
     textStackView.axis = .vertical
@@ -159,6 +162,24 @@ class MusicItemTableViewCell: UITableViewCell {
     musicCellContainer.addSubview(menuButton)
     contentView.addSubview(musicCellContainer)
     setupConstraints()
+    self.layer.cornerRadius = 24
+    
+  }
+  
+  func bindWithViewModel(viewModel: PlayingViewModel) {
+    viewModel
+      .selectedMusicItem
+      .subscribe(on: MainScheduler.instance)
+      .bind { [weak self] musicItem in
+        if musicItem == self?.musicItem {
+          self?.backgroundColor = .accent.withAlphaComponent(0.1)
+          self?.musicTitle.textColor = .accent
+        } else {
+          self?.musicTitle.textColor = nil
+          self?.backgroundColor = nil
+        }
+      }
+      .disposed(by: disposeBag)
   }
   
   func setupConstraints() {
