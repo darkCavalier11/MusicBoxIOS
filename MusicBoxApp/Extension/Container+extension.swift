@@ -14,9 +14,11 @@ extension Container {
     container.register(CoreDataStack.self) { _ in
       CoreDataStack()
     }
+    .inObjectScope(.container)
     container.register(MusicBox.self) { _ in
       MusicBox()
     }
+    .inObjectScope(.container)
     container.register(PlayingViewModel.self) { _ in
       MusicPlayingViewModel()
     }
