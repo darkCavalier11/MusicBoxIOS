@@ -26,6 +26,8 @@ class NextSuggestedMusicItemsViewController: UIViewController {
     view.backgroundColor = .systemBackground
     view.addSubview(titleLabel)
     view.addSubview(musicItemsTableView)
+    
+    musicItemsTableView.actionDelegate = self
     musicItemsTableView.bindWithViewModel(viewModel: musicViewModel)
     musicViewModel.playingViewModel.selectedMusicItem.observe(on: MainScheduler.instance)
       .bind { [weak self] musicItem in

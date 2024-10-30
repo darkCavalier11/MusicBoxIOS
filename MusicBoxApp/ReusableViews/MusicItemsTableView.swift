@@ -171,7 +171,7 @@ class MusicItemTableViewCell: UITableViewCell {
       .selectedMusicItem
       .subscribe(on: MainScheduler.instance)
       .bind { [weak self] musicItem in
-        if musicItem == self?.musicItem {
+        if musicItem?.musicId == self?.musicItem?.musicId {
           self?.backgroundColor = .accent.withAlphaComponent(0.1)
           self?.musicTitle.textColor = .accent
         } else {

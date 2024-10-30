@@ -53,10 +53,10 @@ class HomeViewController: UIViewController {
   }
 }
 
-extension HomeViewController: MusicItemTableViewActionDelegate {
+extension UIViewController: MusicItemTableViewActionDelegate {
   func navigateToAddToPlaylistScreen(for musicItem: MusicItem) {
-    guard let navigationController else { return }
-    homeMusicViewModel.addMusicToPlaylist(controller: navigationController, musicItem: musicItem)
+    let musicViewModel = Container.sharedContainer.resolve(BrowsingViewModel.self)!
+    musicViewModel.addMusicToPlaylist(controller: self, musicItem: musicItem)
   }
   
   func startDownload(for musicItem: MusicItem) {

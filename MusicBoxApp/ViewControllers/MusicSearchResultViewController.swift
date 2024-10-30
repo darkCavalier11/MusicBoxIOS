@@ -89,14 +89,3 @@ class MusicSearchResultViewController: UIViewController {
     ])
   }
 }
-
-extension MusicSearchResultViewController: MusicItemTableViewActionDelegate {
-  func navigateToAddToPlaylistScreen(for musicItem: MusicItem) {
-    guard let navigationController else { return }
-    searchResultViewModel.addMusicToPlaylist(controller: navigationController, musicItem: musicItem)
-  }
-  
-  func startDownload(for musicItem: MusicItem) {
-    // TODO: -
-  }
-}

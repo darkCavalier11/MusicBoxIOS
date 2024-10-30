@@ -44,14 +44,3 @@ class PlaylistDetailsViewController: UIViewController {
     ])
   }
 }
-
-extension PlaylistDetailsViewController: MusicItemTableViewActionDelegate {
-  func navigateToAddToPlaylistScreen(for musicItem: MusicItem) {
-    guard let navigationController else { return }
-    viewModel.addMusicToPlaylist(controller: navigationController, musicItem: musicItem)
-  }
-  
-  func startDownload(for musicItem: MusicItem) {
-    
-  }
-}
