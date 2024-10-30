@@ -29,6 +29,9 @@ extension Container {
       let musicBox = r.resolve(MusicBox.self)!
       return MusicSearchViewModel(musicBox: musicBox)
     }
+    container.register(PlayingViewModel.self) { r in
+      return MusicPlayingViewModel()
+    }
     return container
   }()
 }
