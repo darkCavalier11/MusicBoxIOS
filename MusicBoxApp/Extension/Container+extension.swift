@@ -20,6 +20,11 @@ extension Container {
     container.register(PlayingViewModel.self) { _ in
       MusicPlayingViewModel()
     }
+    container.register(BrowsingViewModel.self) { r in
+      let musicBox = r.resolve(MusicBox.self)!
+      let coreDataStack = r.resolve(CoreDataStack.self)!
+      return MusicBrowsingViewModel(musicBox: musicBox, coreDataStack: coreDataStack)
+    }
     return container
   }()
 }

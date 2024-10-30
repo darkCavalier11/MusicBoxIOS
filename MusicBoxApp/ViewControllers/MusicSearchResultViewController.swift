@@ -8,6 +8,7 @@
 import UIKit
 import RxSwift
 import MusicBox
+import Swinject
 
 class MusicSearchResultViewController: UIViewController {
   var query: MusicListQueryType? {
@@ -26,7 +27,7 @@ class MusicSearchResultViewController: UIViewController {
     return imageView
   }()
   
-  private let searchResultViewModel = MusicBrowsingViewModel()
+  private let searchResultViewModel = Container.sharedContainer.resolve(BrowsingViewModel.self)!
   var searchViewModel: SearchViewModel?
   
   private let disposeBag = DisposeBag()

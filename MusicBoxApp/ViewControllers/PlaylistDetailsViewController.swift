@@ -8,9 +8,10 @@
 import UIKit
 import MusicBox
 import RxSwift
+import Swinject
 
 class PlaylistDetailsViewController: UIViewController {
-  private let viewModel = MusicBrowsingViewModel()
+  private let viewModel = Container.sharedContainer.resolve(BrowsingViewModel.self)!
   
   weak var musicPlaylistModel: MusicPlaylistModel? {
     didSet {

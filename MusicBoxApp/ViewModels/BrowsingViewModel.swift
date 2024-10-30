@@ -16,7 +16,7 @@ protocol BrowsingViewModel: AnyObject {
   var musicItemList: Observable<[MusicItem]> { get }
   func addMusicToPlaylist(controller: UINavigationController, musicItem: MusicItem)
   func startDowloadingMusic(_ musicItem: MusicItem)
-  
+  func setMusicListQuery(_ query: MusicListQueryType) 
 }
 
 enum MusicPlayingStatus {
@@ -33,11 +33,18 @@ enum MusicListQueryType {
 }
 
 final class MusicBrowsingViewModel: BrowsingViewModel {
-  let mb = MusicBox()
+  let musicBox: MusicBox
+  let coreDataStack: CoreDataStack
+  
+  init(musicBox: MusicBox, coreDataStack: CoreDataStack) {
+    self.musicBox = musicBox
+    self.coreDataStack = coreDataStack
+  }
+  
   private let isFetchingMusicListRelay = BehaviorRelay(value: false)
   private let musicListQueryTypeRelay = BehaviorRelay(value: MusicListQueryType.defaultMusicList)
   
-  private lazy var coreDataStack = CoreDataStack()
+  
 
   private lazy var playlistService = MusicPlaylistServices(
     coreDataStack: coreDataStack,
@@ -63,11 +70,11 @@ final class MusicBrowsingViewModel: BrowsingViewModel {
             self.isFetchingMusicListRelay.accept(true)
             switch query {
             case .defaultMusicList:
-              let musicList = await self.mb.musicSession.getHomeScreenMusicList()
+              let musicList = await self.musicBox.musicSession.getHomeScreenMusicList()
               observer.onNext(musicList)
               
             case .withSearchQuery(query: let query):
-              let musicList = await self.mb.musicSession.getMusicSearchResults(query: query)
+              let musicList = await self.musicBox.musicSession.getMusicSearchResults(query: query)
               observer.onNext(musicList)
               
             case .playlist(id: let id):

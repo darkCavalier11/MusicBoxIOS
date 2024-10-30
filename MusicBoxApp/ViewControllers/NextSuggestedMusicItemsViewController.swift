@@ -5,10 +5,11 @@
 //  Created by Sumit Pradhan on 29/10/24.
 //
 import UIKit
+import Swinject
 
 class NextSuggestedMusicItemsViewController: UIViewController {
   let musicItemsTableView = MusicItemsTableView()
-  let musicViewModel = MusicBrowsingViewModel()
+  let musicViewModel = Container.sharedContainer.resolve(BrowsingViewModel.self)!
   override func viewDidLoad() {
     super.viewDidLoad()
     navigationController?.title = "Next Suggested Music"

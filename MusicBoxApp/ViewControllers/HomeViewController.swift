@@ -8,9 +8,10 @@
 import UIKit
 import RxSwift
 import MusicBox
+import Swinject
 
 class HomeViewController: UIViewController {
-  private let homeMusicViewModel = MusicBrowsingViewModel()
+  private let homeMusicViewModel = Container.sharedContainer.resolve(BrowsingViewModel.self)!
   private let disposeBag = DisposeBag()
   private let musicItemsTableView = MusicItemsTableView()
   private let musicPlayingBarView = MusicPlayingBarThumbnailView()
