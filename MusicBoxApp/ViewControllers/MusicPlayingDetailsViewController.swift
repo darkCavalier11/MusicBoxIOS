@@ -172,6 +172,7 @@ class MusicPlayingDetailsViewController: UIViewController {
         self?.selectedMusicItem = musicItem
         self?.musicTitle.text = musicItem.title
         self?.musicArtist.text = musicItem.publisherTitle
+        // TODO: - Get sharp images
         self?.musicThumbnail.imageURL = URL(string: musicItem.largestThumbnail)
       }
       .disposed(by: disposeBag)
