@@ -91,7 +91,7 @@ class MusicItemTableViewCell: UITableViewCell {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.numberOfLines = 2
-    label.font = .preferredCustomFont(forTextStyle: .callout)
+    label.font = .preferredCustomFont(forTextStyle: .body)
     return label
   }()
   
