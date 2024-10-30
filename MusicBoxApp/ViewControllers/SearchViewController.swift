@@ -26,6 +26,7 @@ class SearchViewController: UIViewController {
     navigationItem.largeTitleDisplayMode = .never
     view.addSubview(musicSearchTypeAheadTableView)
     view.addSubview(musicSearchBar)
+    view.backgroundColor = .systemBackground
     
     
     musicSearchTypeAheadTableView
