@@ -12,6 +12,7 @@ import RxCocoa
 import MusicBox
 
 final class TestHomeViewModel: BrowsingViewModel {
+  var playingViewModel: any PlayingViewModel = TestMusicPlayingViewModel()
   func addMusicToPlaylist(controller: UINavigationController, musicItem: MusicItem) {
     
   }

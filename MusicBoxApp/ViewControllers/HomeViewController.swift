@@ -35,8 +35,6 @@ class HomeViewController: UIViewController {
     )
     homeMusicViewModel
       .setMusicListQuery(.withSearchQuery(query: "Ed sheeran"))
-      
-//    musicPlayingBarView.bindWithViewModel(viewModel: homeMusicViewModel)
   }
   
   @objc func navigateToSearchViewController() {

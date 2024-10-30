@@ -14,6 +14,7 @@ import UIKit
 protocol BrowsingViewModel: AnyObject {
   var isFetchingMusicList: Observable<Bool> { get }
   var musicItemList: Observable<[MusicItem]> { get }
+  var playingViewModel: PlayingViewModel { get }
   func addMusicToPlaylist(controller: UINavigationController, musicItem: MusicItem)
   func startDowloadingMusic(_ musicItem: MusicItem)
   func setMusicListQuery(_ query: MusicListQueryType) 

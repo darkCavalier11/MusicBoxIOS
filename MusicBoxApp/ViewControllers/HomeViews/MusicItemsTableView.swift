@@ -64,7 +64,7 @@ class MusicItemsTableView: UITableView {
         let musicItem = cell.musicItem else {
           return
         }
-//        viewModel.playMusicItem(musicItem: musicItem)
+        viewModel.playingViewModel.playMusicItem(musicItem: musicItem)
       }
       .disposed(by: disposeBag)
   }
