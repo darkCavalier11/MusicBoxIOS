@@ -207,8 +207,8 @@ class MusicPlayingDetailsViewController: UIViewController {
   func setupConstraints() {
     NSLayoutConstraint.activate([
       musicThumbnail.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-      musicThumbnail.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
-      musicThumbnail.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5),
+      musicThumbnail.topAnchor.constraint(equalTo: view.topAnchor, constant: 200),
+      musicThumbnail.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
       musicThumbnail.heightAnchor.constraint(equalTo: musicThumbnail.widthAnchor),
       
       musicTitle.centerXAnchor.constraint(equalTo: view.centerXAnchor),
