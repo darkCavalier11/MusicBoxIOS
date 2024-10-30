@@ -28,7 +28,16 @@ class TabBarController: UITabBarController {
     view.addSubview(musicPlayingBarView)
     let playingViewModel = Container.sharedContainer.resolve(PlayingViewModel.self)!
     musicPlayingBarView.bindWithViewModel(viewModel: playingViewModel)
+    let tapGestureRecognizer = UITapGestureRecognizer()
+    tapGestureRecognizer.addTarget(self, action: #selector(handleTapGestureRecognizer))
+    musicPlayingBarView.addGestureRecognizer(tapGestureRecognizer)
     setupPlayingThumbnailViewContraint()
+  }
+  
+  @objc func handleTapGestureRecognizer() {
+    let musicDetailsViewController = MusicPlayingDetailsViewController()
+    musicDetailsViewController.modalPresentationStyle = .fullScreen
+    self.present(musicDetailsViewController, animated: true)
   }
   
   func setupPlayingThumbnailViewContraint() {

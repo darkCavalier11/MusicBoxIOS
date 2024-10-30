@@ -7,23 +7,16 @@
 
 import UIKit
 import MusicBox
+import RxSwift
+import Swinject
 
 class MusicPlayingDetailsViewController: UIViewController {
-  let musicItem = MusicItem(
-    title: "Ed Sheeran - Dive [Official Audio]",
-    publisherTitle: "Ed Sheeran",
-    runningDurationInSeconds: 239,
-    musicId: "Wv2rLZmbPMA",
-    smallestThumbnail: "https://i.ytimg.com/vi/Wv2rLZmbPMA/hqdefault.jpg?sqp=-oaymwEjCOADEI4CSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=&rs=AOn4CLCPeXOnpH6AroaxxXnIjB2IERKo0Q",
-    largestThumbnail:  "https://i.ytimg.com/vi/Wv2rLZmbPMA/hqdefault.jpg?sqp=-oaymwEjCOADEI4CSFryq4qpAxUIARUAAAAAGAElAADIQj0AgKJDeAE=&rs=AOn4CLCPeXOnpH6AroaxxXnIjB2IERKo0Q"
-  )
-  
-  
+  private let disposeBag = DisposeBag()
+  private let viewModel = Container.sharedContainer.resolve(PlayingViewModel.self)!
   private lazy var musicThumbnail: UIAsyncImageView = {
     let imageView = UIAsyncImageView()
     imageView.translatesAutoresizingMaskIntoConstraints = false
     imageView.image = UIImage(systemName: "music.note")
-    imageView.imageURL = URL(string: musicItem.largestThumbnail)
     imageView.contentMode = .scaleAspectFill
     imageView.backgroundColor = .accent.withAlphaComponent(0.1)
     imageView.clipsToBounds = true
@@ -34,7 +27,6 @@ class MusicPlayingDetailsViewController: UIViewController {
   private lazy var musicTitle: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.text = musicItem.title
     label.font = .preferredCustomFont(forTextStyle: .title3, fontName: UIFont.RethinkSans.bold.rawValue)
     label.textColor = .label
     label.numberOfLines = 2
@@ -44,7 +36,6 @@ class MusicPlayingDetailsViewController: UIViewController {
   private lazy var musicArtist: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.text = musicItem.publisherTitle
     label.font = .preferredCustomFont(forTextStyle: .body, fontName: UIFont.RethinkSans.bold.rawValue)
     label.textColor = .secondaryLabel
     return label
@@ -109,8 +100,13 @@ class MusicPlayingDetailsViewController: UIViewController {
     button.clipsToBounds = true
     button.tintColor = .darkGray
     button.configuration = .borderedTinted()
+    button.addTarget(self, action: #selector(handleDismismissVC), for: .touchUpInside)
     return button
   }()
+  
+  @objc func handleDismismissVC() {
+    self.dismiss(animated: true)
+  }
   
   private let addToPlaylistButton: UIButton = {
     let button = UIButton()
@@ -152,10 +148,40 @@ class MusicPlayingDetailsViewController: UIViewController {
   
   @objc func handleNextMusicListTap() {
     let nextSuggestedMusicListVC = NextSuggestedMusicItemsViewController()
-    navigationController?.present(
+    self.present(
       nextSuggestedMusicListVC,
       animated: true
     )
+  }
+  
+  private func bindWithViewModel() {
+    viewModel
+      .selectedMusicItem
+      .observe(on: MainScheduler.instance)
+      .bind { [weak self] musicItem in
+        guard let musicItem else { return }
+        self?.musicTitle.text = musicItem.title
+        self?.musicArtist.text = musicItem.publisherTitle
+        self?.musicThumbnail.imageURL = URL(string: musicItem.largestThumbnail)
+      }
+      .disposed(by: disposeBag)
+    
+    viewModel
+      .musicPlayingStatus
+      .observe(on: MainScheduler.instance)
+      .bind { [weak self] status in
+        switch status {
+        case .idle, .initialising:
+          self?.playPauseButton.isEnabled = false
+          self?.previousMusicButton.isEnabled = false
+          self?.nextMusicButton.isEnabled = false
+        case .paused:
+          self?.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+        case .playing:
+          self?.playPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
+        }
+      }
+      .disposed(by: disposeBag)
   }
   
   override func viewDidLoad() {
@@ -169,32 +195,35 @@ class MusicPlayingDetailsViewController: UIViewController {
     view.addSubview(addToPlaylistButton)
     view.addSubview(downloadMusicButton)
     view.addSubview(nextMusicItemsButton)
-
+    view.backgroundColor = .systemBackground
     
     stackView.addArrangedSubview(previousMusicButton)
     stackView.addArrangedSubview(playPauseButton)
     stackView.addArrangedSubview(nextMusicButton)
     setupConstraints()
+    bindWithViewModel()
   }
   
   func setupConstraints() {
     NSLayoutConstraint.activate([
       musicThumbnail.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-      musicThumbnail.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -50),
-      musicThumbnail.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
+      musicThumbnail.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
+      musicThumbnail.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.5),
       musicThumbnail.heightAnchor.constraint(equalTo: musicThumbnail.widthAnchor),
       
       musicTitle.centerXAnchor.constraint(equalTo: view.centerXAnchor),
       musicTitle.topAnchor.constraint(equalTo: musicThumbnail.bottomAnchor, constant: 10),
+      musicTitle.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
       
       musicArtist.centerXAnchor.constraint(equalTo: view.centerXAnchor),
       musicArtist.topAnchor.constraint(equalTo: musicTitle.bottomAnchor, constant: 10),
+      musicArtist.widthAnchor.constraint(equalTo: musicTitle.widthAnchor),
       
       progressBar.topAnchor.constraint(equalTo: musicArtist.bottomAnchor, constant: 25),
       progressBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-      progressBar.widthAnchor.constraint(equalTo: musicThumbnail.widthAnchor),
+      progressBar.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
       
-      stackView.widthAnchor.constraint(equalTo: musicThumbnail.widthAnchor),
+      stackView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
       stackView.heightAnchor.constraint(equalToConstant: 80),
       stackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
       stackView.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 10),

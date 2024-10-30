@@ -8,6 +8,7 @@
 import UIKit
 import RxSwift
 import MusicBox
+import Swinject
 
 class MusicPlayingBarThumbnailView: UIView {
   private let disposebag = DisposeBag()
@@ -26,10 +27,6 @@ class MusicPlayingBarThumbnailView: UIView {
     stackView.axis = .vertical
     stackView.addArrangedSubview(musicTitleLabel)
     stackView.addArrangedSubview(musicArtistLabel)
-    
-    let tapGestureRecognizer = UITapGestureRecognizer()
-    tapGestureRecognizer.addTarget(self, action: #selector(handleTapGestureRecognizer))
-    self.addGestureRecognizer(tapGestureRecognizer)
     
     self.addSubview(imageView)
     self.addSubview(stackView)
@@ -58,10 +55,6 @@ class MusicPlayingBarThumbnailView: UIView {
       progressBar.bottomAnchor.constraint(equalTo: self.bottomAnchor),
       progressBar.heightAnchor.constraint(equalToConstant: 5),
     ])
-  }
-  
-  @objc func handleTapGestureRecognizer() {
-    
   }
   
   required init?(coder: NSCoder) {
@@ -96,7 +89,7 @@ class MusicPlayingBarThumbnailView: UIView {
             self.playPauseButton.isEnabled = false
             self.progressBar.progress = 0.0
           case .playing:
-            self.playPauseButton.setImage(UIImage(systemName: "pause"), for: .normal)
+            self.playPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
           case .paused:
             self.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
           @unknown default:

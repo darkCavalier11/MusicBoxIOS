@@ -31,6 +31,7 @@ enum MusicListQueryType {
   case defaultMusicList
   case withSearchQuery(query: String)
   case playlist(id: UUID)
+  case nextMusicItems(currentMusicId: String)
 }
 
 final class MusicBrowsingViewModel: BrowsingViewModel {
@@ -98,6 +99,9 @@ final class MusicBrowsingViewModel: BrowsingViewModel {
                   largestThumbnail: $0.largestThumbnail
                 )
               })
+            case .nextMusicItems(currentMusicId: let musicId):
+              let musicList = await musicBox.musicSession.getNextSuggestedMusicItems(musicId: musicId)
+              observer.onNext(musicList)
             }
             
             self.isFetchingMusicListRelay.accept(false)
