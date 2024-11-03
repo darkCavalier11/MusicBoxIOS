@@ -58,7 +58,8 @@ extension UIViewController: MusicItemTableViewActionDelegate {
   }
   
   func startDownload(for musicItem: MusicItem) {
-    // TODO: -
+    let downloadViewModel = Container.sharedContainer.resolve(DownloadViewModel.self)!
+    downloadViewModel.addToDownloadQueue(musicItem: musicItem)
   }
 }
 

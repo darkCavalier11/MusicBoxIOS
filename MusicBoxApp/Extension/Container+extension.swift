@@ -23,6 +23,10 @@ extension Container {
       MusicPlayingViewModel()
     }
     .inObjectScope(.container)
+    container.register(DownloadViewModel.self) { _ in
+      MusicDownloadViewModel()
+    }
+    .inObjectScope(.container)
     container.register(BrowsingViewModel.self) { r in
       let musicBox = r.resolve(MusicBox.self)!
       let coreDataStack = r.resolve(CoreDataStack.self)!
