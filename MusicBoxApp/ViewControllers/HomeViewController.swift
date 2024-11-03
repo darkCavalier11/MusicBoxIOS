@@ -14,13 +14,28 @@ class HomeViewController: UIViewController {
   private let homeMusicViewModel = Container.sharedContainer.resolve(BrowsingViewModel.self)!
   private let disposeBag = DisposeBag()
   private let musicItemsTableView = MusicItemsTableView()
+  private lazy var recentlyPlayedMusicCollectionView = RecentlyPlayedMusicCollectionView(
+    frame: .zero,
+    collectionViewLayout: configureLayout()
+  )
+  private lazy var dataSource = makeDataSource()
+  
+  enum CollectionViewSection {
+    case main
+  }
+  
+  typealias DataSource = UICollectionViewDiffableDataSource<CollectionViewSection, MusicItem>
+  typealias Snapshot = NSDiffableDataSourceSnapshot<CollectionViewSection, MusicItem>
+  
   override func viewDidLoad() {
     super.viewDidLoad()
-    view.addSubview(musicItemsTableView)
+    view.addSubview(recentlyPlayedMusicCollectionView)
+    applySnapshot()
     
     musicItemsTableView.actionDelegate = self
     
-    setupMusicItemsTableViewConstraints()
+//    setupMusicItemsTableViewConstraints()
+    setupMusicItemsCollectionViewConstraints()
     navigationItem.title = "Welcome"
     navigationItem.rightBarButtonItems = [
       UIBarButtonItem(
@@ -51,6 +66,73 @@ class HomeViewController: UIViewController {
       view.bottomAnchor.constraint(equalTo: musicItemsTableView.bottomAnchor),
     ])
   }
+  
+  func setupMusicItemsCollectionViewConstraints() {
+    recentlyPlayedMusicCollectionView.translatesAutoresizingMaskIntoConstraints = false
+    NSLayoutConstraint.activate([
+      recentlyPlayedMusicCollectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+      view.leadingAnchor.constraint(equalTo: recentlyPlayedMusicCollectionView.leadingAnchor),
+      view.trailingAnchor.constraint(equalTo: recentlyPlayedMusicCollectionView.trailingAnchor),
+      recentlyPlayedMusicCollectionView.heightAnchor.constraint(equalToConstant: 180)
+    ])
+  }
+  
+  func makeDataSource() -> DataSource {
+    let dataSource = DataSource(collectionView: recentlyPlayedMusicCollectionView) { (collectionView, indexPath, video) -> UICollectionViewCell? in
+      let cell = collectionView.dequeueReusableCell(
+        withReuseIdentifier: RecentlyPlayedMusicCollectionView.reusableIdentifier,
+        for: indexPath
+      ) as? RecentlyPlayedMusicItemCollectionViewCell
+      return cell
+    }
+    return dataSource
+  }
+  
+  func applySnapshot(animatingDifferences: Bool = true) {
+    var snapshot = Snapshot()
+    snapshot.appendSections([.main])
+    snapshot.appendItems([
+      MusicItem(
+        title: "",
+        publisherTitle: "fff",
+        runningDurationInSeconds: 100,
+        musicId: "f7ff88"
+      ),
+      MusicItem(
+        title: "",
+        publisherTitle: "fff",
+        runningDurationInSeconds: 100,
+        musicId: "ffdfss"
+      )
+    ])
+    dataSource.apply(snapshot, animatingDifferences: animatingDifferences)
+  }
+
+  private func configureLayout() -> UICollectionViewLayout {
+    let layout = UICollectionViewCompositionalLayout(sectionProvider: { (sectionIndex, layoutEnvironment) -> NSCollectionLayoutSection? in
+      
+      let size = NSCollectionLayoutSize(
+        widthDimension: NSCollectionLayoutDimension.absolute(120),
+        heightDimension: NSCollectionLayoutDimension.absolute(160)
+      )
+      let itemCount = 1
+      let item = NSCollectionLayoutItem(layoutSize: size)
+      let group = NSCollectionLayoutGroup.horizontal(
+        layoutSize: size,
+        repeatingSubitem: item,
+        count: itemCount
+      )
+      
+      let section = NSCollectionLayoutSection(group: group)
+      section.contentInsets = NSDirectionalEdgeInsets(top: 10, leading: 10, bottom: 10, trailing: 10)
+      section.interGroupSpacing = 10
+      return section
+    })
+    let configuration = UICollectionViewCompositionalLayoutConfiguration()
+    configuration.scrollDirection = .horizontal
+    layout.configuration = configuration
+    return layout
+  }
 }
 
 extension UIViewController: MusicItemTableViewActionDelegate {
@@ -62,4 +144,11 @@ extension UIViewController: MusicItemTableViewActionDelegate {
   func startDownload(for musicItem: MusicItem) {
     // TODO: -
   }
+}
+
+extension MusicItem: Hashable {
+  public func hash(into hasher: inout Hasher) {
+    hasher.combine(musicId)
+  }
+  
 }
