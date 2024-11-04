@@ -32,9 +32,14 @@ class MusicDownloadViewModel: NSObject, DownloadViewModel, URLSessionDownloadDel
   
   private let musicBox: MusicBox
   private let coreDataStack: CoreDataStack
+  let musicItemModelService: MusicItemModelServices!
   init(musicBox: MusicBox, coreDataStack: CoreDataStack) {
     self.musicBox = musicBox
     self.coreDataStack = coreDataStack
+    self.musicItemModelService = MusicItemModelServices(
+      coreDataStack: coreDataStack,
+      context: coreDataStack.managedObjectContext
+    )
   }
   
   var downloadQueue = [MusicDownloadItem]()
@@ -85,10 +90,7 @@ class MusicDownloadViewModel: NSObject, DownloadViewModel, URLSessionDownloadDel
       .appendingPathExtension("m4a")
     do {
       try FileManager.default.moveItem(at: location, to: newLocationURL)
-      let musicItemModelService = MusicItemModelServices(
-        coreDataStack: coreDataStack,
-        context: coreDataStack.managedObjectContext
-      )
+      
       musicItemModelService.insertNewMusicItemModelWithLocalStorage(
         musicItem: musicItem,
         withLocalStorageURL: newLocationURL

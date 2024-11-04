@@ -44,7 +44,7 @@ class DownloadsViewController: UIViewController {
     
     downloadTableView.delegate = self
     downloadTableView.dataSource = self
-    
+    fetchedResultController.delegate = self
     
     NSLayoutConstraint.activate([
       noDownloadsFoundView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
