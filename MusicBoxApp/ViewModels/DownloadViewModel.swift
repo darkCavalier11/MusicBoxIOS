@@ -9,6 +9,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 import MusicBox
+import os
 
 protocol DownloadViewModel {
   func addToDownloadQueue(musicItem: MusicItem)
@@ -27,9 +28,13 @@ class MusicDownloadItem {
 }
 
 class MusicDownloadViewModel: NSObject, DownloadViewModel, URLSessionDownloadDelegate {
+  static private let logger = Logger(subsystem: "com.MusicBoxApp.Download", category: "MusicDownloadViewModel")
+  
   private let musicBox: MusicBox
-  init(musicBox: MusicBox) {
+  private let coreDataStack: CoreDataStack
+  init(musicBox: MusicBox, coreDataStack: CoreDataStack) {
     self.musicBox = musicBox
+    self.coreDataStack = coreDataStack
   }
   
   var downloadQueue = [MusicDownloadItem]()
@@ -78,8 +83,20 @@ class MusicDownloadViewModel: NSObject, DownloadViewModel, URLSessionDownloadDel
       .first!
       .appending(path: musicItem.title)
       .appendingPathExtension("m4a")
+    do {
+      try FileManager.default.moveItem(at: location, to: newLocationURL)
+      let musicItemModelService = MusicItemModelServices(
+        coreDataStack: coreDataStack,
+        context: coreDataStack.managedObjectContext
+      )
+      musicItemModelService.insertNewMusicItemModelWithLocalStorage(
+        musicItem: musicItem,
+        withLocalStorageURL: newLocationURL
+      )
+    } catch {
+      Self.logger.error("Error downloading music item \(musicItem.title)")
+    }
     
-    try? FileManager.default.moveItem(at: location, to: newLocationURL)
     downloadQueue.remove(at: index)
   }
   

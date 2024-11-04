@@ -17,7 +17,7 @@ final class MusicItemModelServices {
     self.context = context
   }
 
-  func insertNewMusicItemModelLocalStorage(
+  func insertNewMusicItemModelWithLocalStorage(
     musicItem: MusicItem,
     withLocalStorageURL url: URL
   ) {
