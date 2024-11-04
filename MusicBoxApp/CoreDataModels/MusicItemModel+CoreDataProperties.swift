@@ -2,7 +2,7 @@
 //  MusicItemModel+CoreDataProperties.swift
 //  MusicBoxApp
 //
-//  Created by Sumit Pradhan on 24/10/24.
+//  Created by Sumit Pradhan on 04/11/24.
 //
 //
 
@@ -18,10 +18,12 @@ extension MusicItemModel {
 
     @NSManaged public var largestThumbnail: String?
     @NSManaged public var musicId: String?
-    @NSManaged public var smallestThumbnail: String?
     @NSManaged public var publisherTitle: String?
     @NSManaged public var runningDurationInSeconds: Int64
+    @NSManaged public var smallestThumbnail: String?
     @NSManaged public var title: String?
+    @NSManaged public var lastPlayed: Date?
+    @NSManaged public var localStorageURL: URL?
 
 }
 

@@ -13,7 +13,7 @@ import MusicBox
 
 final class TestHomeViewModel: BrowsingViewModel {
   var playingViewModel: any PlayingViewModel = TestMusicPlayingViewModel()
-  func addMusicToPlaylist(controller: UINavigationController, musicItem: MusicItem) {
+  func addMusicToPlaylist(controller: UIViewController, musicItem: MusicItem) {
     
   }
   
@@ -70,6 +70,8 @@ final class TestHomeViewModel: BrowsingViewModel {
           case .withSearchQuery(_):
             observer.onNext([self.testMusicItem])
           case .playlist(id: _):
+            observer.onNext([self.testMusicItem])
+          case .nextMusicItems(currentMusicId: let id):
             observer.onNext([self.testMusicItem])
           }
           self.testIsFetchingMusicListRelay.accept(false)

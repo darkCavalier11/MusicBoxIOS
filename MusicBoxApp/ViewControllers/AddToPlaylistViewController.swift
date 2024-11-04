@@ -100,7 +100,6 @@ class AddToPlaylistViewController: UIViewController {
     view.addSubview(playlistTableView)
     view.addSubview(noExistingPlaylistLabel)
     
-    playlistTableView.delegate = self
     playlistTableView.dataSource = self
     fetchedResultController.delegate = self
 
@@ -174,10 +173,6 @@ extension AddToPlaylistViewController: UITableViewDataSource {
       showToast(text: "\(musicItem.title) already in \"\(model.title ?? "")\"")
     }
   }
-}
-
-extension AddToPlaylistViewController: UITableViewDelegate {
-  
 }
 
 extension AddToPlaylistViewController: NSFetchedResultsControllerDelegate {

@@ -7,14 +7,33 @@
 
 import Foundation
 import RxSwift
+import RxCocoa
 import MusicBox
 
 protocol DownloadViewModel {
   func addToDownloadQueue(musicItem: MusicItem)
+  var downloadQueue: Observable<[MusicDownloadItem]> { get }
+}
+
+class MusicDownloadItem {
+  let identifier: Int
+  let musicItem: MusicItem
+  var fractionDownloaded: Double
   
+  init(identifier: Int, musicItem: MusicItem, fractionDownloaded: Double) {
+    self.identifier = identifier
+    self.musicItem = musicItem
+    self.fractionDownloaded = fractionDownloaded
+  }
 }
 
 class MusicDownloadViewModel: NSObject, DownloadViewModel, URLSessionDownloadDelegate {
+  private let downloadQueueRelay = BehaviorRelay<[MusicDownloadItem]>(value: [])
+  
+  var downloadQueue: Observable<[MusicDownloadItem]> {
+    downloadQueueRelay.asObservable()
+  }
+  
   func addToDownloadQueue(musicItem: MusicItem) {
     guard let url = URL(string: "https://mp4-download.com/4k-MP4") else {
       return
@@ -23,6 +42,7 @@ class MusicDownloadViewModel: NSObject, DownloadViewModel, URLSessionDownloadDel
     let task = session.downloadTask(
       with: request
     )
+    
     task.resume()
   }
   
@@ -31,7 +51,7 @@ class MusicDownloadViewModel: NSObject, DownloadViewModel, URLSessionDownloadDel
     downloadTask: URLSessionDownloadTask,
     didFinishDownloadingTo location: URL
   ) {
-    
+      
   }
   
   func urlSession(
