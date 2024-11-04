@@ -15,9 +15,22 @@ protocol DownloadViewModel {
   func addToDownloadQueue(musicItem: MusicItem)
   func removeDownloadedItem(musicItemModel: MusicItemModel)
   var playingViewModel: PlayingViewModel { get }
+  var inProgressDownlods: Observable<[MusicDownloadItem]> { get }
 }
 
-class MusicDownloadItem {
+class MusicDownloadItem: Equatable, Hashable {
+  static func == (lhs: MusicDownloadItem, rhs: MusicDownloadItem) -> Bool {
+    lhs.identifier == rhs.identifier &&
+    lhs.fractionDownloaded == rhs.fractionDownloaded &&
+    lhs.musicItem == rhs.musicItem
+  }
+  
+  func hash(into hasher: inout Hasher) {
+    hasher.combine(identifier)
+    hasher.combine(fractionDownloaded)
+    hasher.combine(musicItem)
+  }
+  
   let identifier: Int
   let musicItem: MusicItem
   var fractionDownloaded: Double
@@ -52,15 +65,14 @@ final class MusicDownloadViewModel:
   }
   
   var downloadQueue = [MusicDownloadItem]()
-  let defaultDownloadDirectory: URL? = {
-    let fm = FileManager.default
-    guard let documentURL = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
-    let downloadDir = documentURL.appending(path: "OfflineMusicDownloads")
-    return downloadDir
-  }()
   
+  var downloadQueueRelay = BehaviorRelay<[MusicDownloadItem]>(value: [])
   func removeDownloadedItem(musicItemModel: MusicItemModel) {
     musicItemModelService.removeMusicItemModel(model: musicItemModel)
+  }
+  
+  var inProgressDownlods: Observable<[MusicDownloadItem]> {
+    downloadQueueRelay.asObservable()
   }
   
   func addToDownloadQueue(musicItem: MusicItem) {
@@ -79,6 +91,7 @@ final class MusicDownloadViewModel:
           fractionDownloaded: 0
         )
       )
+      downloadQueueRelay.accept(downloadQueue)
       task.resume()
     }
   }
@@ -113,6 +126,7 @@ final class MusicDownloadViewModel:
     }
     
     downloadQueue.remove(at: index)
+    downloadQueueRelay.accept(downloadQueue)
   }
   
   func urlSession(
@@ -123,7 +137,13 @@ final class MusicDownloadViewModel:
     totalBytesExpectedToWrite: Int64
   ) {
     let fractionDownloaded = Double(totalBytesWritten) / Double(totalBytesExpectedToWrite)
-    print(fractionDownloaded)
+    guard let index = downloadQueue.firstIndex(where: { item in
+      item.identifier == downloadTask.taskIdentifier
+    }) else {
+      return
+    }
+    downloadQueue[index].fractionDownloaded = fractionDownloaded
+    downloadQueueRelay.accept(downloadQueue)
   }
   
   lazy var session = URLSession(

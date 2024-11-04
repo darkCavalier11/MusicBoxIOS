@@ -1,16 +1,8 @@
 //
-//  PlaylistTableView.swift
+//  DownloadTableView.swift
 //  MusicBoxApp
 //
 //  Created by Sumit Pradhan on 04/11/24.
-//
-
-
-//
-//  PlaylistTableView.swift
-//  MusicBoxApp
-//
-//  Created by Sumit Pradhan on 24/10/24.
 //
 
 import UIKit
