@@ -184,7 +184,7 @@ class MusicItemTableViewCell: UITableViewCell {
   
   func setupConstraints() {
     NSLayoutConstraint.activate([
-      musicCellContainer.widthAnchor.constraint(equalTo: contentView.widthAnchor, constant: -36),
+      musicCellContainer.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.9),
       musicCellContainer.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
       musicCellContainer.topAnchor.constraint(equalTo: contentView.topAnchor),
       musicCellContainer.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),

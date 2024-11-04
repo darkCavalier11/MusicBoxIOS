@@ -38,19 +38,30 @@ class DownloadsViewController: UIViewController {
     view.addSubview(downloadTableView)
     view.addSubview(noDownloadsFoundView)
     
-    NSLayoutConstraint.activate([
-      noDownloadsFoundView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-      noDownloadsFoundView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
-      noDownloadsFoundView.widthAnchor.constraint(equalToConstant: 250)
-    ])
-    
     hideEmptyDownloadsView
       .bind(to: noDownloadsFoundView.rx.isHidden)
       .disposed(by: disposeBag)
     
+    downloadTableView.delegate = self
+    downloadTableView.dataSource = self
+    
+    
+    NSLayoutConstraint.activate([
+      noDownloadsFoundView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+      noDownloadsFoundView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+      noDownloadsFoundView.widthAnchor.constraint(equalToConstant: 250),
+      
+      downloadTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+      downloadTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+      downloadTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+      downloadTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+    ])
+    
     do {
       try fetchedResultController.performFetch()
-      guard let downloadsCount = fetchedResultController.sections?.first?.numberOfObjects, downloadsCount > 0 else {
+      guard let
+              downloadsCount = fetchedResultController.sections?.first?.numberOfObjects,
+              downloadsCount > 0 else {
         hideEmptyDownloadsView.accept(false)
         return
       }
@@ -65,7 +76,10 @@ extension DownloadsViewController: UITableViewDelegate {
 }
 
 extension DownloadsViewController: UITableViewDataSource {
-  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+  func tableView(
+    _ tableView: UITableView,
+    numberOfRowsInSection section: Int
+  ) -> Int {
     guard let sectionInfo =
             fetchedResultController.sections?[section] else {
       return 0
@@ -73,11 +87,57 @@ extension DownloadsViewController: UITableViewDataSource {
     return sectionInfo.numberOfObjects
   }
   
-  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    guard let cell = tableView.dequeueReusableCell(withIdentifier: DownloadTableView.reusableIdentifier, for: indexPath) as? DownloadTableViewCell else {
+  func tableView(
+    _ tableView: UITableView,
+    cellForRowAt indexPath: IndexPath
+  ) -> UITableViewCell {
+    guard let cell = tableView.dequeueReusableCell(
+      withIdentifier: DownloadTableView.reusableIdentifier,
+      for: indexPath
+    ) as? DownloadTableViewCell else {
       return UITableViewCell()
     }
-    
+    cell.musicItemModel = fetchedResultController.object(at: indexPath)
     return cell
+  }
+}
+
+extension DownloadsViewController: NSFetchedResultsControllerDelegate {
+  func controllerWillChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
+    downloadTableView.beginUpdates()
+  }
+  
+  func controller(
+    _ controller: NSFetchedResultsController<any NSFetchRequestResult>,
+    didChange anObject: Any,
+    at indexPath: IndexPath?,
+    for type: NSFetchedResultsChangeType,
+    newIndexPath: IndexPath?
+  ) {
+    switch type {
+    case .insert:
+      downloadTableView.insertRows(at: [newIndexPath!], with: .automatic)
+      hideEmptyDownloadsView.accept(true)
+      let cell = downloadTableView.cellForRow(at: newIndexPath!) as? PlaylistTableViewCell
+      cell?.musicPlaylistModel = controller.object(at: newIndexPath!) as? MusicPlaylistModel
+    case .delete:
+      downloadTableView.deleteRows(at: [indexPath!], with: .automatic)
+      guard let count = controller.fetchedObjects?.count, count > 0 else {
+        hideEmptyDownloadsView.accept(false)
+        return
+      }
+    case .update:
+      let cell = downloadTableView.cellForRow(at: indexPath!) as! PlaylistTableViewCell
+      cell.musicPlaylistModel = controller.object(at: indexPath!) as? MusicPlaylistModel
+    case .move:
+      downloadTableView.deleteRows(at: [indexPath!], with: .automatic)
+      downloadTableView.insertRows(at: [newIndexPath!], with: .automatic)
+    @unknown default:
+      print("Unexpected NSFetchedResultChangeType: \(type)")
+    }
+  }
+  
+  func controllerDidChangeContent(_ controller: NSFetchedResultsController<any NSFetchRequestResult>) {
+    downloadTableView.endUpdates()
   }
 }

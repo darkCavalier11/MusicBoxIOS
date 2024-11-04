@@ -14,14 +14,15 @@
 //
 
 import UIKit
+import MusicBox
 
 class DownloadTableView: UITableView {
   static let reusableIdentifier: String = "DownloadTableViewCell"
   override init(frame: CGRect, style: UITableView.Style) {
     super.init(frame: frame, style: style)
-    register(DownloadTableViewCell.self, forCellReuseIdentifier: Self.reusableIdentifier)
+    self.register(DownloadTableViewCell.self, forCellReuseIdentifier: Self.reusableIdentifier)
     self.translatesAutoresizingMaskIntoConstraints = false
-    self.rowHeight = 120
+    self.rowHeight = 110
   }
   
   required init?(coder: NSCoder) {
@@ -41,30 +42,9 @@ class DownloadTableViewCell: UITableViewCell {
     return imageView
   }()
   
-  private let rightImageView: UIAsyncImageView = {
-    let imageView = UIAsyncImageView()
-    imageView.translatesAutoresizingMaskIntoConstraints = false
-    imageView.contentMode = .scaleAspectFill
-    imageView.clipsToBounds = true
-    imageView.transform = CGAffineTransform(translationX: 20, y: 0).rotated(by: Double.pi / 15)
-    imageView.layer.cornerRadius = 8
-    return imageView
-  }()
-  
-  private let leftImageView: UIAsyncImageView = {
-    let imageView = UIAsyncImageView()
-    imageView.translatesAutoresizingMaskIntoConstraints = false
-    imageView.contentMode = .scaleAspectFill
-    imageView.clipsToBounds = true
-    imageView.transform = CGAffineTransform(translationX: -20, y: 0).rotated(by: -Double.pi / 15)
-    imageView.layer.cornerRadius = 8
-    return imageView
-  }()
-  
-  private let playlistTitle: UILabel = {
+  private let title: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.text = "Your playlist"
     label.numberOfLines = 2
     label.font = .preferredCustomFont(forTextStyle: .headline)
     return label
@@ -74,6 +54,7 @@ class DownloadTableViewCell: UITableViewCell {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.font = .preferredCustomFont(forTextStyle: .caption1, weight: .bold)
+    label.textColor = .secondaryLabel
     return label
   }()
   
@@ -86,33 +67,16 @@ class DownloadTableViewCell: UITableViewCell {
     return label
   }()
   
-  private let totalTrackLabel: UILabel = {
-    let label = UILabel()
-    label.translatesAutoresizingMaskIntoConstraints = false
-    label.font = .preferredCustomFont(forTextStyle: .caption1, weight: .bold)
-    return label
-  }()
   
-  var musicPlaylistModel: MusicPlaylistModel? {
+  var musicItemModel: MusicItemModel? {
     didSet {
-      guard let musicPlaylistModel = musicPlaylistModel else { return }
-      let images = musicPlaylistModel.top3ThumbnailURLs
-      playlistTitle.text = musicPlaylistModel.title
-      durationTitle.text = "Total Duration: " + musicPlaylistModel.totalDurationInSeconds.convertToDuration()
-      centerImageView.image = nil
-      leftImageView.image = nil
-      rightImageView.image = nil
-      if images.count >= 1 {
-        centerImageView.imageURL = images[0]
-      }
-      if images.count >= 2 {
-        leftImageView.imageURL = images[1]
-      }
-      if images.count >= 3 {
-        rightImageView.imageURL = images[2]
-      }
-      artistDesc.text = musicPlaylistModel.artistDesc
-      totalTrackLabel.text = "\(musicPlaylistModel.musicItems?.count ?? 0) Tracks"
+      guard let musicItemModel = musicItemModel else { return }
+      title.text = musicItemModel.title
+      durationTitle.text = "\(Int(musicItemModel.runningDurationInSeconds).convertToDuration())"
+      centerImageView.imageURL = URL(
+        string: musicItemModel.smallestThumbnail ?? MusicItem.defaultSmallestThumbnail
+      )
+      artistDesc.text = musicItemModel.publisherTitle
     }
   }
   
@@ -124,14 +88,10 @@ class DownloadTableViewCell: UITableViewCell {
     containerView.translatesAutoresizingMaskIntoConstraints = false
     
     contentView.addSubview(containerView)
-    
-    containerView.addSubview(rightImageView)
-    containerView.addSubview(leftImageView)
     containerView.addSubview(centerImageView)
-    containerView.addSubview(playlistTitle)
+    containerView.addSubview(title)
     containerView.addSubview(durationTitle)
     containerView.addSubview(artistDesc)
-    containerView.addSubview(totalTrackLabel)
     
     
     NSLayoutConstraint.activate([
@@ -140,35 +100,22 @@ class DownloadTableViewCell: UITableViewCell {
       centerImageView.widthAnchor.constraint(equalToConstant: 75),
       centerImageView.heightAnchor.constraint(equalToConstant: 75),
       
-      rightImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-      rightImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-      rightImageView.widthAnchor.constraint(equalToConstant: 75),
-      rightImageView.heightAnchor.constraint(equalToConstant: 75),
-      
-      leftImageView.leadingAnchor.constraint(equalTo: containerView.leadingAnchor),
-      leftImageView.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
-      leftImageView.widthAnchor.constraint(equalToConstant: 75),
-      leftImageView.heightAnchor.constraint(equalToConstant: 75),
-      
-      containerView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.8),
+      containerView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.9),
       containerView.heightAnchor.constraint(equalTo: contentView.heightAnchor),
       containerView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
       containerView.centerYAnchor.constraint(equalTo: contentView.centerYAnchor),
       
-      playlistTitle.topAnchor.constraint(equalTo: centerImageView.topAnchor),
-      playlistTitle.leadingAnchor.constraint(equalTo: centerImageView.trailingAnchor, constant: 50),
-      playlistTitle.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
+      title.topAnchor.constraint(equalTo: centerImageView.topAnchor),
+      title.leadingAnchor.constraint(equalTo: centerImageView.trailingAnchor, constant: 10),
+      title.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
       
-      durationTitle.topAnchor.constraint(equalTo: playlistTitle.bottomAnchor),
-      durationTitle.leadingAnchor.constraint(equalTo: centerImageView.trailingAnchor, constant: 50),
+      durationTitle.topAnchor.constraint(equalTo: artistDesc.bottomAnchor),
+      durationTitle.leadingAnchor.constraint(equalTo: centerImageView.trailingAnchor, constant: 10),
       durationTitle.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
       
-      artistDesc.topAnchor.constraint(equalTo: durationTitle.bottomAnchor),
-      artistDesc.leadingAnchor.constraint(equalTo: centerImageView.trailingAnchor, constant: 50),
+      artistDesc.topAnchor.constraint(equalTo: title.bottomAnchor),
+      artistDesc.leadingAnchor.constraint(equalTo: centerImageView.trailingAnchor, constant: 10),
       artistDesc.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
-      
-      totalTrackLabel.topAnchor.constraint(equalTo: artistDesc.bottomAnchor),
-      totalTrackLabel.leadingAnchor.constraint(equalTo: centerImageView.trailingAnchor, constant: 50),
     ])
   }
   
