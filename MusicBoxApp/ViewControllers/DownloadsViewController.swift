@@ -20,6 +20,17 @@ class DownloadsViewController: UIViewController {
   private let downloadViewModel = Container.sharedContainer.resolve(DownloadViewModel.self)!
   private let disposeBag = DisposeBag()
   
+  private let progressButton: UIButton = {
+    let button = UIButton()
+    button.translatesAutoresizingMaskIntoConstraints = false
+    button.titleLabel?.font = .preferredCustomFont(forTextStyle: .callout, weight: .bold)
+    button.setTitleColor(.accent, for: .normal)
+    button.backgroundColor = .accent.withAlphaComponent(0.1)
+    button.clipsToBounds = true
+    button.layer.cornerRadius = 8
+    return button
+  }()
+  
   private lazy var fetchedResultController: NSFetchedResultsController<MusicItemModel> = {
     let fetchRequest = MusicItemModel.fetchRequest()
     let sort = NSSortDescriptor(key: #keyPath(MusicItemModel.title), ascending: true)
@@ -40,21 +51,39 @@ class DownloadsViewController: UIViewController {
     
     view.addSubview(downloadTableView)
     view.addSubview(noDownloadsFoundView)
+    view.addSubview(progressButton)
     
     hideEmptyDownloadsView
       .bind(to: noDownloadsFoundView.rx.isHidden)
       .disposed(by: disposeBag)
     
+//    hideEmptyDownloadsView
+//      .bind(to: progressButton.rx.isEnabled)
+//      .disposed(by: disposeBag)
+    
     downloadTableView.delegate = self
     downloadTableView.dataSource = self
     fetchedResultController.delegate = self
+    
+    downloadViewModel
+      .inProgressDownlods
+      .observe(on: MainScheduler.instance)
+      .bind { [weak self] musicItems in
+        self?.progressButton.setTitle("\(musicItems.count) Download(s) in progress", for: .normal)
+      }
+      .disposed(by: disposeBag)
     
     NSLayoutConstraint.activate([
       noDownloadsFoundView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
       noDownloadsFoundView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
       noDownloadsFoundView.widthAnchor.constraint(equalToConstant: 250),
       
-      downloadTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+      progressButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+      progressButton.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.9),
+      progressButton.heightAnchor.constraint(equalToConstant: 50),
+      progressButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+      
+      downloadTableView.topAnchor.constraint(equalTo: progressButton.bottomAnchor, constant: 10),
       downloadTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
       downloadTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
       downloadTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),

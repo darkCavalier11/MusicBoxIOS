@@ -17,6 +17,7 @@ class DownloadTableView: UITableView {
     self.register(DownloadTableViewCell.self, forCellReuseIdentifier: Self.reusableIdentifier)
     self.translatesAutoresizingMaskIntoConstraints = false
     self.rowHeight = 110
+    self.separatorStyle = .none
   }
   
   required init?(coder: NSCoder) {
