@@ -21,21 +21,19 @@ protocol DownloadViewModel {
 class MusicDownloadItem: Equatable, Hashable {
   static func == (lhs: MusicDownloadItem, rhs: MusicDownloadItem) -> Bool {
     lhs.identifier == rhs.identifier &&
-    lhs.fractionDownloaded == rhs.fractionDownloaded &&
     lhs.musicItem == rhs.musicItem
   }
   
   func hash(into hasher: inout Hasher) {
     hasher.combine(identifier)
-    hasher.combine(fractionDownloaded)
     hasher.combine(musicItem)
   }
   
   let identifier: Int
   let musicItem: MusicItem
-  var fractionDownloaded: Double
+  var fractionDownloaded: BehaviorRelay<Double>
   
-  init(identifier: Int, musicItem: MusicItem, fractionDownloaded: Double) {
+  init(identifier: Int, musicItem: MusicItem, fractionDownloaded: BehaviorRelay<Double>) {
     self.identifier = identifier
     self.musicItem = musicItem
     self.fractionDownloaded = fractionDownloaded
@@ -88,7 +86,7 @@ final class MusicDownloadViewModel:
         MusicDownloadItem(
           identifier: task.taskIdentifier,
           musicItem: musicItem,
-          fractionDownloaded: 0
+          fractionDownloaded: .init(value: 0.0)
         )
       )
       downloadQueueRelay.accept(downloadQueue)
@@ -142,7 +140,7 @@ final class MusicDownloadViewModel:
     }) else {
       return
     }
-    downloadQueue[index].fractionDownloaded = fractionDownloaded
+    downloadQueue[index].fractionDownloaded.accept(fractionDownloaded)
     downloadQueueRelay.accept(downloadQueue)
   }
   
