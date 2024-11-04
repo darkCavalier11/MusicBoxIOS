@@ -9,12 +9,15 @@ import UIKit
 import CoreData
 import RxCocoa
 import RxSwift
+import Swinject
+import MusicBox
 
 class DownloadsViewController: UIViewController {
   private let noDownloadsFoundView = NoDownloadsFoundView()
   private lazy var coreDataStack = CoreDataStack()
   private let hideEmptyDownloadsView = BehaviorRelay<Bool>(value: true)
   private let downloadTableView = DownloadTableView()
+  private let downloadViewModel = Container.sharedContainer.resolve(DownloadViewModel.self)!
   private let disposeBag = DisposeBag()
   
   private lazy var fetchedResultController: NSFetchedResultsController<MusicItemModel> = {
@@ -72,7 +75,15 @@ class DownloadsViewController: UIViewController {
 }
 
 extension DownloadsViewController: UITableViewDelegate {
-  
+  func tableView(
+    _ tableView: UITableView,
+    commit editingStyle: UITableViewCell.EditingStyle,
+    forRowAt indexPath: IndexPath
+  ) {
+    self.downloadViewModel.removeDownloadedItem(
+      musicItemModel: fetchedResultController.object(at: indexPath)
+    )
+  }
 }
 
 extension DownloadsViewController: UITableViewDataSource {
@@ -97,8 +108,27 @@ extension DownloadsViewController: UITableViewDataSource {
     ) as? DownloadTableViewCell else {
       return UITableViewCell()
     }
-    cell.musicItemModel = fetchedResultController.object(at: indexPath)
+    let musicItemModel = fetchedResultController.object(at: indexPath)
+    cell.musicItemModel = musicItemModel
+    cell.bindWithViewModel(viewModel: self.downloadViewModel)
+      
     return cell
+  }
+  
+  func tableView(
+    _ tableView: UITableView,
+    didSelectRowAt indexPath: IndexPath
+  ) {
+    let musicItemModel = fetchedResultController.object(at: indexPath)
+    let musicItem = MusicItem.init(
+      title: musicItemModel.title ?? "-",
+      publisherTitle: musicItemModel.publisherTitle ?? "-",
+      runningDurationInSeconds: Int(musicItemModel.runningDurationInSeconds),
+      musicId: musicItemModel.musicId ?? "-",
+      smallestThumbnail: musicItemModel.smallestThumbnail,
+      largestThumbnail: musicItemModel.largestThumbnail
+    )
+    self.downloadViewModel.playingViewModel.playMusicItem(musicItem: musicItem)
   }
 }
 

@@ -16,7 +16,6 @@ protocol BrowsingViewModel: AnyObject {
   var musicItemList: Observable<[MusicItem]> { get }
   var playingViewModel: PlayingViewModel { get }
   func addMusicToPlaylist(controller: UIViewController, musicItem: MusicItem)
-  func startDowloadingMusic(_ musicItem: MusicItem)
   func setMusicListQuery(_ query: MusicListQueryType) 
 }
 
@@ -118,10 +117,6 @@ final class MusicBrowsingViewModel: BrowsingViewModel {
     let addToPlaylistVC = AddToPlaylistViewController()
     addToPlaylistVC.musicItem = musicItem
     controller.present(addToPlaylistVC, animated: true)
-  }
-  
-  func startDowloadingMusic(_ musicItem: MusicItem) {
-    // TODO: -
   }
 }
 

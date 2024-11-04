@@ -101,6 +101,7 @@ class AddToPlaylistViewController: UIViewController {
     view.addSubview(noExistingPlaylistLabel)
     
     playlistTableView.dataSource = self
+    playlistTableView.delegate = self
     fetchedResultController.delegate = self
 
     
@@ -144,6 +145,10 @@ class AddToPlaylistViewController: UIViewController {
       print("Error NSFetchResultsController \(error.localizedDescription)")
     }
   }
+}
+
+extension AddToPlaylistViewController: UITableViewDelegate {
+  
 }
 
 extension AddToPlaylistViewController: UITableViewDataSource {

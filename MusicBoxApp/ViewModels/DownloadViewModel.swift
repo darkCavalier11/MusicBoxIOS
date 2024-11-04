@@ -13,6 +13,8 @@ import os
 
 protocol DownloadViewModel {
   func addToDownloadQueue(musicItem: MusicItem)
+  func removeDownloadedItem(musicItemModel: MusicItemModel)
+  var playingViewModel: PlayingViewModel { get }
 }
 
 class MusicDownloadItem {
@@ -27,19 +29,26 @@ class MusicDownloadItem {
   }
 }
 
-class MusicDownloadViewModel: NSObject, DownloadViewModel, URLSessionDownloadDelegate {
+final class MusicDownloadViewModel:
+  NSObject, DownloadViewModel, URLSessionDownloadDelegate {
   static private let logger = Logger(subsystem: "com.MusicBoxApp.Download", category: "MusicDownloadViewModel")
   
   private let musicBox: MusicBox
   private let coreDataStack: CoreDataStack
   let musicItemModelService: MusicItemModelServices!
-  init(musicBox: MusicBox, coreDataStack: CoreDataStack) {
+  let playingViewModel: PlayingViewModel
+  init(
+    musicBox: MusicBox,
+    coreDataStack: CoreDataStack,
+    playingViewModel: PlayingViewModel
+  ) {
     self.musicBox = musicBox
     self.coreDataStack = coreDataStack
     self.musicItemModelService = MusicItemModelServices(
       coreDataStack: coreDataStack,
       context: coreDataStack.managedObjectContext
     )
+    self.playingViewModel = playingViewModel
   }
   
   var downloadQueue = [MusicDownloadItem]()
@@ -49,6 +58,10 @@ class MusicDownloadViewModel: NSObject, DownloadViewModel, URLSessionDownloadDel
     let downloadDir = documentURL.appending(path: "OfflineMusicDownloads")
     return downloadDir
   }()
+  
+  func removeDownloadedItem(musicItemModel: MusicItemModel) {
+    musicItemModelService.removeMusicItemModel(model: musicItemModel)
+  }
   
   func addToDownloadQueue(musicItem: MusicItem) {
     Task {

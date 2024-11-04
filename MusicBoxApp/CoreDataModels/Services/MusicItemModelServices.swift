@@ -33,7 +33,7 @@ final class MusicItemModelServices {
   }
   
   func removeMusicItemModel(
-    model: MusicPlaylistModel
+    model: MusicItemModel
   ) {
     context.delete(model)
     coreDataStack.saveContext()

@@ -15,6 +15,8 @@
 
 import UIKit
 import MusicBox
+import RxSwift
+import RxCocoa
 
 class DownloadTableView: UITableView {
   static let reusableIdentifier: String = "DownloadTableViewCell"
@@ -31,6 +33,8 @@ class DownloadTableView: UITableView {
 }
 
 class DownloadTableViewCell: UITableViewCell {
+  private let disposeBag = DisposeBag()
+  
   private let centerImageView: UIAsyncImageView = {
     let imageView = UIAsyncImageView()
     imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -83,6 +87,7 @@ class DownloadTableViewCell: UITableViewCell {
   override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
     super.init(style: style, reuseIdentifier: reuseIdentifier)
     self.selectionStyle = .none
+    self.layer.cornerRadius = 24
     let containerView = UIView()
     
     containerView.translatesAutoresizingMaskIntoConstraints = false
@@ -117,6 +122,23 @@ class DownloadTableViewCell: UITableViewCell {
       artistDesc.leadingAnchor.constraint(equalTo: centerImageView.trailingAnchor, constant: 10),
       artistDesc.trailingAnchor.constraint(equalTo: containerView.trailingAnchor),
     ])
+  }
+  
+  func bindWithViewModel(viewModel: DownloadViewModel) {
+    viewModel
+    .playingViewModel
+    .selectedMusicItem
+    .observe(on: MainScheduler.instance)
+    .bind { [weak self] musicItem in
+      if musicItem?.musicId == self?.musicItemModel?.musicId {
+        self?.backgroundColor = UIColor.accent.withAlphaComponent(0.1)
+        self?.title.textColor = .accent
+      } else {
+        self?.backgroundColor = .none
+        self?.title.textColor = nil
+      }
+    }
+    .disposed(by: disposeBag)
   }
   
   required init?(coder: NSCoder) {
