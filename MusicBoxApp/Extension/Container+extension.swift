@@ -24,7 +24,10 @@ extension Container {
     }
     .inObjectScope(.container)
     container.register(DownloadViewModel.self) { _ in
-      MusicDownloadViewModel()
+      let musicBox = container.resolve(MusicBox.self)!
+      return MusicDownloadViewModel(
+        musicBox: musicBox
+      )
     }
     .inObjectScope(.container)
     container.register(BrowsingViewModel.self) { r in

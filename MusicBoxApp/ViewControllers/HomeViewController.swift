@@ -51,18 +51,6 @@ class HomeViewController: UIViewController {
   }
 }
 
-extension UIViewController: MusicItemTableViewActionDelegate {
-  func navigateToAddToPlaylistScreen(for musicItem: MusicItem) {
-    let musicViewModel = Container.sharedContainer.resolve(BrowsingViewModel.self)!
-    musicViewModel.addMusicToPlaylist(controller: self, musicItem: musicItem)
-  }
-  
-  func startDownload(for musicItem: MusicItem) {
-    let downloadViewModel = Container.sharedContainer.resolve(DownloadViewModel.self)!
-    downloadViewModel.addToDownloadQueue(musicItem: musicItem)
-  }
-}
-
 extension MusicItem: Hashable {
   public func hash(into hasher: inout Hasher) {
     hasher.combine(musicId)

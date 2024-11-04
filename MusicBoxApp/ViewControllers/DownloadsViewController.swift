@@ -17,8 +17,8 @@ class DownloadsViewController: UIViewController {
   private let downloadTableView = DownloadTableView()
   private let disposeBag = DisposeBag()
   
-  private lazy var fetchedResultController: NSFetchedResultsController<MusicPlaylistModel> = {
-    let fetchRequest = MusicPlaylistModel.fetchRequest()
+  private lazy var fetchedResultController: NSFetchedResultsController<MusicItemModel> = {
+    let fetchRequest = MusicItemModel.fetchRequest()
     let sort = NSSortDescriptor(key: #keyPath(MusicItemModel.title), ascending: true)
     fetchRequest.sortDescriptors = [sort]
     fetchRequest.predicate = NSPredicate(format: "%K != NULL", #keyPath(MusicItemModel.localStorageURL))
@@ -57,5 +57,27 @@ class DownloadsViewController: UIViewController {
     } catch {
       print("Error NSFetchResultsController \(error.localizedDescription)")
     }
+  }
+}
+
+extension DownloadsViewController: UITableViewDelegate {
+  
+}
+
+extension DownloadsViewController: UITableViewDataSource {
+  func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    guard let sectionInfo =
+            fetchedResultController.sections?[section] else {
+      return 0
+    }
+    return sectionInfo.numberOfObjects
+  }
+  
+  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    guard let cell = tableView.dequeueReusableCell(withIdentifier: DownloadTableView.reusableIdentifier, for: indexPath) as? DownloadTableViewCell else {
+      return UITableViewCell()
+    }
+    
+    return cell
   }
 }

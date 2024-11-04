@@ -12,7 +12,6 @@ import MusicBox
 
 protocol DownloadViewModel {
   func addToDownloadQueue(musicItem: MusicItem)
-  var downloadQueue: Observable<[MusicDownloadItem]> { get }
 }
 
 class MusicDownloadItem {
@@ -28,22 +27,37 @@ class MusicDownloadItem {
 }
 
 class MusicDownloadViewModel: NSObject, DownloadViewModel, URLSessionDownloadDelegate {
-  private let downloadQueueRelay = BehaviorRelay<[MusicDownloadItem]>(value: [])
-  
-  var downloadQueue: Observable<[MusicDownloadItem]> {
-    downloadQueueRelay.asObservable()
+  private let musicBox: MusicBox
+  init(musicBox: MusicBox) {
+    self.musicBox = musicBox
   }
   
+  var downloadQueue = [MusicDownloadItem]()
+  let defaultDownloadDirectory: URL? = {
+    let fm = FileManager.default
+    guard let documentURL = fm.urls(for: .documentDirectory, in: .userDomainMask).first else { return nil }
+    let downloadDir = documentURL.appending(path: "OfflineMusicDownloads")
+    return downloadDir
+  }()
+  
   func addToDownloadQueue(musicItem: MusicItem) {
-    guard let url = URL(string: "https://mp4-download.com/4k-MP4") else {
-      return
+    Task {
+      guard let musicDownloadURL = await musicBox.musicSession.getMusicStreamingURL(musicId: musicItem.musicId) else {
+        return
+      }
+      let request = URLRequest(url: musicDownloadURL)
+      let task = session.downloadTask(
+        with: request
+      )
+      downloadQueue.append(
+        MusicDownloadItem(
+          identifier: task.taskIdentifier,
+          musicItem: musicItem,
+          fractionDownloaded: 0
+        )
+      )
+      task.resume()
     }
-    let request = URLRequest(url: url)
-    let task = session.downloadTask(
-      with: request
-    )
-    
-    task.resume()
   }
   
   func urlSession(
@@ -51,7 +65,22 @@ class MusicDownloadViewModel: NSObject, DownloadViewModel, URLSessionDownloadDel
     downloadTask: URLSessionDownloadTask,
     didFinishDownloadingTo location: URL
   ) {
-      
+    guard let index = downloadQueue.firstIndex(where: { item in
+      item.identifier == downloadTask.taskIdentifier
+    }) else {
+      return
+    }
+    let musicItem = downloadQueue[index].musicItem
+    let newLocationURL = FileManager.default.urls(
+      for: .documentDirectory,
+      in: .userDomainMask
+    )
+      .first!
+      .appending(path: musicItem.title)
+      .appendingPathExtension("m4a")
+    
+    try? FileManager.default.moveItem(at: location, to: newLocationURL)
+    downloadQueue.remove(at: index)
   }
   
   func urlSession(
@@ -61,7 +90,8 @@ class MusicDownloadViewModel: NSObject, DownloadViewModel, URLSessionDownloadDel
     totalBytesWritten: Int64,
     totalBytesExpectedToWrite: Int64
   ) {
-    
+    let fractionDownloaded = Double(totalBytesWritten) / Double(totalBytesExpectedToWrite)
+    print(fractionDownloaded)
   }
   
   lazy var session = URLSession(
