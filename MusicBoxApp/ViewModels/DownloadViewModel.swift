@@ -67,6 +67,10 @@ final class MusicDownloadViewModel:
   var downloadQueueRelay = BehaviorRelay<[MusicDownloadItem]>(value: [])
   func removeDownloadedItem(musicItemModel: MusicItemModel) {
     musicItemModelService.removeMusicItemModel(model: musicItemModel)
+    guard let localStorageURL = musicItemModel.localStorageURL else {
+      return
+    }
+    try? FileManager.default.removeItem(at: localStorageURL)
   }
   
   var inProgressDownlods: Observable<[MusicDownloadItem]> {
@@ -113,6 +117,7 @@ final class MusicDownloadViewModel:
       .appending(path: musicItem.title)
       .appendingPathExtension("m4a")
     do {
+      try FileManager.default.removeItem(at: newLocationURL)
       try FileManager.default.moveItem(at: location, to: newLocationURL)
       
       musicItemModelService.insertNewMusicItemModelWithLocalStorage(
@@ -120,7 +125,8 @@ final class MusicDownloadViewModel:
         withLocalStorageURL: newLocationURL
       )
     } catch {
-      Self.logger.error("Error downloading music item \(musicItem.title)")
+      
+      Self.logger.error("Error downloading music item \(musicItem.title): \(error.localizedDescription)")
     }
     
     downloadQueue.remove(at: index)
