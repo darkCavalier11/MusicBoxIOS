@@ -41,6 +41,14 @@ class InProgressDownloadTableViewCell: UITableViewCell {
           self?.musicThumbnail.image = image
         }
       }
+      
+      guard let fractionDownloaded = musicDownloadItem?.fractionDownloaded else { return }
+      fractionDownloaded
+        .observe(on: MainScheduler.instance)
+        .bind { [weak self] progress in
+          self?.circularProgressView.setProgres(progress, animated: false)
+        }
+        .disposed(by: disposeBag)
     }
   }
   
@@ -109,13 +117,11 @@ class InProgressDownloadTableViewCell: UITableViewCell {
     musicThumbnail.addSubview(thumbnailMask)
     thumbnailMask.addSubview(circularProgressView)
     circularProgressView.translatesAutoresizingMaskIntoConstraints = false
-    circularProgressView.setProgres(0.3, animated: true)
     musicCellContainer.translatesAutoresizingMaskIntoConstraints = false
     musicCellContainer.addSubview(textStackView)
     musicCellContainer.addSubview(musicThumbnail)
     contentView.addSubview(musicCellContainer)
     setupConstraints()
-    self.backgroundColor = .accent.withAlphaComponent(0.1)
   }
   
   

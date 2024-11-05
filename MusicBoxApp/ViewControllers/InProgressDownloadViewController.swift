@@ -12,14 +12,26 @@ import MusicBox
 class InProgressDownloadViewController: UIViewController {
   private let inProgressDownloadTableView = InProgressDownloadTableView()
   
+  private let titleLabel: UILabel = {
+    let label = UILabel()
+    label.translatesAutoresizingMaskIntoConstraints = false
+    label.text = "In Progress Download(s)"
+    label.font = .preferredCustomFont(forTextStyle: .title3, fontName: UIFont.RethinkSans.bold.rawValue)
+    return label
+  }()
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     inProgressDownloadTableView.delegate = self
     inProgressDownloadTableView.dataSource = self
     view.addSubview(inProgressDownloadTableView)
-    
+    view.addSubview(titleLabel)
+    view.backgroundColor = .systemBackground
     NSLayoutConstraint.activate([
-      inProgressDownloadTableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+      titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+      titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+      
+      inProgressDownloadTableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
       inProgressDownloadTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
       inProgressDownloadTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
       inProgressDownloadTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),

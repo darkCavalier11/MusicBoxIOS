@@ -31,6 +31,11 @@ class DownloadsViewController: UIViewController {
     return button
   }()
   
+  @objc func presentInProgressDownloadVC() {
+    let inProgressDownloadVC = InProgressDownloadViewController()
+    navigationController?.present(inProgressDownloadVC, animated: true)
+  }
+  
   private lazy var fetchedResultController: NSFetchedResultsController<MusicItemModel> = {
     let fetchRequest = MusicItemModel.fetchRequest()
     let sort = NSSortDescriptor(key: #keyPath(MusicItemModel.title), ascending: true)
@@ -57,13 +62,11 @@ class DownloadsViewController: UIViewController {
       .bind(to: noDownloadsFoundView.rx.isHidden)
       .disposed(by: disposeBag)
     
-//    hideEmptyDownloadsView
-//      .bind(to: progressButton.rx.isEnabled)
-//      .disposed(by: disposeBag)
-    
     downloadTableView.delegate = self
     downloadTableView.dataSource = self
     fetchedResultController.delegate = self
+    
+    progressButton.addTarget(self, action: #selector(presentInProgressDownloadVC), for: .touchUpInside)
     
     downloadViewModel
       .inProgressDownlods
