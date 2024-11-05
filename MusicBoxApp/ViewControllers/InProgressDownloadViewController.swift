@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import RxSwift
+import MusicBox
 
 class InProgressDownloadViewController: UIViewController {
   private let inProgressDownloadTableView = InProgressDownloadTableView()
@@ -35,7 +37,20 @@ extension InProgressDownloadViewController: UITableViewDataSource {
   }
   
   func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    let cell = tableView.dequeueReusableCell(withIdentifier: InProgressDownloadTableView.reusableIdentifier, for: indexPath)
+    guard let cell = tableView.dequeueReusableCell(withIdentifier: InProgressDownloadTableView.reusableIdentifier, for: indexPath) as? InProgressDownloadTableViewCell else {
+      return UITableViewCell()
+    }
+    cell.musicDownloadItem = MusicDownloadItem(
+      identifier: 0,
+      musicItem: MusicItem(
+        title: "Test Music Item 1",
+        publisherTitle: "Test Publisher 1",
+        runningDurationInSeconds: 100,
+        musicId: "A",
+        smallestThumbnail: MusicItem.defaultSmallestThumbnail
+      ),
+      fractionDownloaded: .init(value: 0)
+    )
     return cell
   }
 }
