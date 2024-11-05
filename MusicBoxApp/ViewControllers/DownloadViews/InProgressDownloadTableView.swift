@@ -12,12 +12,28 @@ import SwiftUI
 
 class InProgressDownloadTableView: UITableView {
   static let reusableIdentifier = "InProgressDownloadTableViewCell"
+  private let disposeBag = DisposeBag()
   override init(frame: CGRect, style: UITableView.Style) {
     super.init(frame: frame, style: style)
     self.translatesAutoresizingMaskIntoConstraints = false
     self.separatorStyle = .none
     register(InProgressDownloadTableViewCell.self, forCellReuseIdentifier: Self.reusableIdentifier)
     self.rowHeight = 110
+  }
+  
+  func bindWithViewModel(viewModel: DownloadViewModel) {
+    viewModel
+      .inProgressDownlods
+      .bind(
+        to:
+          self.rx.items(
+            cellIdentifier: Self.reusableIdentifier,
+            cellType: InProgressDownloadTableViewCell.self
+          )
+      ) { row, musicDownloadItem, cell in
+        cell.musicDownloadItem = musicDownloadItem
+      }
+      .disposed(by: disposeBag)
   }
   
   required init?(coder: NSCoder) {
