@@ -20,7 +20,10 @@ extension Container {
     }
     .inObjectScope(.container)
     container.register(PlayingViewModel.self) { _ in
-      MusicPlayingViewModel()
+      let musicBox = container.resolve(MusicBox.self)!
+      return MusicPlayingViewModel(
+        musicBox: musicBox
+      )
     }
     .inObjectScope(.container)
     container.register(DownloadViewModel.self) { _ in

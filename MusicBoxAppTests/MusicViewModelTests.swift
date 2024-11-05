@@ -24,7 +24,7 @@ final class TestHomeViewModel: BrowsingViewModel {
   private let testIsFetchingMusicListRelay = BehaviorRelay(value: false)
   private let testMusicListRelay = BehaviorRelay(value: [MusicItem]())
   private let testMusicQueryTypeRelay = BehaviorRelay(value: MusicListQueryType.defaultMusicList)
-  private let testMusicPlayingStatusRelay = BehaviorRelay(value: MusicPlayingStatus.idle)
+  private let testMusicPlayingStatusRelay = BehaviorRelay(value: MusicPlayingStatus.unknown)
   private let testSelectedMusicItemRelay = BehaviorRelay<MusicItem?>(value: nil)
   
   private let testMusicItem = MusicItem(
@@ -49,7 +49,7 @@ final class TestHomeViewModel: BrowsingViewModel {
   }
   
   func playMusicItem(musicItem: MusicItem) {
-    testMusicPlayingStatusRelay.accept(.initialising)
+    testMusicPlayingStatusRelay.accept(.readyToPlay)
     testSelectedMusicItemRelay.accept(musicItem)
   }
   
@@ -138,9 +138,9 @@ final class MusicViewModelTests: XCTestCase {
       .subscribe(
         onNext: { status in
         switch status {
-        case .initialising:
+        case .readyToPlay:
             expectation2.fulfill()
-        case .idle:
+        case .unknown:
           expectation1.fulfill()
         default:
           XCTFail()

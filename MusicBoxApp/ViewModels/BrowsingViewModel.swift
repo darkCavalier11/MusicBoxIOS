@@ -22,8 +22,9 @@ protocol BrowsingViewModel: AnyObject {
 enum MusicPlayingStatus {
   case playing
   case paused
-  case idle
-  case initialising
+  case unknown
+  case readyToPlay
+  case error
 }
 
 enum MusicListQueryType {

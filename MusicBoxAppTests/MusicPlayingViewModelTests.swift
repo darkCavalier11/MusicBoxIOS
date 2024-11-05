@@ -12,7 +12,7 @@ import RxCocoa
 import MusicBox
 
 final class TestMusicPlayingViewModel: PlayingViewModel {
-  private let testMusicPlayingStatusRelay = BehaviorRelay(value: MusicPlayingStatus.idle)
+  private let testMusicPlayingStatusRelay = BehaviorRelay(value: MusicPlayingStatus.unknown)
   private let testSelectedMusicItemRelay = BehaviorRelay<MusicItem?>(value: nil)
   
   private let testMusicItem = MusicItem(
@@ -29,7 +29,7 @@ final class TestMusicPlayingViewModel: PlayingViewModel {
   }
   
   func playMusicItem(musicItem: MusicItem) {
-    testMusicPlayingStatusRelay.accept(.initialising)
+    testMusicPlayingStatusRelay.accept(.readyToPlay)
     testSelectedMusicItemRelay.accept(musicItem)
   }
   
@@ -62,9 +62,9 @@ final class MusicPlayingViewModelTests: XCTestCase {
       .subscribe(
         onNext: { status in
           switch status {
-          case .initialising:
+          case .readyToPlay:
             expectation2.fulfill()
-          case .idle:
+          case .unknown:
             expectation1.fulfill()
           default:
             XCTFail()

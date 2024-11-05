@@ -9,6 +9,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 import MusicBox
+import MediaPlayer
 
 protocol PlayingViewModel {
   var musicPlayingStatus: Observable<MusicPlayingStatus> { get }
@@ -17,9 +18,14 @@ protocol PlayingViewModel {
   func playMusicItem(musicItem: MusicItem)
 }
 
-class MusicPlayingViewModel: PlayingViewModel {
-  private lazy var musicPlayingStatusRelay: BehaviorRelay<MusicPlayingStatus> = .init(value: .idle)
+class MusicPlayingViewModel: NSObject, PlayingViewModel {
+  private lazy var musicPlayingStatusRelay: BehaviorRelay<MusicPlayingStatus> = .init(value: .unknown)
   private let selectedMusicItemRelay = BehaviorRelay<MusicItem?>(value: nil)
+  
+  private let musicBox: MusicBox
+  init(musicBox: MusicBox) {
+    self.musicBox = musicBox
+  }
   
   var selectedMusicItem: Observable<MusicItem?> {
     selectedMusicItemRelay.asObservable()
@@ -30,7 +36,17 @@ class MusicPlayingViewModel: PlayingViewModel {
   }
   
   func playMusicItem(musicItem: MusicItem) {
-    musicPlayingStatusRelay.accept(.initialising)
+    musicPlayingStatusRelay.accept(.readyToPlay)
     selectedMusicItemRelay.accept(musicItem)
+    Task {
+      let queuePlayer = AVQueuePlayer()
+      guard let streamingURL = await musicBox.musicSession.getMusicStreamingURL(musicId: musicItem.musicId) else {
+        // TODO: - Handle by showing a toast
+        return
+      }
+      queuePlayer.insert(.init(url: streamingURL), after: nil)
+      queuePlayer.play()
+      
+    }
   }
 }

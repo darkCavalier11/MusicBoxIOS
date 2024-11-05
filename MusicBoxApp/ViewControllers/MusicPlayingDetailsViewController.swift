@@ -182,7 +182,7 @@ class MusicPlayingDetailsViewController: UIViewController {
       .observe(on: MainScheduler.instance)
       .bind { [weak self] status in
         switch status {
-        case .idle, .initialising:
+        case .unknown, .error, .readyToPlay:
           self?.playPauseButton.isEnabled = false
           self?.previousMusicButton.isEnabled = false
           self?.nextMusicButton.isEnabled = false
@@ -190,6 +190,7 @@ class MusicPlayingDetailsViewController: UIViewController {
           self?.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
         case .playing:
           self?.playPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
+        
         }
       }
       .disposed(by: disposeBag)
