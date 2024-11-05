@@ -7,6 +7,7 @@
 
 import UIKit
 import CoreData
+import AVFoundation
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -14,7 +15,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
   func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-    // Override point for customization after application launch.
+    do {
+      try AVAudioSession.sharedInstance().setCategory(.playback, mode: .default, options: [])
+    }
+    catch {
+      print("Setting category to AVAudioSessionCategoryPlayback failed.")
+    }
     return true
   }
 
