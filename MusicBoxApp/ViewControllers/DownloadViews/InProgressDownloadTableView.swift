@@ -24,6 +24,9 @@ class InProgressDownloadTableView: UITableView {
   func bindWithViewModel(viewModel: DownloadViewModel) {
     viewModel
       .inProgressDownlods
+      .distinctUntilChanged()
+      .throttle(.seconds(2), scheduler: MainScheduler.asyncInstance)
+      .debounce(.seconds(2), scheduler: MainScheduler.asyncInstance)
       .bind(
         to:
           self.rx.items(
@@ -60,7 +63,7 @@ class InProgressDownloadTableViewCell: UITableViewCell {
       
       guard let fractionDownloaded = musicDownloadItem?.fractionDownloaded else { return }
       fractionDownloaded
-        .observe(on: MainScheduler.instance)
+        .throttle(.seconds(2), scheduler: MainScheduler.asyncInstance)
         .bind { [weak self] progress in
           self?.circularProgressView.setProgres(progress, animated: false)
         }

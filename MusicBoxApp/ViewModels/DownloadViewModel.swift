@@ -147,7 +147,6 @@ final class MusicDownloadViewModel:
       return
     }
     downloadQueue[index].fractionDownloaded.accept(fractionDownloaded)
-    downloadQueueRelay.accept(downloadQueue)
   }
   
   lazy var session = URLSession(
