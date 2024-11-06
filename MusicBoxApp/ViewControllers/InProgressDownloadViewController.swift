@@ -29,10 +29,10 @@ class InProgressDownloadViewController: UIViewController {
     view.backgroundColor = .systemBackground
     inProgressDownloadTableView.bindWithViewModel(viewModel: downloadViewModel)
     NSLayoutConstraint.activate([
-      titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
+      titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
       titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
       
-      inProgressDownloadTableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
+      inProgressDownloadTableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 20),
       inProgressDownloadTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
       inProgressDownloadTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
       inProgressDownloadTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),

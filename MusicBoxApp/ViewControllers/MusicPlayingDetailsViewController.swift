@@ -103,7 +103,6 @@ class MusicPlayingDetailsViewController: UIViewController {
     button.clipsToBounds = true
     button.tintColor = .darkGray
     button.configuration = .borderedTinted()
-    button.addTarget(self, action: #selector(handleDismismissVC), for: .touchUpInside)
     return button
   }()
   
@@ -119,7 +118,7 @@ class MusicPlayingDetailsViewController: UIViewController {
     button.layer.cornerRadius = 20
     button.clipsToBounds = true
     button.configuration = .borderedTinted()
-    button.addTarget(self, action: #selector(handleAddToPlaylist), for: .touchUpInside)
+    
     return button
   }()
   
@@ -139,6 +138,11 @@ class MusicPlayingDetailsViewController: UIViewController {
     return button
   }()
   
+  @objc func handleTapToDownloadButton() {
+    guard let selectedMusicItem else { return }
+    self.startDownload(for: selectedMusicItem)
+  }
+  
   private let nextMusicItemsButton: UIButton = {
     let button = UIButton()
     button.translatesAutoresizingMaskIntoConstraints = false
@@ -147,11 +151,6 @@ class MusicPlayingDetailsViewController: UIViewController {
     button.layer.cornerRadius = 20
     button.clipsToBounds = true
     button.configuration = .borderedTinted()
-    button.addTarget(
-      self,
-      action: #selector(handleNextMusicListTap),
-      for: .touchUpInside
-    )
     return button
   }()
   
@@ -208,6 +207,15 @@ class MusicPlayingDetailsViewController: UIViewController {
     view.addSubview(downloadMusicButton)
     view.addSubview(nextMusicItemsButton)
     view.backgroundColor = .systemBackground
+    
+    addToPlaylistButton.addTarget(self, action: #selector(handleAddToPlaylist), for: .touchUpInside)
+    downloadMusicButton.addTarget(self, action: #selector(handleTapToDownloadButton), for: .touchUpInside)
+    nextMusicItemsButton.addTarget(
+      self,
+      action: #selector(handleNextMusicListTap),
+      for: .touchUpInside
+    )
+    dismissButton.addTarget(self, action: #selector(handleDismismissVC), for: .touchUpInside)
     
     stackView.addArrangedSubview(previousMusicButton)
     stackView.addArrangedSubview(playPauseButton)

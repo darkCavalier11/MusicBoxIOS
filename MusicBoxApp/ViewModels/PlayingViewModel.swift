@@ -46,11 +46,10 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
         return
       }
       let item = AVPlayerItem(url: streamingURL)
+      player.removeAllItems()
       player.insert(.init(url: streamingURL), after: nil)
-      player.play()
-      
-      player
-        .rx
+      var duration = try? await player.currentItem?.asset.load(.duration)
+      print(CMTimeGetSeconds(duration!))
         
     }
   }
