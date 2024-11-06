@@ -16,6 +16,7 @@ protocol PlayingViewModel {
   var selectedMusicItem: Observable<MusicItem?> { get }
   func playMusicItem(musicItem: MusicItem)
   func pause()
+  func resume()
   var currentTimeInSeconds: Observable<Int> { get }
 }
 
@@ -77,7 +78,8 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
     ) { [weak self] time in
       guard let self else { return }
       let duration = player.currentItem?.duration.seconds ?? 0.0
-      self.currentTimeInSecondsRelay.accept(Int(duration))
+      let currentProgressInSeconds = time.seconds
+      self.currentTimeInSecondsRelay.accept(Int(currentProgressInSeconds))
     }
   }
   
@@ -105,5 +107,9 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
   
   func pause() {
     player.pause()
+  }
+  
+  func resume() {
+    player.play()
   }
 }

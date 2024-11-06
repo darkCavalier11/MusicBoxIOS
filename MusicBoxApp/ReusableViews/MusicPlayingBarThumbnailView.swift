@@ -87,7 +87,7 @@ class MusicPlayingBarThumbnailView: UIView {
         DispatchQueue.main.async { [weak self] in
           guard let self else { return }
           switch status {
-          case .unknown, .readyToPlay:
+          case .unknown, .readyToPlay, .error:
             self.nextMusicButton.isEnabled = false
             self.playPauseButton.isEnabled = false
             self.progressBar.progress = 0.0

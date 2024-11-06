@@ -64,6 +64,16 @@ class MusicPlayingDetailsViewController: UIViewController {
     return button
   }()
   
+  @objc func handlePauseButtonTap() {
+    playingViewModel
+      .pause()
+  }
+  
+  @objc func handleResumeButtonTap() {
+    playingViewModel
+      .resume()
+  }
+  
   private let nextMusicButton: UIButton = {
     let button = UIButton()
     button.translatesAutoresizingMaskIntoConstraints = false
@@ -222,9 +232,10 @@ class MusicPlayingDetailsViewController: UIViewController {
           self?.nextMusicButton.isEnabled = false
         case .paused:
           self?.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+          self?.playPauseButton.addTarget(self, action: #selector(self?.handleResumeButtonTap), for: .touchUpInside)
         case .playing:
           self?.playPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
-        
+          self?.playPauseButton.addTarget(self, action: #selector(self?.handlePauseButtonTap), for: .touchUpInside)
         }
       }
       .disposed(by: disposeBag)
