@@ -178,6 +178,8 @@ class MusicPlayingDetailsViewController: UIViewController {
     return label
   }()
   
+  private var totalDuration: Int = 1
+  
   private func bindWithViewModel() {
     playingViewModel
       .selectedMusicItem
@@ -189,9 +191,23 @@ class MusicPlayingDetailsViewController: UIViewController {
         self?.musicArtist.text = musicItem.publisherTitle
         // TODO: - Get sharp images
         self?.musicThumbnail.imageURL = URL(string: musicItem.largestThumbnail)
-        
-        self?.currentDurationLabel.text = 0.convertToDuration()
         self?.totalDurationLabel.text = musicItem.runningDurationInSeconds.convertToDuration()
+        self?.totalDuration = musicItem.runningDurationInSeconds
+      }
+      .disposed(by: disposeBag)
+    
+    playingViewModel
+      .currentTimeInSeconds
+      .observe(on: MainScheduler.asyncInstance)
+      .distinctUntilChanged()
+      .bind { [weak self] t in
+        guard let self else { return }
+        self.currentDurationLabel.text = t.convertToDuration()
+        let progress = Float(
+          Double(t) /
+          Double(self.totalDuration)
+        )
+        self.progressBar.progress = progress
       }
       .disposed(by: disposeBag)
     
