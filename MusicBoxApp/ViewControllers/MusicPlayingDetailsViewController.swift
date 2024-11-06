@@ -264,6 +264,7 @@ class MusicPlayingDetailsViewController: UIViewController {
       progressBar.topAnchor.constraint(equalTo: musicArtist.bottomAnchor, constant: 25),
       progressBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
       progressBar.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
+      progressBar.heightAnchor.constraint(equalToConstant: 6),
       
       currentDurationLabel.leadingAnchor.constraint(equalTo: progressBar.leadingAnchor),
       currentDurationLabel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 5),
