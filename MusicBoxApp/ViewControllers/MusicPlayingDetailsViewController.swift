@@ -220,22 +220,24 @@ class MusicPlayingDetailsViewController: UIViewController {
         self.progressBar.progress = progress
       }
       .disposed(by: disposeBag)
-    
+    // TODO: - bug in button 
     playingViewModel
       .musicPlayingStatus
-      .observe(on: MainScheduler.instance)
       .bind { [weak self] status in
+        
         switch status {
-        case .unknown, .error, .readyToPlay:
+        case .unknown, .error:
           self?.playPauseButton.isEnabled = false
           self?.previousMusicButton.isEnabled = false
           self?.nextMusicButton.isEnabled = false
-        case .paused:
-          self?.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
-          self?.playPauseButton.addTarget(self, action: #selector(self?.handleResumeButtonTap), for: .touchUpInside)
         case .playing:
           self?.playPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
           self?.playPauseButton.addTarget(self, action: #selector(self?.handlePauseButtonTap), for: .touchUpInside)
+        case .paused:
+          self?.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
+          self?.playPauseButton.addTarget(self, action: #selector(self?.handleResumeButtonTap), for: .touchUpInside)
+        default:
+          break
         }
       }
       .disposed(by: disposeBag)

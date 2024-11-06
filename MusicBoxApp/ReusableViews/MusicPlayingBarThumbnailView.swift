@@ -12,6 +12,17 @@ import Swinject
 
 class MusicPlayingBarThumbnailView: UIView {
   private let disposeBag = DisposeBag()
+  private let playingViewModel = Container.sharedContainer.resolve(PlayingViewModel.self)!
+  
+  @objc func handlePauseButtonTap() {
+    playingViewModel
+      .pause()
+  }
+  
+  @objc func handleResumeButtonTap() {
+    playingViewModel
+      .resume()
+  }
   
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -63,8 +74,8 @@ class MusicPlayingBarThumbnailView: UIView {
   
   private var totalDuration = 1
   
-  func bindWithViewModel(viewModel: PlayingViewModel) {
-    viewModel
+  func bindWithViewModel() {
+    playingViewModel
       .selectedMusicItem
       .bind { musicItem in
         DispatchQueue.main.async { [weak self] in
@@ -81,13 +92,14 @@ class MusicPlayingBarThumbnailView: UIView {
       }
       .disposed(by: disposeBag)
     
-    viewModel
+    playingViewModel
       .musicPlayingStatus
       .bind { status in
         DispatchQueue.main.async { [weak self] in
           guard let self else { return }
+          print(status)
           switch status {
-          case .unknown, .readyToPlay, .error:
+          case .unknown, .error:
             self.nextMusicButton.isEnabled = false
             self.playPauseButton.isEnabled = false
             self.progressBar.progress = 0.0
@@ -95,18 +107,20 @@ class MusicPlayingBarThumbnailView: UIView {
             self.nextMusicButton.isEnabled = true
             self.playPauseButton.isEnabled = true
             self.playPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
+            self.playPauseButton.addTarget(self, action: #selector(self.handlePauseButtonTap), for: .touchUpInside)
           case .paused:
             self.nextMusicButton.isEnabled = true
             self.playPauseButton.isEnabled = true
             self.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
-          @unknown default:
+            self.playPauseButton.addTarget(self, action: #selector(self.handleResumeButtonTap), for: .touchUpInside)
+          default:
             break
           }
         }
       }
       .disposed(by: disposeBag)
     
-    viewModel
+    playingViewModel
       .currentTimeInSeconds
       .observe(on: MainScheduler.asyncInstance)
       .distinctUntilChanged()

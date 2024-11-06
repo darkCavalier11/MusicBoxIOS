@@ -17,6 +17,8 @@ protocol PlayingViewModel {
   func playMusicItem(musicItem: MusicItem)
   func pause()
   func resume()
+  func seekToNextMusicItem()
+  func seekToPreviousMusicItem()
   var currentTimeInSeconds: Observable<Int> { get }
 }
 
@@ -24,9 +26,14 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
   private lazy var musicPlayingStatusRelay: BehaviorRelay<MusicPlayingStatus> = .init(value: .unknown)
   private let selectedMusicItemRelay = BehaviorRelay<MusicItem?>(value: nil)
   private let currentTimeInSecondsRelay = BehaviorRelay<Int>(value: 0)
-  let player = AVQueuePlayer()
+  
+  private var recentlyPlayedMusicItems: [(AVPlayerItem, MusicItem)] = []
+  private var recentlyPlayedIndex = -1
+  
+  let player = AVPlayer()
   private let musicBox: MusicBox
   private var timeObserver: Any?
+  private var boundaryTimeObserver: Any?
   
   init(musicBox: MusicBox) {
     self.musicBox = musicBox
@@ -62,10 +69,23 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
     currentTimeInSecondsRelay.asObservable()
   }
   
-  private func resetPlayer() {
-    player.removeAllItems()
-    musicPlayingStatusRelay.accept(.unknown)
-    removePeriodicTimeObserver()
+//  private func resetPlayer() {
+//    //
+//    musicPlayingStatusRelay.accept(.unknown)
+//    removePeriodicTimeObserver()
+//  }
+  
+  /// Observe when music goes to the end then go to the next item.
+  private func addBoundaryTimeObserver(totalDuration: Int) {
+    let interval = CMTime(value: Int64(totalDuration), timescale: 1)
+    var breakpoints = [NSValue]()
+    breakpoints.append(NSValue(time: interval))
+    boundaryTimeObserver = player.addBoundaryTimeObserver(
+      forTimes: breakpoints,
+      queue: .main
+    ) { [weak self] in
+      self?.seekToNextMusicItem()
+    }
   }
   
   /// Adds an observer of the player timing.
@@ -77,9 +97,20 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       queue: .main
     ) { [weak self] time in
       guard let self else { return }
-      let duration = player.currentItem?.duration.seconds ?? 0.0
       let currentProgressInSeconds = time.seconds
       self.currentTimeInSecondsRelay.accept(Int(currentProgressInSeconds))
+      
+      switch player.status {
+      case .unknown:
+        self.musicPlayingStatusRelay.accept(.unknown)
+      case .failed:
+        self.musicPlayingStatusRelay.accept(.error)
+        self.currentTimeInSecondsRelay.accept(0)
+      case .readyToPlay:
+        break
+      @unknown default:
+        break
+      }
     }
   }
   
@@ -88,6 +119,11 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
     guard let timeObserver else { return }
     player.removeTimeObserver(timeObserver)
     self.timeObserver = nil
+  }
+  private func removeBoundaryObserver() {
+    guard let boundaryTimeObserver else { return }
+    player.removeTimeObserver(boundaryTimeObserver)
+    self.boundaryTimeObserver = nil
   }
   
   func playMusicItem(musicItem: MusicItem) {
@@ -99,10 +135,64 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
         // TODO: - Handle by showing a toast
         return
       }
-      player.removeAllItems()
-      player.insert(.init(url: streamingURL), after: nil)
+      let playerItem = AVPlayerItem(url: streamingURL)
+      recentlyPlayedMusicItems.append((playerItem, musicItem))
+      recentlyPlayedIndex = recentlyPlayedMusicItems.count - 1
+      player.replaceCurrentItem(
+        with: recentlyPlayedMusicItems[recentlyPlayedIndex].0
+      )
+      self.removeBoundaryObserver()
+      self.addBoundaryTimeObserver(totalDuration: musicItem.runningDurationInSeconds)
       player.play()
     }
+  }
+  
+  func seekToNextMusicItem() {
+    /// if recently played index less than the size of the items, we can increment the index and
+    /// play that item, else we fetch the next item and play
+    currentTimeInSecondsRelay.accept(0)
+    musicPlayingStatusRelay.accept(.unknown)
+    if recentlyPlayedIndex + 1 < recentlyPlayedMusicItems.count {
+      recentlyPlayedIndex += 1
+      let item = recentlyPlayedMusicItems[recentlyPlayedIndex]
+      player.replaceCurrentItem(with: item.0)
+      player.play()
+      return
+    }
+    guard let item = selectedMusicItemRelay.value else { return }
+    Task {
+      guard let nextMusicItem = await musicBox.musicSession.getNextSuggestedMusicItems(
+        musicId: item.musicId
+      ).first else { return }
+      playMusicItem(musicItem: nextMusicItem)
+      selectedMusicItemRelay.accept(nextMusicItem)
+      guard let streamingURL = await musicBox.musicSession.getMusicStreamingURL(musicId: nextMusicItem.musicId) else {
+        // TODO: - Handle by showing a toast
+        return
+      }
+      let playerItem = AVPlayerItem(url: streamingURL)
+      recentlyPlayedMusicItems.append((playerItem, nextMusicItem))
+      recentlyPlayedIndex = recentlyPlayedMusicItems.count - 1
+      self.removeBoundaryObserver()
+      self.addBoundaryTimeObserver(totalDuration: nextMusicItem.runningDurationInSeconds)
+      player.replaceCurrentItem(with: playerItem)
+      player.play()
+    }
+  }
+  
+  func seekToPreviousMusicItem() {
+    currentTimeInSecondsRelay.accept(0)
+    musicPlayingStatusRelay.accept(.unknown)
+    recentlyPlayedIndex = max(0, recentlyPlayedIndex-1)
+    if recentlyPlayedIndex > recentlyPlayedMusicItems.count {
+      return
+    }
+    let item = recentlyPlayedMusicItems[recentlyPlayedIndex]
+    selectedMusicItemRelay.accept(item.1)
+    self.removeBoundaryObserver()
+    self.addBoundaryTimeObserver(totalDuration: item.1.runningDurationInSeconds)
+    player.replaceCurrentItem(with: item.0)
+    player.play()
   }
   
   func pause() {
