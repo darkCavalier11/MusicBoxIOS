@@ -15,6 +15,7 @@ protocol PlayingViewModel {
   var musicPlayingStatus: Observable<MusicPlayingStatus> { get }
   var selectedMusicItem: Observable<MusicItem?> { get }
   func playMusicItem(musicItem: MusicItem)
+  func pause()
   var currentTimeInSeconds: Observable<Int> { get }
 }
 
@@ -22,7 +23,7 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
   private lazy var musicPlayingStatusRelay: BehaviorRelay<MusicPlayingStatus> = .init(value: .unknown)
   private let selectedMusicItemRelay = BehaviorRelay<MusicItem?>(value: nil)
   private let currentTimeInSecondsRelay = BehaviorRelay<Int>(value: 0)
-  private let player = AVQueuePlayer()
+  let player = AVQueuePlayer()
   private let musicBox: MusicBox
   private var timeObserver: Any?
   
@@ -30,6 +31,22 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
     self.musicBox = musicBox
     super.init()
     addPeriodicTimeObserver()
+    self.player.addObserver(self, forKeyPath: #keyPath(AVQueuePlayer.rate), options: [.new], context: nil)
+  }
+  
+  override func observeValue(
+    forKeyPath keyPath: String?,
+    of object: Any?,
+    change: [NSKeyValueChangeKey : Any]?,
+    context: UnsafeMutableRawPointer?
+  ) {
+    if keyPath == #keyPath(AVQueuePlayer.rate) {
+      if player.rate == 0 {
+        musicPlayingStatusRelay.accept(.paused)
+      } else {
+        musicPlayingStatusRelay.accept(.playing)
+      }
+    }
   }
   
   var selectedMusicItem: Observable<MusicItem?> {
@@ -59,7 +76,8 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       queue: .main
     ) { [weak self] time in
       guard let self else { return }
-      self.currentTimeInSecondsRelay.accept(Int(time.seconds.rounded()))
+      let duration = player.currentItem?.duration.seconds ?? 0.0
+      self.currentTimeInSecondsRelay.accept(Int(duration))
     }
   }
   
@@ -83,5 +101,9 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       player.insert(.init(url: streamingURL), after: nil)
       player.play()
     }
+  }
+  
+  func pause() {
+    player.pause()
   }
 }

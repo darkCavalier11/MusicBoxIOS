@@ -11,7 +11,7 @@ import MusicBox
 import Swinject
 
 class MusicPlayingBarThumbnailView: UIView {
-  private let disposebag = DisposeBag()
+  private let disposeBag = DisposeBag()
   
   override init(frame: CGRect) {
     super.init(frame: frame)
@@ -61,6 +61,8 @@ class MusicPlayingBarThumbnailView: UIView {
     fatalError("init(coder:) has not been implemented")
   }
   
+  private var totalDuration = 1
+  
   func bindWithViewModel(viewModel: PlayingViewModel) {
     viewModel
       .selectedMusicItem
@@ -74,9 +76,10 @@ class MusicPlayingBarThumbnailView: UIView {
           self?.imageView.imageURL = URL(string: musicItem?.smallestThumbnail ?? MusicItem.defaultSmallestThumbnail)
           self?.musicTitleLabel.text = musicItem?.title
           self?.musicArtistLabel.text = musicItem?.publisherTitle
+          self?.totalDuration = musicItem?.runningDurationInSeconds ?? 0
         }
       }
-      .disposed(by: disposebag)
+      .disposed(by: disposeBag)
     
     viewModel
       .musicPlayingStatus
@@ -89,15 +92,33 @@ class MusicPlayingBarThumbnailView: UIView {
             self.playPauseButton.isEnabled = false
             self.progressBar.progress = 0.0
           case .playing:
+            self.nextMusicButton.isEnabled = true
+            self.playPauseButton.isEnabled = true
             self.playPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
           case .paused:
+            self.nextMusicButton.isEnabled = true
+            self.playPauseButton.isEnabled = true
             self.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
           @unknown default:
             break
           }
         }
       }
-      .disposed(by: disposebag)
+      .disposed(by: disposeBag)
+    
+    viewModel
+      .currentTimeInSeconds
+      .observe(on: MainScheduler.asyncInstance)
+      .distinctUntilChanged()
+      .bind { [weak self] t in
+        guard let self else { return }
+        let progress = Float(
+          Double(t) /
+          Double(self.totalDuration)
+        )
+        self.progressBar.progress = progress
+      }
+      .disposed(by: disposeBag)
   }
   
   private let imageView: UIAsyncImageView = {
