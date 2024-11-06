@@ -162,6 +162,22 @@ class MusicPlayingDetailsViewController: UIViewController {
     )
   }
   
+  private let currentDurationLabel: UILabel = {
+    let label = UILabel()
+    label.translatesAutoresizingMaskIntoConstraints = false
+    label.textColor = .label
+    label.font = .preferredCustomFont(forTextStyle: .caption1)
+    return label
+  }()
+  
+  private let totalDurationLabel: UILabel = {
+    let label = UILabel()
+    label.translatesAutoresizingMaskIntoConstraints = false
+    label.textColor = .label
+    label.font = .preferredCustomFont(forTextStyle: .caption1)
+    return label
+  }()
+  
   private func bindWithViewModel() {
     playingViewModel
       .selectedMusicItem
@@ -173,6 +189,9 @@ class MusicPlayingDetailsViewController: UIViewController {
         self?.musicArtist.text = musicItem.publisherTitle
         // TODO: - Get sharp images
         self?.musicThumbnail.imageURL = URL(string: musicItem.largestThumbnail)
+        
+        self?.currentDurationLabel.text = 0.convertToDuration()
+        self?.totalDurationLabel.text = musicItem.runningDurationInSeconds.convertToDuration()
       }
       .disposed(by: disposeBag)
     
@@ -206,6 +225,9 @@ class MusicPlayingDetailsViewController: UIViewController {
     view.addSubview(addToPlaylistButton)
     view.addSubview(downloadMusicButton)
     view.addSubview(nextMusicItemsButton)
+    
+    view.addSubview(currentDurationLabel)
+    view.addSubview(totalDurationLabel)
     view.backgroundColor = .systemBackground
     
     addToPlaylistButton.addTarget(self, action: #selector(handleAddToPlaylist), for: .touchUpInside)
@@ -242,6 +264,12 @@ class MusicPlayingDetailsViewController: UIViewController {
       progressBar.topAnchor.constraint(equalTo: musicArtist.bottomAnchor, constant: 25),
       progressBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
       progressBar.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
+      
+      currentDurationLabel.leadingAnchor.constraint(equalTo: progressBar.leadingAnchor),
+      currentDurationLabel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 5),
+      
+      totalDurationLabel.trailingAnchor.constraint(equalTo: progressBar.trailingAnchor),
+      totalDurationLabel.topAnchor.constraint(equalTo: currentDurationLabel.topAnchor),
       
       stackView.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
       stackView.heightAnchor.constraint(equalToConstant: 80),
