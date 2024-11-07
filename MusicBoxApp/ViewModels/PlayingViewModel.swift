@@ -158,6 +158,9 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       let item = recentlyPlayedMusicItems[recentlyPlayedIndex]
       player.replaceCurrentItem(with: item.0)
       player.play()
+      self.removeBoundaryObserver()
+      self.addBoundaryTimeObserver(totalDuration: item.1.runningDurationInSeconds)
+      selectedMusicItemRelay.accept(item.1)
       return
     }
     guard let item = selectedMusicItemRelay.value else { return }
@@ -194,9 +197,9 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       return
     }
     let item = recentlyPlayedMusicItems[recentlyPlayedIndex]
-    selectedMusicItemRelay.accept(item.1)
     self.removeBoundaryObserver()
     self.addBoundaryTimeObserver(totalDuration: item.1.runningDurationInSeconds)
+    self.selectedMusicItemRelay.accept(item.1)
     player.replaceCurrentItem(with: item.0)
     player.play()
   }
