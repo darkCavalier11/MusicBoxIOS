@@ -24,6 +24,11 @@ class MusicPlayingBarThumbnailView: UIView {
       .resume()
   }
   
+  @objc func handleNextMusicButtonTap() {
+    playingViewModel
+      .seekToNextMusicItem()
+  }
+  
   override init(frame: CGRect) {
     super.init(frame: frame)
     self.translatesAutoresizingMaskIntoConstraints = false
@@ -32,6 +37,12 @@ class MusicPlayingBarThumbnailView: UIView {
     self.layer.shadowOffset = CGSize(width: 0, height: -8)
     self.layer.shadowOpacity = 0.2
     self.layer.shadowRadius = 8
+    
+    nextMusicButton.addTarget(
+      self,
+      action: #selector(handleNextMusicButtonTap),
+      for: .touchUpInside
+    )
     
     let stackView = UIStackView()
     stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -97,7 +108,6 @@ class MusicPlayingBarThumbnailView: UIView {
       .bind { status in
         DispatchQueue.main.async { [weak self] in
           guard let self else { return }
-          print(status)
           switch status {
           case .unknown, .error:
             self.nextMusicButton.isEnabled = false

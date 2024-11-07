@@ -169,7 +169,7 @@ class MusicItemTableViewCell: UITableViewCell {
   func bindWithViewModel(viewModel: PlayingViewModel) {
     viewModel
       .selectedMusicItem
-      .subscribe(on: MainScheduler.instance)
+      .observe(on: MainScheduler.instance)
       .bind { [weak self] musicItem in
         if musicItem?.musicId == self?.musicItem?.musicId {
           self?.backgroundColor = .accent.withAlphaComponent(0.1)

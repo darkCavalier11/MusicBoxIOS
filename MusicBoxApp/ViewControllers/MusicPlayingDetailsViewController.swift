@@ -105,6 +105,11 @@ class MusicPlayingDetailsViewController: UIViewController {
     return button
   }()
   
+  @objc func handleNextMusicButtonTap() {
+    playingViewModel
+      .seekToNextMusicItem()
+  }
+  
   private let previousMusicButton: UIButton = {
     let button = UIButton()
     button.translatesAutoresizingMaskIntoConstraints = false
@@ -115,6 +120,11 @@ class MusicPlayingDetailsViewController: UIViewController {
     button.tintColor = .label
     return button
   }()
+  
+  @objc func handlePrevMusicButtonTap() {
+    playingViewModel
+      .seekToPreviousMusicItem()
+  }
   
   private let stackView: UIStackView = {
     let stackView = UIStackView()
@@ -232,8 +242,12 @@ class MusicPlayingDetailsViewController: UIViewController {
         sliderDragRelay.asObservable()
       )
       .observe(on: MainScheduler.instance)
-      .bind { time, isDragging in
-        self.currentDurationLabel.text = time.convertToDuration()
+      .bind { [weak self] time, isDragging in
+        guard let self else { return }
+        self.currentDurationLabel.text = min(
+          time,
+          self.selectedMusicItem?.runningDurationInSeconds ?? 0
+        ).convertToDuration()
         if !isDragging {
           let progress = Float(
             Double(time) /
@@ -255,9 +269,15 @@ class MusicPlayingDetailsViewController: UIViewController {
           self?.previousMusicButton.isEnabled = false
           self?.nextMusicButton.isEnabled = false
         case .playing:
+          self?.nextMusicButton.isEnabled = true
+          self?.previousMusicButton.isEnabled = true
+          self?.playPauseButton.isEnabled = true
           self?.playPauseButton.setImage(UIImage(systemName: "pause.fill"), for: .normal)
           self?.playPauseButton.addTarget(self, action: #selector(self?.handlePauseButtonTap), for: .touchUpInside)
         case .paused:
+          self?.nextMusicButton.isEnabled = true
+          self?.playPauseButton.isEnabled = true
+          self?.previousMusicButton.isEnabled = true
           self?.playPauseButton.setImage(UIImage(systemName: "play.fill"), for: .normal)
           self?.playPauseButton.addTarget(self, action: #selector(self?.handleResumeButtonTap), for: .touchUpInside)
         default:
@@ -285,6 +305,9 @@ class MusicPlayingDetailsViewController: UIViewController {
     
     addToPlaylistButton.addTarget(self, action: #selector(handleAddToPlaylist), for: .touchUpInside)
     downloadMusicButton.addTarget(self, action: #selector(handleTapToDownloadButton), for: .touchUpInside)
+    nextMusicButton.addTarget(self, action: #selector(handleNextMusicButtonTap), for: .touchUpInside)
+    previousMusicButton.addTarget(self, action: #selector(handlePrevMusicButtonTap), for: .touchUpInside)
+    
     nextMusicItemsButton.addTarget(
       self,
       action: #selector(handleNextMusicListTap),

@@ -70,11 +70,12 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
     currentTimeInSecondsRelay.asObservable()
   }
   
-//  private func resetPlayer() {
-//    //
-//    musicPlayingStatusRelay.accept(.unknown)
-//    removePeriodicTimeObserver()
-//  }
+  private func resetPlayer() {
+    currentTimeInSecondsRelay.accept(0)
+    musicPlayingStatusRelay.accept(.unknown)
+    player.seek(to: .zero)
+    pause()
+  }
   
   /// Observe when music goes to the end then go to the next item.
   private func addBoundaryTimeObserver(totalDuration: Int) {
@@ -151,8 +152,7 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
   func seekToNextMusicItem() {
     /// if recently played index less than the size of the items, we can increment the index and
     /// play that item, else we fetch the next item and play
-    currentTimeInSecondsRelay.accept(0)
-    musicPlayingStatusRelay.accept(.unknown)
+    resetPlayer()
     if recentlyPlayedIndex + 1 < recentlyPlayedMusicItems.count {
       recentlyPlayedIndex += 1
       let item = recentlyPlayedMusicItems[recentlyPlayedIndex]
@@ -165,7 +165,6 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       guard let nextMusicItem = await musicBox.musicSession.getNextSuggestedMusicItems(
         musicId: item.musicId
       ).first else { return }
-      playMusicItem(musicItem: nextMusicItem)
       selectedMusicItemRelay.accept(nextMusicItem)
       guard let streamingURL = await musicBox.musicSession.getMusicStreamingURL(musicId: nextMusicItem.musicId) else {
         // TODO: - Handle by showing a toast
@@ -189,8 +188,7 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
   }
   
   func seekToPreviousMusicItem() {
-    currentTimeInSecondsRelay.accept(0)
-    musicPlayingStatusRelay.accept(.unknown)
+    resetPlayer()
     recentlyPlayedIndex = max(0, recentlyPlayedIndex-1)
     if recentlyPlayedIndex > recentlyPlayedMusicItems.count {
       return
