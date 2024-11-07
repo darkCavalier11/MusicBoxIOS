@@ -44,11 +44,14 @@ class MusicPlayingDetailsViewController: UIViewController {
     return label
   }()
   
-  private lazy var progressBar: UIProgressView = {
-    let progressBar = UIProgressView()
+  private lazy var progressBar: UIProgressSlider = {
+    let progressBar = UIProgressSlider()
     progressBar.translatesAutoresizingMaskIntoConstraints = false
-    progressBar.progressTintColor = .accent
-    progressBar.progress = 0.3
+    progressBar.tintColor = .accent
+//    progressBar.thumbTintColor = .clear
+    progressBar.minimumValue = 0.0
+    progressBar.maximumValue = 1.0
+    progressBar.setThumbImage(UIImage(systemName: "circle.fill"), for: .normal)
     return progressBar
   }()
   
@@ -217,12 +220,13 @@ class MusicPlayingDetailsViewController: UIViewController {
           Double(t) /
           Double(self.totalDuration)
         )
-        self.progressBar.progress = progress
+        self.progressBar.value = progress
       }
       .disposed(by: disposeBag)
     // TODO: - bug in button 
     playingViewModel
       .musicPlayingStatus
+      .observe(on: MainScheduler.instance)
       .bind { [weak self] status in
         
         switch status {
@@ -293,7 +297,6 @@ class MusicPlayingDetailsViewController: UIViewController {
       progressBar.topAnchor.constraint(equalTo: musicArtist.bottomAnchor, constant: 25),
       progressBar.centerXAnchor.constraint(equalTo: view.centerXAnchor),
       progressBar.widthAnchor.constraint(equalTo: view.widthAnchor, multiplier: 0.8),
-      progressBar.heightAnchor.constraint(equalToConstant: 6),
       
       currentDurationLabel.leadingAnchor.constraint(equalTo: progressBar.leadingAnchor),
       currentDurationLabel.topAnchor.constraint(equalTo: progressBar.bottomAnchor, constant: 5),
