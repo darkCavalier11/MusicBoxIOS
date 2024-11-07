@@ -17,6 +17,7 @@ protocol PlayingViewModel {
   func playMusicItem(musicItem: MusicItem)
   func pause()
   func resume()
+  func seekToTime(seconds: Int, completion: @escaping () -> Void)
   func seekToNextMusicItem()
   func seekToPreviousMusicItem()
   var currentTimeInSeconds: Observable<Int> { get }
@@ -177,6 +178,13 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       self.addBoundaryTimeObserver(totalDuration: nextMusicItem.runningDurationInSeconds)
       player.replaceCurrentItem(with: playerItem)
       player.play()
+    }
+  }
+  
+  func seekToTime(seconds: Int, completion: @escaping () -> Void) {
+    let time = CMTime(value: Int64(seconds), timescale: 1)
+    player.currentItem?.seek(to: time) { done in
+      completion()
     }
   }
   

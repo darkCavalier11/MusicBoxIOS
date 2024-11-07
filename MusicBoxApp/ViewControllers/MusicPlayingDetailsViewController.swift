@@ -9,6 +9,7 @@ import UIKit
 import MusicBox
 import RxSwift
 import Swinject
+import RxRelay
 
 class MusicPlayingDetailsViewController: UIViewController {
   private let disposeBag = DisposeBag()
@@ -48,12 +49,28 @@ class MusicPlayingDetailsViewController: UIViewController {
     let progressBar = UIProgressSlider()
     progressBar.translatesAutoresizingMaskIntoConstraints = false
     progressBar.tintColor = .accent
-//    progressBar.thumbTintColor = .clear
     progressBar.minimumValue = 0.0
     progressBar.maximumValue = 1.0
+    progressBar.isContinuous = false
     progressBar.setThumbImage(UIImage(systemName: "circle.fill"), for: .normal)
+    progressBar.addTarget(self, action: #selector(onSliderDragStarted), for: .touchDown)
+    progressBar.addTarget(self, action: #selector(onSliderDragEnded), for: .valueChanged)
     return progressBar
   }()
+  
+  private let sliderDragRelay = BehaviorRelay<Bool>(value: false)
+  
+  @objc func onSliderDragStarted() {
+    sliderDragRelay.accept(true)
+  }
+  
+  @objc func onSliderDragEnded() {
+    let value = progressBar.value
+    let seekTo = value * Float(selectedMusicItem?.runningDurationInSeconds ?? 0)
+    playingViewModel.seekToTime(seconds: Int(seekTo)) { [weak self] in
+      self?.sliderDragRelay.accept(false)
+    }
+  }
   
   private let playPauseButton: UIButton = {
     let button = UIButton()
@@ -209,21 +226,24 @@ class MusicPlayingDetailsViewController: UIViewController {
       }
       .disposed(by: disposeBag)
     
-    playingViewModel
-      .currentTimeInSeconds
-      .observe(on: MainScheduler.asyncInstance)
-      .distinctUntilChanged()
-      .bind { [weak self] t in
-        guard let self else { return }
-        self.currentDurationLabel.text = t.convertToDuration()
-        let progress = Float(
-          Double(t) /
-          Double(self.totalDuration)
-        )
-        self.progressBar.value = progress
+    Observable
+      .combineLatest(
+        playingViewModel.currentTimeInSeconds,
+        sliderDragRelay.asObservable()
+      )
+      .observe(on: MainScheduler.instance)
+      .bind { time, isDragging in
+        self.currentDurationLabel.text = time.convertToDuration()
+        if !isDragging {
+          let progress = Float(
+            Double(time) /
+            Double(self.totalDuration)
+          )
+          self.progressBar.value = progress
+        }
       }
       .disposed(by: disposeBag)
-    // TODO: - bug in button 
+    
     playingViewModel
       .musicPlayingStatus
       .observe(on: MainScheduler.instance)
