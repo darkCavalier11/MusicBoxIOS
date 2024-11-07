@@ -206,7 +206,7 @@ class MusicPlayingDetailsViewController: UIViewController {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.textColor = .label
-    label.font = .preferredCustomFont(forTextStyle: .caption1)
+    label.font = .preferredCustomFont(forTextStyle: .callout)
     return label
   }()
   
@@ -214,7 +214,7 @@ class MusicPlayingDetailsViewController: UIViewController {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
     label.textColor = .label
-    label.font = .preferredCustomFont(forTextStyle: .caption1)
+    label.font = .preferredCustomFont(forTextStyle: .callout)
     return label
   }()
   
