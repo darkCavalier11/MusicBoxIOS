@@ -9,7 +9,8 @@ import Foundation
 import RxSwift
 import RxCocoa
 import MusicBox
-import MediaPlayer
+import os
+import AVFoundation
 
 protocol PlayingViewModel {
   var musicPlayingStatus: Observable<MusicPlayingStatus> { get }
@@ -24,6 +25,10 @@ protocol PlayingViewModel {
 }
 
 class MusicPlayingViewModel: NSObject, PlayingViewModel {
+  static private let logger = Logger(
+    subsystem: "com.MusicBoxApp.CoreData",
+    category: "PlayingViewModel"
+  )
   private lazy var musicPlayingStatusRelay: BehaviorRelay<MusicPlayingStatus> = .init(value: .unknown)
   private let selectedMusicItemRelay = BehaviorRelay<MusicItem?>(value: nil)
   private let currentTimeInSecondsRelay = BehaviorRelay<Int>(value: 0)
@@ -129,6 +134,7 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
   }
   
   func playMusicItem(musicItem: MusicItem) {
+    Self.logger.log("called \(#function)")
     musicPlayingStatusRelay.accept(.readyToPlay)
     selectedMusicItemRelay.accept(musicItem)
     
@@ -137,6 +143,7 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
         // TODO: - Handle by showing a toast
         return
       }
+      Self.logger.info("Got String URL for music item \(musicItem.title)")
       let playerItem = AVPlayerItem(url: streamingURL)
       recentlyPlayedMusicItems.append((playerItem, musicItem))
       recentlyPlayedIndex = recentlyPlayedMusicItems.count - 1
@@ -145,19 +152,20 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       )
       self.removeBoundaryObserver()
       self.addBoundaryTimeObserver(totalDuration: musicItem.runningDurationInSeconds)
-      player.play()
+      player.playImmediately(atRate: 1)
     }
   }
   
   func seekToNextMusicItem() {
     /// if recently played index less than the size of the items, we can increment the index and
     /// play that item, else we fetch the next item and play
+    Self.logger.log("called \(#function)")
     resetPlayer()
     if recentlyPlayedIndex + 1 < recentlyPlayedMusicItems.count {
       recentlyPlayedIndex += 1
       let item = recentlyPlayedMusicItems[recentlyPlayedIndex]
       player.replaceCurrentItem(with: item.0)
-      player.play()
+      player.playImmediately(atRate: 1)
       self.removeBoundaryObserver()
       self.addBoundaryTimeObserver(totalDuration: item.1.runningDurationInSeconds)
       selectedMusicItemRelay.accept(item.1)
@@ -179,11 +187,12 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       self.removeBoundaryObserver()
       self.addBoundaryTimeObserver(totalDuration: nextMusicItem.runningDurationInSeconds)
       player.replaceCurrentItem(with: playerItem)
-      player.play()
+      player.playImmediately(atRate: 1)
     }
   }
   
   func seekToTime(seconds: Int, completion: @escaping () -> Void) {
+    Self.logger.log("called \(#function)")
     let time = CMTime(value: Int64(seconds), timescale: 1)
     player.currentItem?.seek(to: time) { done in
       completion()
@@ -191,6 +200,7 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
   }
   
   func seekToPreviousMusicItem() {
+    Self.logger.log("called \(#function)")
     resetPlayer()
     recentlyPlayedIndex = max(0, recentlyPlayedIndex-1)
     if recentlyPlayedIndex > recentlyPlayedMusicItems.count {
@@ -201,14 +211,16 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
     self.addBoundaryTimeObserver(totalDuration: item.1.runningDurationInSeconds)
     self.selectedMusicItemRelay.accept(item.1)
     player.replaceCurrentItem(with: item.0)
-    player.play()
+    player.playImmediately(atRate: 1)
   }
   
   func pause() {
+    Self.logger.log("called \(#function)")
     player.pause()
   }
   
   func resume() {
-    player.play()
+    Self.logger.log("called \(#function)")
+    player.playImmediately(atRate: 1)
   }
 }
