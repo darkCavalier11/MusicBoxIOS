@@ -62,6 +62,8 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
         self?.updatePlayingMetadata(musicItem: musicItem)
       }
       .disposed(by: disposeBag)
+    
+    setupRemoteCommandCenter()
   }
   
   override func observeValue(
@@ -253,7 +255,11 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       nowPlayingInfo[MPMediaItemPropertyTitle] = musicItem.title
       nowPlayingInfo[MPMediaItemPropertyArtist] = musicItem.publisherTitle
       nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = musicItem.runningDurationInSeconds
-      nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime().seconds
+      currentTimeInSeconds
+        .bind { progress in
+          nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = progress
+        }
+        .disposed(by: disposeBag)
       
       // Set artwork
       do {
@@ -287,5 +293,43 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
     }
     UIApplication.shared.beginReceivingRemoteControlEvents()
+  }
+  
+  private func setupRemoteCommandCenter() {
+    let rcc = MPRemoteCommandCenter.shared()
+    rcc.pauseCommand.isEnabled = true
+    rcc.pauseCommand.addTarget { [weak self] _ in
+      self?.pause()
+      return .success
+    }
+    
+    rcc.playCommand.isEnabled = true
+    rcc.playCommand.addTarget { [weak self] _ in
+      self?.resume()
+      return .success
+    }
+    
+    rcc.nextTrackCommand.isEnabled = true
+    rcc.nextTrackCommand.addTarget { [weak self] _ in
+      self?.seekToNextMusicItem()
+      return .success
+    }
+    
+    rcc.previousTrackCommand.isEnabled = true
+    rcc.previousTrackCommand.addTarget { [weak self] _ in
+      self?.seekToPreviousMusicItem()
+      return .success
+    }
+    rcc.changePlaybackPositionCommand.isEnabled = true
+    rcc.changePlaybackPositionCommand.addTarget { [weak self] event in
+      guard let position = event as? MPChangePlaybackPositionCommandEvent else {
+        return .commandFailed
+      }
+      self?.seekToTime(
+        seconds: Int(position.positionTime)) {
+          
+        }
+      return .success
+    }
   }
 }
