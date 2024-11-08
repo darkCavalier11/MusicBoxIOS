@@ -137,13 +137,14 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
     Self.logger.log("called \(#function)")
     musicPlayingStatusRelay.accept(.readyToPlay)
     selectedMusicItemRelay.accept(musicItem)
-    
+    resetPlayer()
+
     Task {
       guard let streamingURL = await musicBox.musicSession.getMusicStreamingURL(musicId: musicItem.musicId) else {
         // TODO: - Handle by showing a toast
         return
       }
-      Self.logger.info("Got String URL for music item \(musicItem.title)")
+      Self.logger.info("Got URL for music item \(musicItem.title)")
       let playerItem = AVPlayerItem(url: streamingURL)
       recentlyPlayedMusicItems.append((playerItem, musicItem))
       recentlyPlayedIndex = recentlyPlayedMusicItems.count - 1
@@ -152,6 +153,7 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       )
       self.removeBoundaryObserver()
       self.addBoundaryTimeObserver(totalDuration: musicItem.runningDurationInSeconds)
+      
       player.playImmediately(atRate: 1)
     }
   }

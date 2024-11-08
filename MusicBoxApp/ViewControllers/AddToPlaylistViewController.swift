@@ -46,7 +46,6 @@ class AddToPlaylistViewController: UIViewController {
     let button = UIButton()
     button.translatesAutoresizingMaskIntoConstraints = false
     button.setTitle("Create and Add to Playlist", for: .normal)
-    button.addTarget(self, action: #selector(createAndAddPlaylistButtonTapped), for: .touchUpInside)
     button.backgroundColor = .accent
     button.layer.cornerRadius = 6
     return button
@@ -100,6 +99,7 @@ class AddToPlaylistViewController: UIViewController {
     view.addSubview(playlistTableView)
     view.addSubview(noExistingPlaylistLabel)
     
+    createAndAddPlaylistButton.addTarget(self, action: #selector(createAndAddPlaylistButtonTapped), for: .touchUpInside)
     playlistTableView.dataSource = self
     playlistTableView.delegate = self
     fetchedResultController.delegate = self

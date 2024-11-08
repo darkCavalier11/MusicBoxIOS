@@ -51,9 +51,3 @@ class HomeViewController: UIViewController {
   }
 }
 
-extension MusicItem: Hashable {
-  public func hash(into hasher: inout Hasher) {
-    hasher.combine(musicId)
-  }
-  
-}

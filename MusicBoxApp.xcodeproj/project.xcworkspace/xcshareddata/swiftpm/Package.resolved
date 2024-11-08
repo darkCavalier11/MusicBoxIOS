@@ -7,7 +7,7 @@
       "location" : "https://github.com/darkCavalier11/MusicBoxSwift",
       "state" : {
         "branch" : "main",
-        "revision" : "3b6d32dee00fbbb92bd3cacb24f98f5555efa6ae"
+        "revision" : "9403030be27100f80890001259e8c3e67c6a835f"
       }
     },
     {
@@ -24,8 +24,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/scinfu/SwiftSoup.git",
       "state" : {
-        "revision" : "3c2c7e1e72b8abd96eafbae80323c5c1e5317437",
-        "version" : "2.7.5"
+        "revision" : "0837db354faf9c9deb710dc597046edaadf5360f",
+        "version" : "2.7.6"
       }
     },
     {
@@ -42,8 +42,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/alexeichhorn/YouTubeKit.git",
       "state" : {
-        "revision" : "a04805da8111422e1581ca447e2e167808ec2b44",
-        "version" : "0.2.3"
+        "revision" : "c4882966210b5d116a90c532f89b52448f720f0f",
+        "version" : "0.2.4"
       }
     }
   ],
