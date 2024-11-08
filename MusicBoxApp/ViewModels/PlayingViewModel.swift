@@ -110,7 +110,7 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
   /// Adds an observer of the player timing.
   private func addPeriodicTimeObserver() {
     // Create a 0.5 second interval time.
-    let interval = CMTime(value: 1, timescale: 1)
+    let interval = CMTime(value: 1, timescale: 2)
     timeObserver = player.addPeriodicTimeObserver(
       forInterval: interval,
       queue: .main
@@ -123,6 +123,7 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       case .unknown:
         self.musicPlayingStatusRelay.accept(.unknown)
       case .failed:
+        Self.logger.error("Error playing music")
         self.musicPlayingStatusRelay.accept(.error)
         self.currentTimeInSecondsRelay.accept(0)
       case .readyToPlay:
@@ -284,7 +285,6 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
           } catch {
             Self.logger.error("Error getting artwork data for \(musicItem.title)")
           }
-          // Update the Now Playing Info Center
         }
       }
       .disposed(by: disposeBag)
