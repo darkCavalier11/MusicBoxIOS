@@ -110,7 +110,7 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
   /// Adds an observer of the player timing.
   private func addPeriodicTimeObserver() {
     // Create a 0.5 second interval time.
-    let interval = CMTime(value: 1, timescale: 2)
+    let interval = CMTime(value: 1, timescale: 1)
     timeObserver = player.addPeriodicTimeObserver(
       forInterval: interval,
       queue: .main
