@@ -255,11 +255,6 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       nowPlayingInfo[MPMediaItemPropertyTitle] = musicItem.title
       nowPlayingInfo[MPMediaItemPropertyArtist] = musicItem.publisherTitle
       nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = musicItem.runningDurationInSeconds
-      currentTimeInSeconds
-        .bind { progress in
-          nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = progress
-        }
-        .disposed(by: disposeBag)
       
       // Set artwork
       do {
@@ -290,7 +285,12 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
         Self.logger.error("Error getting artwork data for \(musicItem.title)")
       }
       // Update the Now Playing Info Center
-      MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+      currentTimeInSeconds
+        .bind { progress in
+          nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = progress
+          MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+        }
+        .disposed(by: disposeBag)
     }
     UIApplication.shared.beginReceivingRemoteControlEvents()
   }
