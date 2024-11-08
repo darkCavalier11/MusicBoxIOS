@@ -7,6 +7,7 @@
 
 import Swinject
 import MusicBox
+import AVFoundation
 
 extension Container {
   static var sharedContainer: Container = {
@@ -19,10 +20,16 @@ extension Container {
       MusicBox()
     }
     .inObjectScope(.container)
+    container.register(AVPlayer.self) { _ in
+      AVPlayer()
+    }
+    .inObjectScope(.container)
     container.register(PlayingViewModel.self) { _ in
       let musicBox = container.resolve(MusicBox.self)!
+      let player = container.resolve(AVPlayer.self)!
       return MusicPlayingViewModel(
-        musicBox: musicBox
+        musicBox: musicBox,
+        player: player
       )
     }
     .inObjectScope(.container)

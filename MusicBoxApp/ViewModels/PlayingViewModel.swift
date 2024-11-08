@@ -11,6 +11,7 @@ import RxCocoa
 import MusicBox
 import os
 import AVFoundation
+import MediaPlayer
 
 protocol PlayingViewModel {
   var musicPlayingStatus: Observable<MusicPlayingStatus> { get }
@@ -36,16 +37,22 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
   private var recentlyPlayedMusicItems: [(AVPlayerItem, MusicItem)] = []
   private var recentlyPlayedIndex = -1
   
-  let player = AVPlayer()
+  private let player: AVPlayer
   private let musicBox: MusicBox
+  
   private var timeObserver: Any?
   private var boundaryTimeObserver: Any?
   
-  init(musicBox: MusicBox) {
+  init(musicBox: MusicBox, player: AVPlayer) {
     self.musicBox = musicBox
+    self.player = player
     super.init()
     addPeriodicTimeObserver()
-    self.player.addObserver(self, forKeyPath: #keyPath(AVQueuePlayer.rate), options: [.new], context: nil)
+    self.player.addObserver(
+      self,
+      forKeyPath: #keyPath(AVQueuePlayer.rate),
+      options: [.new], context: nil
+    )
   }
   
   override func observeValue(
@@ -137,6 +144,7 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
     Self.logger.log("called \(#function)")
     musicPlayingStatusRelay.accept(.readyToPlay)
     selectedMusicItemRelay.accept(musicItem)
+    updateNowPlayingInfo(musicItem: musicItem)
     resetPlayer()
 
     Task {
@@ -225,4 +233,24 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
     Self.logger.log("called \(#function)")
     player.playImmediately(atRate: 1)
   }
+
+  /// Function to set the Now Playing Info
+  func updateNowPlayingInfo(musicItem: MusicItem) {
+    let session = AVAudioSession()
+    try! session.setActive(true)
+    var nowPlayingInfo = [String: Any]()
+    
+    // Set metadata properties
+    nowPlayingInfo[MPMediaItemPropertyTitle] = musicItem.title
+    nowPlayingInfo[MPMediaItemPropertyArtist] = musicItem.publisherTitle
+    nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = musicItem.runningDurationInSeconds
+    nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime().seconds
+    
+    // Set artwork
+    
+    // Update the Now Playing Info Center
+    MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+    UIApplication.shared.beginReceivingRemoteControlEvents()
+  }
+
 }
