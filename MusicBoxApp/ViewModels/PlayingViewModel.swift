@@ -56,13 +56,7 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       options: [.new], context: nil
     )
     
-    selectedMusicItemRelay
-      .bind { [weak self] musicItem in
-        guard let musicItem else { return }
-        self?.updatePlayingMetadata(musicItem: musicItem)
-      }
-      .disposed(by: disposeBag)
-    
+    updatePlayingMetadata()
     setupRemoteCommandCenter()
   }
   
@@ -245,54 +239,55 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
   }
 
   /// Function to set the Now Playing Info
-  func updatePlayingMetadata(musicItem: MusicItem) {
+  func updatePlayingMetadata() {
     let session = AVAudioSession()
     try! session.setActive(true)
-    Task {
-      var nowPlayingInfo = [String: Any]()
-      
-      // Set metadata properties
-      nowPlayingInfo[MPMediaItemPropertyTitle] = musicItem.title
-      nowPlayingInfo[MPMediaItemPropertyArtist] = musicItem.publisherTitle
-      nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = musicItem.runningDurationInSeconds
-      
-      // Set artwork
-      do {
-        let (artworkData, _) = try await URLSession.shared.data(
-          from: URL(string: musicItem.largestThumbnail)!
-        )
-        let newImageSize = CGSize(width: 500, height: 500)
-        nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(
-          boundsSize: newImageSize
-        ) { size in
-          let newWidth = newImageSize.width
-          let image = UIImage(data: artworkData)!
-          let oldWidth = image.size.width
-          let scaleFactor = newImageSize.width / oldWidth
-          let newHeight = oldWidth * scaleFactor
+    Observable
+      .combineLatest(selectedMusicItem, currentTimeInSeconds)
+      .bind { musicItem, progress in
+        Task {
+          guard let musicItem else { return }
+          var nowPlayingInfo = [String: Any]()
           
-          let rect = CGRect(
-            origin: .zero,
-            size: CGSize(width: newWidth, height: newHeight)
-          )
-          UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
-          image.draw(in: rect)
-          let newImage = UIGraphicsGetImageFromCurrentImageContext()
-          UIGraphicsEndImageContext()
-          return newImage!
+          // Set metadata properties
+          nowPlayingInfo[MPMediaItemPropertyTitle] = musicItem.title
+          nowPlayingInfo[MPMediaItemPropertyArtist] = musicItem.publisherTitle
+          nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = musicItem.runningDurationInSeconds
+          
+          // Set artwork
+          do {
+            let (artworkData, _) = try await URLSession.shared.data(
+              from: URL(string: musicItem.largestThumbnail)!
+            )
+            let newImageSize = CGSize(width: 500, height: 500)
+            nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(
+              boundsSize: newImageSize
+            ) { size in
+              let newWidth = newImageSize.width
+              let image = UIImage(data: artworkData)!
+              let oldWidth = image.size.width
+              let scaleFactor = newImageSize.width / oldWidth
+              let newHeight = oldWidth * scaleFactor
+              
+              let rect = CGRect(
+                origin: .zero,
+                size: CGSize(width: newWidth, height: newHeight)
+              )
+              UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
+              image.draw(in: rect)
+              let newImage = UIGraphicsGetImageFromCurrentImageContext()
+              UIGraphicsEndImageContext()
+              return newImage!
+            }
+            nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = progress
+            MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+          } catch {
+            Self.logger.error("Error getting artwork data for \(musicItem.title)")
+          }
+          // Update the Now Playing Info Center
         }
-      } catch {
-        Self.logger.error("Error getting artwork data for \(musicItem.title)")
       }
-      // Update the Now Playing Info Center
-      currentTimeInSeconds
-        .bind { progress in
-          nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = progress
-          MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
-        }
-        .disposed(by: disposeBag)
-    }
-    UIApplication.shared.beginReceivingRemoteControlEvents()
+      .disposed(by: disposeBag)
   }
   
   private func setupRemoteCommandCenter() {
