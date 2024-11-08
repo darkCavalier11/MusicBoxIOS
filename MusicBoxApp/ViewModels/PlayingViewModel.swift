@@ -40,6 +40,8 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
   private let player: AVPlayer
   private let musicBox: MusicBox
   
+  private let disposeBag = DisposeBag()
+  
   private var timeObserver: Any?
   private var boundaryTimeObserver: Any?
   
@@ -53,6 +55,13 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       forKeyPath: #keyPath(AVQueuePlayer.rate),
       options: [.new], context: nil
     )
+    
+    selectedMusicItemRelay
+      .bind { [weak self] musicItem in
+        guard let musicItem else { return }
+        self?.updatePlayingMetadata(musicItem: musicItem)
+      }
+      .disposed(by: disposeBag)
   }
   
   override func observeValue(
@@ -144,7 +153,6 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
     Self.logger.log("called \(#function)")
     musicPlayingStatusRelay.accept(.readyToPlay)
     selectedMusicItemRelay.accept(musicItem)
-    updateNowPlayingInfo(musicItem: musicItem)
     resetPlayer()
 
     Task {
@@ -235,22 +243,49 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
   }
 
   /// Function to set the Now Playing Info
-  func updateNowPlayingInfo(musicItem: MusicItem) {
+  func updatePlayingMetadata(musicItem: MusicItem) {
     let session = AVAudioSession()
     try! session.setActive(true)
-    var nowPlayingInfo = [String: Any]()
-    
-    // Set metadata properties
-    nowPlayingInfo[MPMediaItemPropertyTitle] = musicItem.title
-    nowPlayingInfo[MPMediaItemPropertyArtist] = musicItem.publisherTitle
-    nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = musicItem.runningDurationInSeconds
-    nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime().seconds
-    
-    // Set artwork
-    
-    // Update the Now Playing Info Center
-    MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+    Task {
+      var nowPlayingInfo = [String: Any]()
+      
+      // Set metadata properties
+      nowPlayingInfo[MPMediaItemPropertyTitle] = musicItem.title
+      nowPlayingInfo[MPMediaItemPropertyArtist] = musicItem.publisherTitle
+      nowPlayingInfo[MPMediaItemPropertyPlaybackDuration] = musicItem.runningDurationInSeconds
+      nowPlayingInfo[MPNowPlayingInfoPropertyElapsedPlaybackTime] = player.currentTime().seconds
+      
+      // Set artwork
+      do {
+        let (artworkData, _) = try await URLSession.shared.data(
+          from: URL(string: musicItem.largestThumbnail)!
+        )
+        let newImageSize = CGSize(width: 500, height: 500)
+        nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(
+          boundsSize: newImageSize
+        ) { size in
+          let newWidth = newImageSize.width
+          let image = UIImage(data: artworkData)!
+          let oldWidth = image.size.width
+          let scaleFactor = newImageSize.width / oldWidth
+          let newHeight = oldWidth * scaleFactor
+          
+          let rect = CGRect(
+            origin: .zero,
+            size: CGSize(width: newWidth, height: newHeight)
+          )
+          UIGraphicsBeginImageContextWithOptions(size, false, 1.0)
+          image.draw(in: rect)
+          let newImage = UIGraphicsGetImageFromCurrentImageContext()
+          UIGraphicsEndImageContext()
+          return newImage!
+        }
+      } catch {
+        Self.logger.error("Error getting artwork data for \(musicItem.title)")
+      }
+      // Update the Now Playing Info Center
+      MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+    }
     UIApplication.shared.beginReceivingRemoteControlEvents()
   }
-
 }
