@@ -22,6 +22,13 @@ class PlaylistTableView: UITableView {
 }
 
 class PlaylistTableViewCell: UITableViewCell {
+  private let playPlaylistButton: UIButton = {
+    let button = UIButton()
+    button.translatesAutoresizingMaskIntoConstraints = false
+    button.setImage(UIImage(systemName: "play.circle"), for: .normal)
+    return button
+  }()
+  
   private let centerImageView: UIAsyncImageView = {
     let imageView = UIAsyncImageView()
     imageView.translatesAutoresizingMaskIntoConstraints = false
@@ -124,6 +131,7 @@ class PlaylistTableViewCell: UITableViewCell {
     containerView.addSubview(durationTitle)
     containerView.addSubview(artistDesc)
     containerView.addSubview(totalTrackLabel)
+    containerView.addSubview(playPlaylistButton)
     
     
     NSLayoutConstraint.activate([
@@ -161,6 +169,11 @@ class PlaylistTableViewCell: UITableViewCell {
       
       totalTrackLabel.topAnchor.constraint(equalTo: artistDesc.bottomAnchor),
       totalTrackLabel.leadingAnchor.constraint(equalTo: centerImageView.trailingAnchor, constant: 50),
+      
+      playPlaylistButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
+      playPlaylistButton.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: 10),
+      playPlaylistButton.widthAnchor.constraint(equalToConstant: 30),
+      playPlaylistButton.heightAnchor.constraint(equalToConstant: 30),
     ])
   }
   
