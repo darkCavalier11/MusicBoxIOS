@@ -9,6 +9,7 @@ import UIKit
 import CoreData
 import RxCocoa
 import RxSwift
+import Swinject
 
 class PlaylistViewController: UIViewController {
   private lazy var coreDataStack = CoreDataStack()
@@ -35,6 +36,7 @@ class PlaylistViewController: UIViewController {
   
   private let noPlaylistFoundView = NoPlaylistFoundView()
   private let playlistTableView = PlaylistTableView()
+  private let playingViewModel = Container.sharedContainer.resolve(PlayingViewModel.self)
   override func viewDidLoad() {
     super.viewDidLoad()
     navigationItem.title = "Your playlists"
@@ -101,7 +103,12 @@ extension PlaylistViewController: UITableViewDataSource {
       return UITableViewCell()
     }
     cell.musicPlaylistModel = fetchedResultController.object(at: indexPath)
+    cell.playingViewModel = playingViewModel
     return cell
+  }
+  
+  @objc func playPlaylistButtonTapped(indexPath: IndexPath) {
+    playingViewModel?.playPlaylist(playlist: fetchedResultController.object(at: indexPath))
   }
   
   func tableView(

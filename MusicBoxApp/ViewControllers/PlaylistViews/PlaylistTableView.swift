@@ -22,7 +22,7 @@ class PlaylistTableView: UITableView {
 }
 
 class PlaylistTableViewCell: UITableViewCell {
-  private let playPlaylistButton: UIButton = {
+  let playPlaylistButton: UIButton = {
     let button = UIButton()
     button.translatesAutoresizingMaskIntoConstraints = false
     button.setImage(UIImage(systemName: "play.circle"), for: .normal)
@@ -92,6 +92,13 @@ class PlaylistTableViewCell: UITableViewCell {
     return label
   }()
   
+  var playingViewModel: PlayingViewModel?
+  
+  @objc func handlePlayPlaylistButtonTap() {
+    guard let musicPlaylistModel else { return }
+    playingViewModel?.playPlaylist(playlist: musicPlaylistModel)
+  }
+  
   var musicPlaylistModel: MusicPlaylistModel? {
     didSet {
       guard let musicPlaylistModel = musicPlaylistModel else { return }
@@ -121,6 +128,11 @@ class PlaylistTableViewCell: UITableViewCell {
     let containerView = UIView()
     
     containerView.translatesAutoresizingMaskIntoConstraints = false
+    playPlaylistButton.addTarget(
+      self,
+      action: #selector(handlePlayPlaylistButtonTap),
+      for: .touchUpInside
+    )
     
     contentView.addSubview(containerView)
     
