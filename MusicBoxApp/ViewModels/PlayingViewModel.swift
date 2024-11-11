@@ -22,6 +22,7 @@ protocol PlayingViewModel {
   func seekToTime(seconds: Int, completion: @escaping () -> Void)
   func seekToNextMusicItem()
   func seekToPreviousMusicItem()
+  func playDownloadedItems(musicItemModels: [MusicItemModel])
   func playPlaylist(playlist: MusicPlaylistModel)
   var currentTimeInSeconds: Observable<Int> { get }
 }
@@ -271,6 +272,53 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
         let asset = AVURLAsset(url: musicItemModel.localStorageURL!)
         let playerItem = AVPlayerItem(asset: asset)
         recentlyPlayedMusicItems[index] = (playerItem, musicItem)
+      } else {
+        Task {
+          guard let streamingURL = await musicBox.musicSession.getMusicStreamingURL(musicId: musicItem.musicId) else {
+            // TODO: - Handle by showing a toast
+            return
+          }
+          let playerItem = AVPlayerItem(url: streamingURL)
+          recentlyPlayedMusicItems[index] = (playerItem, musicItem)
+          if index == 0 {
+            recentlyPlayedIndex = -1
+            seekToNextMusicItem()
+          }
+        }
+      }
+    }
+  }
+  func playDownloadedItems(musicItemModels: [MusicItemModel]) {
+    recentlyPlayedMusicItems.removeAll()
+    recentlyPlayedMusicItems = Array<(AVPlayerItem?, MusicItem)>(
+      repeating:
+        (nil,
+         MusicItem(
+        title: "",
+        publisherTitle: "",
+        runningDurationInSeconds: 0,
+        musicId: "")
+        ),
+      count: musicItemModels.count
+    )
+    
+    for (index, musicItemModel) in musicItemModels.enumerated() {
+      let musicItem = MusicItem(
+        title: musicItemModel.title ?? "",
+        publisherTitle: musicItemModel.publisherTitle ?? "",
+        runningDurationInSeconds: Int(musicItemModel.runningDurationInSeconds),
+        musicId: musicItemModel.musicId ?? "",
+        smallestThumbnail: musicItemModel.smallestThumbnail,
+        largestThumbnail: musicItemModel.largestThumbnail
+      )
+      
+      if musicItemModel.localStorageURL != nil {
+        let asset = AVURLAsset(url: musicItemModel.localStorageURL!)
+        let avItem = AVPlayerItem(asset: asset)
+        recentlyPlayedMusicItems[index] = (
+          avItem,
+          musicItem
+          )
       } else {
         Task {
           guard let streamingURL = await musicBox.musicSession.getMusicStreamingURL(musicId: musicItem.musicId) else {

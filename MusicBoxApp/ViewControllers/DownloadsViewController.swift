@@ -16,6 +16,7 @@ class DownloadsViewController: UIViewController {
   private let noDownloadsFoundView = NoDownloadsFoundView()
   private lazy var coreDataStack = CoreDataStack()
   private let hideEmptyDownloadsView = BehaviorRelay<Bool>(value: true)
+  private let playingViewModel = Container.sharedContainer.resolve(PlayingViewModel.self)!
   private let downloadTableView = DownloadTableView()
   private let downloadViewModel = Container.sharedContainer.resolve(DownloadViewModel.self)!
   private let disposeBag = DisposeBag()
@@ -50,6 +51,16 @@ class DownloadsViewController: UIViewController {
     )
   }()
   
+  @objc func handlePlayBarButtonTap() {
+    guard let musicItemModels = fetchedResultController.fetchedObjects else {
+      return
+    }
+    guard let musicItemModels = fetchedResultController.fetchedObjects else {
+      return
+    }
+    playingViewModel.playDownloadedItems(musicItemModels: musicItemModels)
+  }
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     title = "Downloads"
@@ -57,6 +68,13 @@ class DownloadsViewController: UIViewController {
     view.addSubview(downloadTableView)
     view.addSubview(noDownloadsFoundView)
     view.addSubview(progressButton)
+    
+    navigationItem.rightBarButtonItem = UIBarButtonItem(
+      image: UIImage(systemName: "play.circle"),
+      style: .plain,
+      target: self,
+      action: nil
+    )
     
     hideEmptyDownloadsView
       .bind(to: noDownloadsFoundView.rx.isHidden)
