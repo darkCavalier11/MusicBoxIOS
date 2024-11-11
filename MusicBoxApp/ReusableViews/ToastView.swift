@@ -12,7 +12,7 @@ final class ToastView: UIView {
   private lazy var label: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
-    label.font = .monospacedSystemFont(ofSize: 12, weight: .regular)
+    label.font = .preferredCustomFont(forTextStyle: .callout)
     label.numberOfLines = 0
     return label
   }()
@@ -27,37 +27,17 @@ final class ToastView: UIView {
     let view = UIView()
     view.translatesAutoresizingMaskIntoConstraints = false
     view.backgroundColor = .darkText
-    view.layer.cornerRadius = 6
-    return view
-  }()
-  
-  private lazy var backView2: UIView = {
-    let view = UIView()
-    view.translatesAutoresizingMaskIntoConstraints = false
-    view.backgroundColor = .systemYellow
-    view.transform = CGAffineTransform(translationX: -2.5, y: 2.5)
-    view.layer.cornerRadius = 6
-    return view
-  }()
-  
-  private lazy var backView3: UIView = {
-    let view = UIView()
-    view.translatesAutoresizingMaskIntoConstraints = false
-    view.backgroundColor = .tintColor
-    view.transform = CGAffineTransform(translationX: -5, y: 5)
-    view.layer.cornerRadius = 6
+    view.layer.cornerRadius = 24
     return view
   }()
   
   override init(frame: CGRect) {
     super.init(frame: frame)
-    addSubview(backView3)
-    addSubview(backView2)
     addSubview(backView1)
     addSubview(label)
     self.backgroundColor = .darkText
-    self.layer.cornerRadius = 6
-    label.textColor = .lightText
+    self.layer.cornerRadius = 72
+    label.textColor = .white
     NSLayoutConstraint.activate([
       label.topAnchor.constraint(equalTo: self.topAnchor, constant: 8),
       label.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8),
@@ -66,12 +46,6 @@ final class ToastView: UIView {
       
       backView1.widthAnchor.constraint(equalTo: self.widthAnchor),
       backView1.heightAnchor.constraint(equalTo: self.heightAnchor),
-      
-      backView2.widthAnchor.constraint(equalTo: self.widthAnchor),
-      backView2.heightAnchor.constraint(equalTo: self.heightAnchor),
-      
-      backView3.widthAnchor.constraint(equalTo: self.widthAnchor),
-      backView3.heightAnchor.constraint(equalTo: self.heightAnchor),
     ])
   }
   
