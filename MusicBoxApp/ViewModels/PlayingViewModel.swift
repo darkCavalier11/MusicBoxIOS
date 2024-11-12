@@ -268,9 +268,11 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
         musicId: musicItemModel.musicId ?? "",
         smallestThumbnail: musicItemModel.smallestThumbnail, largestThumbnail: musicItemModel.largestThumbnail
       )
-      if musicItemModel.localStorageURL != nil {
-        let asset = AVURLAsset(url: musicItemModel.localStorageURL!)
-        let playerItem = AVPlayerItem(asset: asset)
+      if musicItemModel.localStorageURL != nil &&
+          FileManager.default.fileExists(
+        atPath: musicItemModel.localStorageURL?.absoluteString ?? ""
+          ) {
+        let playerItem = AVPlayerItem(url: musicItemModel.localStorageURL!)
         recentlyPlayedMusicItems[index] = (playerItem, musicItem)
       } else {
         Task {
@@ -312,13 +314,19 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
         largestThumbnail: musicItemModel.largestThumbnail
       )
       
-      if musicItemModel.localStorageURL != nil {
-        let asset = AVURLAsset(url: musicItemModel.localStorageURL!)
-        let avItem = AVPlayerItem(asset: asset)
+      if musicItemModel.localStorageURL != nil
+          && FileManager.default.fileExists(
+        atPath: musicItemModel.localStorageURL?.absoluteString ?? ""
+      ) {
+        let playerItem = AVPlayerItem(url: musicItemModel.localStorageURL!)
         recentlyPlayedMusicItems[index] = (
-          avItem,
+          playerItem,
           musicItem
           )
+        if index == 0 {
+          recentlyPlayedIndex = -1
+          seekToNextMusicItem()
+        }
       } else {
         Task {
           guard let streamingURL = await musicBox.musicSession.getMusicStreamingURL(musicId: musicItem.musicId) else {

@@ -55,9 +55,6 @@ class DownloadsViewController: UIViewController {
     guard let musicItemModels = fetchedResultController.fetchedObjects else {
       return
     }
-    guard let musicItemModels = fetchedResultController.fetchedObjects else {
-      return
-    }
     playingViewModel.playDownloadedItems(musicItemModels: musicItemModels)
   }
   
@@ -73,7 +70,7 @@ class DownloadsViewController: UIViewController {
       image: UIImage(systemName: "play.circle"),
       style: .plain,
       target: self,
-      action: nil
+      action: #selector(handlePlayBarButtonTap)
     )
     
     hideEmptyDownloadsView
