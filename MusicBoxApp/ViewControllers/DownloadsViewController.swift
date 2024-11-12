@@ -52,10 +52,10 @@ class DownloadsViewController: UIViewController {
   }()
   
   @objc func handlePlayBarButtonTap() {
-    guard let musicItemModels = fetchedResultController.fetchedObjects else {
+    guard let downloadedItems = fetchedResultController.fetchedObjects else {
       return
     }
-    playingViewModel.playDownloadedItems(musicItemModels: musicItemModels)
+    playingViewModel.playPlaylist(playlistItems: downloadedItems)
   }
   
   override func viewDidLoad() {

@@ -96,7 +96,10 @@ class PlaylistTableViewCell: UITableViewCell {
   
   @objc func handlePlayPlaylistButtonTap() {
     guard let musicPlaylistModel else { return }
-    playingViewModel?.playPlaylist(playlist: musicPlaylistModel)
+    guard let playlistItems = musicPlaylistModel.musicItems?.allObjects as? [MusicItemModel] else {
+      return
+    }
+    playingViewModel?.playPlaylist(playlistItems: playlistItems)
   }
   
   var musicPlaylistModel: MusicPlaylistModel? {

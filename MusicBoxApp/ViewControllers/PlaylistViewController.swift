@@ -107,10 +107,6 @@ extension PlaylistViewController: UITableViewDataSource {
     return cell
   }
   
-  @objc func playPlaylistButtonTapped(indexPath: IndexPath) {
-    playingViewModel?.playPlaylist(playlist: fetchedResultController.object(at: indexPath))
-  }
-  
   func tableView(
     _ tableView: UITableView,
     commit editingStyle: UITableViewCell.EditingStyle,

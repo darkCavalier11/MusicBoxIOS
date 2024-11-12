@@ -22,8 +22,7 @@ protocol PlayingViewModel {
   func seekToTime(seconds: Int, completion: @escaping () -> Void)
   func seekToNextMusicItem()
   func seekToPreviousMusicItem()
-  func playDownloadedItems(musicItemModels: [MusicItemModel])
-  func playPlaylist(playlist: MusicPlaylistModel)
+  func playPlaylist(playlistItems: [MusicItemModel])
   var currentTimeInSeconds: Observable<Int> { get }
 }
 
@@ -241,7 +240,7 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
     player.playImmediately(atRate: 1)
   }
   
-  func playPlaylist(playlist: MusicPlaylistModel) {
+  func playPlaylist(playlistItems: [MusicItemModel]) {
     recentlyPlayedMusicItems.removeAll()
     recentlyPlayedMusicItems = Array<(AVPlayerItem?, MusicItem)>(
       repeating:
@@ -254,13 +253,10 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
             musicId: ""
           )
         ),
-        count: playlist.musicItems?.count ?? 0
+      count: playlistItems.count
     )
-    guard let musicItemModels = playlist.musicItems?.allObjects as? [MusicItemModel] else {
-      return
-    }
     
-    for (index, musicItemModel) in musicItemModels.enumerated() {
+    for (index, musicItemModel) in playlistItems.enumerated() {
       let musicItem = MusicItem(
         title: musicItemModel.title ?? "",
         publisherTitle: musicItemModel.publisherTitle ?? "",
@@ -274,59 +270,6 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
           ) {
         let playerItem = AVPlayerItem(url: musicItemModel.localStorageURL!)
         recentlyPlayedMusicItems[index] = (playerItem, musicItem)
-      } else {
-        Task {
-          guard let streamingURL = await musicBox.musicSession.getMusicStreamingURL(musicId: musicItem.musicId) else {
-            // TODO: - Handle by showing a toast
-            return
-          }
-          let playerItem = AVPlayerItem(url: streamingURL)
-          recentlyPlayedMusicItems[index] = (playerItem, musicItem)
-          if index == 0 {
-            recentlyPlayedIndex = -1
-            seekToNextMusicItem()
-          }
-        }
-      }
-    }
-  }
-  func playDownloadedItems(musicItemModels: [MusicItemModel]) {
-    recentlyPlayedMusicItems.removeAll()
-    recentlyPlayedMusicItems = Array<(AVPlayerItem?, MusicItem)>(
-      repeating:
-        (nil,
-         MusicItem(
-        title: "",
-        publisherTitle: "",
-        runningDurationInSeconds: 0,
-        musicId: "")
-        ),
-      count: musicItemModels.count
-    )
-    
-    for (index, musicItemModel) in musicItemModels.enumerated() {
-      let musicItem = MusicItem(
-        title: musicItemModel.title ?? "",
-        publisherTitle: musicItemModel.publisherTitle ?? "",
-        runningDurationInSeconds: Int(musicItemModel.runningDurationInSeconds),
-        musicId: musicItemModel.musicId ?? "",
-        smallestThumbnail: musicItemModel.smallestThumbnail,
-        largestThumbnail: musicItemModel.largestThumbnail
-      )
-      
-      if musicItemModel.localStorageURL != nil
-          && FileManager.default.fileExists(
-        atPath: musicItemModel.localStorageURL?.absoluteString ?? ""
-      ) {
-        let playerItem = AVPlayerItem(url: musicItemModel.localStorageURL!)
-        recentlyPlayedMusicItems[index] = (
-          playerItem,
-          musicItem
-          )
-        if index == 0 {
-          recentlyPlayedIndex = -1
-          seekToNextMusicItem()
-        }
       } else {
         Task {
           guard let streamingURL = await musicBox.musicSession.getMusicStreamingURL(musicId: musicItem.musicId) else {
