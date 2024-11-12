@@ -35,6 +35,14 @@ class HomeViewController: UIViewController {
     )
     homeMusicViewModel
       .setMusicListQuery(.defaultMusicList)
+    
+    homeMusicViewModel
+      .musicItemList
+      .map{ $0.isEmpty }
+      .bind { [weak self] isEmpty in
+        self?.noHomeScreenMusicFoundView.isHidden = !isEmpty
+      }
+      .disposed(by: disposeBag)
   }
   
   @objc func navigateToSearchViewController() {
