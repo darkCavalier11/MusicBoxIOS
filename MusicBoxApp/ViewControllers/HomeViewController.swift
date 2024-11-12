@@ -32,7 +32,7 @@ class HomeViewController: UIViewController {
       viewModel: homeMusicViewModel
     )
     homeMusicViewModel
-      .setMusicListQuery(.withSearchQuery(query: "Ed sheeran"))
+      .setMusicListQuery(.defaultMusicList)
   }
   
   @objc func navigateToSearchViewController() {

@@ -32,7 +32,10 @@ class NextSuggestedMusicItemsViewController: UIViewController {
     musicViewModel.playingViewModel.selectedMusicItem.observe(on: MainScheduler.instance)
       .bind { [weak self] musicItem in
         guard let musicItem else { return }
-        self?.musicViewModel.setMusicListQuery(.withSearchQuery(query: "One Direction"))
+        self?.musicViewModel
+          .setMusicListQuery(
+          .nextMusicItems(currentMusicId: musicItem.musicId)
+          )
       }
       .disposed(by: disposeBag)
     
