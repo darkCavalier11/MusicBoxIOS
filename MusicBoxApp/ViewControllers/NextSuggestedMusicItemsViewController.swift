@@ -21,15 +21,27 @@ class NextSuggestedMusicItemsViewController: UIViewController {
     return label
   }()
   
+  private let activityIndicator: UIActivityIndicatorView = {
+    let activityIndicator = UIActivityIndicatorView()
+    activityIndicator.translatesAutoresizingMaskIntoConstraints = false
+    activityIndicator.style = .medium
+    return activityIndicator
+  }()
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     view.backgroundColor = .systemBackground
     view.addSubview(titleLabel)
+    view.addSubview(activityIndicator)
     view.addSubview(musicItemsTableView)
     
+    activityIndicator.startAnimating()
     musicItemsTableView.actionDelegate = self
     musicItemsTableView.bindWithViewModel(viewModel: musicViewModel)
-    musicViewModel.playingViewModel.selectedMusicItem.observe(on: MainScheduler.instance)
+    musicViewModel
+      .playingViewModel
+      .selectedMusicItem
+      .observe(on: MainScheduler.instance)
       .bind { [weak self] musicItem in
         guard let musicItem else { return }
         self?.musicViewModel
@@ -39,6 +51,14 @@ class NextSuggestedMusicItemsViewController: UIViewController {
       }
       .disposed(by: disposeBag)
     
+    musicViewModel
+      .isFetchingMusicList
+      .observe(on: MainScheduler.instance)
+      .bind { [weak self] isFetching in
+        print(isFetching)
+        self?.activityIndicator.isHidden = !isFetching
+      }
+      .disposed(by: disposeBag)
     
     NSLayoutConstraint.activate([
       titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
@@ -46,7 +66,9 @@ class NextSuggestedMusicItemsViewController: UIViewController {
       musicItemsTableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
       musicItemsTableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
       musicItemsTableView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-      musicItemsTableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10)
+      musicItemsTableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 10),
+      activityIndicator.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+      activityIndicator.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 20),
     ])
   }
   

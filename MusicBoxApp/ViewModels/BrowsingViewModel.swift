@@ -50,7 +50,10 @@ final class MusicBrowsingViewModel: BrowsingViewModel {
   }
   
   private let isFetchingMusicListRelay = BehaviorRelay(value: false)
-  private let musicListQueryTypeRelay = BehaviorRelay(value: MusicListQueryType.defaultMusicList)
+  private let musicListQueryTypeRelay = BehaviorRelay<MusicListQueryType?
+  >(
+    value: nil
+  )
   
   
 
@@ -61,7 +64,6 @@ final class MusicBrowsingViewModel: BrowsingViewModel {
   
   var isFetchingMusicList: Observable<Bool> {
     isFetchingMusicListRelay
-      .share(replay: 1)
       .asObservable()
   }
   
@@ -80,10 +82,12 @@ final class MusicBrowsingViewModel: BrowsingViewModel {
             case .defaultMusicList:
               let musicList = await self.musicBox.musicSession.getHomeScreenMusicList()
               observer.onNext(musicList)
+              self.isFetchingMusicListRelay.accept(false)
               
             case .withSearchQuery(query: let query):
               let musicList = await self.musicBox.musicSession.getMusicSearchResults(query: query)
               observer.onNext(musicList)
+              self.isFetchingMusicListRelay.accept(false)
               
             case .playlist(id: let id):
               let model = playlistService.getMusicPlaylistById(id)
@@ -99,12 +103,14 @@ final class MusicBrowsingViewModel: BrowsingViewModel {
                   largestThumbnail: $0.largestThumbnail
                 )
               })
+              self.isFetchingMusicListRelay.accept(false)
             case .nextMusicItems(currentMusicId: let musicId):
               let musicList = await musicBox.musicSession.getNextSuggestedMusicItems(musicId: musicId)
               observer.onNext(musicList)
+              self.isFetchingMusicListRelay.accept(false)
+            @unknown default:
+              break
             }
-            
-            self.isFetchingMusicListRelay.accept(false)
           }
           return Disposables.create {
             task.cancel()
