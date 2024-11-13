@@ -117,7 +117,9 @@ final class MusicDownloadViewModel:
       .appendingPathComponent(musicItem.title)
       .appendingPathExtension("m4a")
     do {
-      try FileManager.default.removeItem(at: newLocationURL)
+      if FileManager.default.fileExists(atPath: newLocationURL.absoluteString) {
+        try FileManager.default.removeItem(at: newLocationURL)
+      }
       try FileManager.default.moveItem(at: location, to: newLocationURL)
       
       musicItemModelService.insertNewMusicItemModelWithLocalStorage(

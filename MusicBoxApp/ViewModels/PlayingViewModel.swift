@@ -193,7 +193,7 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
         self.removeBoundaryObserver()
         self.addBoundaryTimeObserver(totalDuration: musicItem.runningDurationInSeconds)
         
-        await player.playImmediately(atRate: 1)
+        player.playImmediately(atRate: 1)
       }
     }
   }
@@ -229,7 +229,7 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       self.removeBoundaryObserver()
       self.addBoundaryTimeObserver(totalDuration: nextMusicItem.runningDurationInSeconds)
       player.replaceCurrentItem(with: playerItem)
-      await player.playImmediately(atRate: 1)
+      player.playImmediately(atRate: 1)
     }
   }
   
@@ -290,9 +290,9 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
         musicId: musicItemModel.musicId ?? "",
         smallestThumbnail: musicItemModel.smallestThumbnail, largestThumbnail: musicItemModel.largestThumbnail
       )
-      if musicItemModel.localStorageURL != nil &&
+      if let localStorageURL = musicItemModel.localStorageURL,
           FileManager.default.fileExists(
-        atPath: musicItemModel.localStorageURL?.absoluteString ?? ""
+            atPath: localStorageURL.path()
           ) {
         let playerItem = AVPlayerItem(url: musicItemModel.localStorageURL!)
         recentlyPlayedMusicItems[index] = (playerItem, musicItem)
