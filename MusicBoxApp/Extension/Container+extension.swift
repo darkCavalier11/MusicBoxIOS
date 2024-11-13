@@ -27,9 +27,11 @@ extension Container {
     container.register(PlayingViewModel.self) { _ in
       let musicBox = container.resolve(MusicBox.self)!
       let player = container.resolve(AVPlayer.self)!
+      let coreDataStack = container.resolve(CoreDataStack.self)!
       return MusicPlayingViewModel(
         musicBox: musicBox,
-        player: player
+        player: player,
+        coreDataStack: coreDataStack
       )
     }
     .inObjectScope(.container)

@@ -40,15 +40,20 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
   
   private let player: AVPlayer
   private let musicBox: MusicBox
+  private let coreDataStack: CoreDataStack
   
   private let disposeBag = DisposeBag()
   
   private var timeObserver: Any?
   private var boundaryTimeObserver: Any?
   
-  init(musicBox: MusicBox, player: AVPlayer) {
+  init(musicBox: MusicBox,
+       player: AVPlayer,
+       coreDataStack: CoreDataStack
+  ) {
     self.musicBox = musicBox
     self.player = player
+    self.coreDataStack = coreDataStack
     super.init()
     addPeriodicTimeObserver()
     self.player.addObserver(
@@ -152,14 +157,17 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
     musicPlayingStatusRelay.accept(.readyToPlay)
     selectedMusicItemRelay.accept(musicItem)
     resetPlayer()
-
-    Task {
-      guard let streamingURL = await musicBox.musicSession.getMusicStreamingURL(musicId: musicItem.musicId) else {
-        // TODO: - Handle by showing a toast
-        return
-      }
-      Self.logger.info("Got URL for music item \(musicItem.title)")
-      let playerItem = AVPlayerItem(url: streamingURL)
+    
+    /// check if a local storage URL exist for this particular music item else fetch the HTTP URL
+    let request = MusicItemModel.fetchRequest()
+    request.predicate = NSPredicate(format: "musicId == %@", musicItem.musicId)
+    if let results = try? coreDataStack.managedObjectContext.fetch(request),
+       results.count > 0,
+       let localStorageURL = results.first?.localStorageURL,
+       FileManager.default.fileExists(atPath: localStorageURL.absoluteString)
+    {
+      Self.logger.info("Found music in local storage for music item \(musicItem.title)")
+      let playerItem = AVPlayerItem(url: localStorageURL)
       recentlyPlayedMusicItems.append((playerItem, musicItem))
       recentlyPlayedIndex = recentlyPlayedMusicItems.count - 1
       player.replaceCurrentItem(
@@ -169,6 +177,24 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       self.addBoundaryTimeObserver(totalDuration: musicItem.runningDurationInSeconds)
       
       player.playImmediately(atRate: 1)
+    } else {
+      Task {
+        guard let streamingURL = await musicBox.musicSession.getMusicStreamingURL(musicId: musicItem.musicId) else {
+          // TODO: - Handle by showing a toast
+          return
+        }
+        Self.logger.info("Got URL for music item \(musicItem.title)")
+        let playerItem = AVPlayerItem(url: streamingURL)
+        recentlyPlayedMusicItems.append((playerItem, musicItem))
+        recentlyPlayedIndex = recentlyPlayedMusicItems.count - 1
+        player.replaceCurrentItem(
+          with: recentlyPlayedMusicItems[recentlyPlayedIndex].0
+        )
+        self.removeBoundaryObserver()
+        self.addBoundaryTimeObserver(totalDuration: musicItem.runningDurationInSeconds)
+        
+        await player.playImmediately(atRate: 1)
+      }
     }
   }
   
@@ -203,7 +229,7 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
       self.removeBoundaryObserver()
       self.addBoundaryTimeObserver(totalDuration: nextMusicItem.runningDurationInSeconds)
       player.replaceCurrentItem(with: playerItem)
-      player.playImmediately(atRate: 1)
+      await player.playImmediately(atRate: 1)
     }
   }
   

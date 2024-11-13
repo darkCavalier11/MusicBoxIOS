@@ -114,7 +114,7 @@ final class MusicDownloadViewModel:
       in: .userDomainMask
     )
       .first!
-      .appending(path: musicItem.title)
+      .appendingPathComponent(musicItem.title)
       .appendingPathExtension("m4a")
     do {
       try FileManager.default.removeItem(at: newLocationURL)
