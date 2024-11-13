@@ -27,7 +27,7 @@ enum MusicPlayingStatus {
   case error
 }
 
-enum MusicListQueryType {
+enum MusicListQueryType: Equatable {
   case defaultMusicList
   case withSearchQuery(query: String)
   case playlist(id: UUID)
@@ -50,10 +50,7 @@ final class MusicBrowsingViewModel: BrowsingViewModel {
   }
   
   private let isFetchingMusicListRelay = BehaviorRelay(value: false)
-  private let musicListQueryTypeRelay = BehaviorRelay<MusicListQueryType?
-  >(
-    value: nil
-  )
+  private let musicListQueryTypeRelay = BehaviorRelay<MusicListQueryType?>(value: nil)
   
   
 
@@ -73,8 +70,9 @@ final class MusicBrowsingViewModel: BrowsingViewModel {
   
   var musicItemList: Observable<[MusicItem]> {
     musicListQueryTypeRelay
+      .distinctUntilChanged()
       .flatMapLatest { [weak self] query in
-        Observable.create { observer in
+        return Observable.create { observer in
           let task = Task { [weak self] in
             guard let self = self else { return }
             self.isFetchingMusicListRelay.accept(true)
@@ -108,7 +106,7 @@ final class MusicBrowsingViewModel: BrowsingViewModel {
               let musicList = await musicBox.musicSession.getNextSuggestedMusicItems(musicId: musicId)
               observer.onNext(musicList)
               self.isFetchingMusicListRelay.accept(false)
-            @unknown default:
+            case .none:
               break
             }
           }

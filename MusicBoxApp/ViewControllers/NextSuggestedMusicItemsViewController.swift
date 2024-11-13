@@ -55,7 +55,6 @@ class NextSuggestedMusicItemsViewController: UIViewController {
       .isFetchingMusicList
       .observe(on: MainScheduler.instance)
       .bind { [weak self] isFetching in
-        print(isFetching)
         self?.activityIndicator.isHidden = !isFetching
       }
       .disposed(by: disposeBag)

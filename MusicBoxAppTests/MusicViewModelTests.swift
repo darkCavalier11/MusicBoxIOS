@@ -160,7 +160,6 @@ final class MusicViewModelTests: XCTestCase {
       .selectedMusicItem
       .subscribe(
         onNext: { musicItem in
-          print(musicItem)
           if musicItem?.musicId == testMusicItem.musicId {
             expectation.fulfill()
           }

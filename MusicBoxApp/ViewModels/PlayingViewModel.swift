@@ -270,6 +270,10 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
           ) {
         let playerItem = AVPlayerItem(url: musicItemModel.localStorageURL!)
         recentlyPlayedMusicItems[index] = (playerItem, musicItem)
+        if index == 0 {
+          recentlyPlayedIndex = -1
+          seekToNextMusicItem()
+        }
       } else {
         Task {
           guard let streamingURL = await musicBox.musicSession.getMusicStreamingURL(musicId: musicItem.musicId) else {
