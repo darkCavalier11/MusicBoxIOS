@@ -20,6 +20,8 @@ class HomeViewController: UIViewController {
     musicItemsTableView.actionDelegate = self
     view.addSubview(musicItemsTableView)
     view.addSubview(noHomeScreenMusicFoundView)
+    noHomeScreenMusicFoundView.isHidden = true
+    
     setupMusicItemsTableViewConstraints()
     navigationItem.title = "Welcome"
     navigationItem.rightBarButtonItems = [
@@ -36,13 +38,17 @@ class HomeViewController: UIViewController {
     homeMusicViewModel
       .setMusicListQuery(.defaultMusicList)
     
-    homeMusicViewModel
-      .musicItemList
-      .map{ $0.isEmpty }
-      .bind { [weak self] isEmpty in
-        self?.noHomeScreenMusicFoundView.isHidden = !isEmpty
+    Observable.combineLatest(
+      homeMusicViewModel.musicItemList.map { $0.isEmpty },
+      homeMusicViewModel.isFetchingMusicList
+    )
+      .observe(on: MainScheduler.instance)
+      .bind { [weak self] (isEmpty, isFetching) in
+        print(isFetching)
+        self?.noHomeScreenMusicFoundView.isHidden = (isFetching || !isEmpty)
       }
       .disposed(by: disposeBag)
+      
   }
   
   @objc func navigateToSearchViewController() {
