@@ -7,9 +7,28 @@
 
 import UIKit
 import Swinject
+import Network
 
 class TabBarController: UITabBarController {
   private let musicPlayingBarView = MusicPlayingBarThumbnailView()
+  
+  private let networkMonitor = NWPathMonitor()
+  
+  private let noInternetContainerView: UIView = {
+    let view = UIView()
+    view.translatesAutoresizingMaskIntoConstraints = false
+    view.backgroundColor = .darkText
+    return view
+  }()
+  
+  private let noInternetLabel: UILabel = {
+    let label = UILabel()
+    label.translatesAutoresizingMaskIntoConstraints = false
+    label.text = "Device not connected to internet."
+    label.textColor = .lightText
+    return label
+  }()
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     
@@ -26,11 +45,29 @@ class TabBarController: UITabBarController {
     ]
     
     view.addSubview(musicPlayingBarView)
+    
+    
     musicPlayingBarView.bindWithViewModel()
     let tapGestureRecognizer = UITapGestureRecognizer()
     tapGestureRecognizer.addTarget(self, action: #selector(handleTapGestureRecognizer))
     musicPlayingBarView.addGestureRecognizer(tapGestureRecognizer)
     setupPlayingThumbnailViewContraint()
+    
+    noInternetContainerView.addSubview(noInternetLabel)
+    view.addSubview(noInternetContainerView)
+    setupNoInternetViewContraint()
+    networkMonitor.pathUpdateHandler = { [weak self] path in
+      if path.status == .satisfied {
+        DispatchQueue.main.async {
+          self?.noInternetContainerView.isHidden = true
+        }
+      } else {
+        DispatchQueue.main.async {
+          self?.noInternetContainerView.isHidden = false
+        }
+      }
+    }
+    networkMonitor.start(queue: DispatchQueue.global())
   }
   
   @objc func handleTapGestureRecognizer() {
@@ -45,6 +82,17 @@ class TabBarController: UITabBarController {
       musicPlayingBarView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
       musicPlayingBarView.bottomAnchor.constraint(equalTo: self.tabBar.topAnchor),
       musicPlayingBarView.heightAnchor.constraint(equalToConstant: 80)
+    ])
+  }
+  
+  func setupNoInternetViewContraint() {
+    NSLayoutConstraint.activate([
+      noInternetContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+      noInternetContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+      noInternetContainerView.bottomAnchor.constraint(equalTo: self.tabBar.topAnchor),
+      noInternetContainerView.heightAnchor.constraint(equalToConstant: 50),
+      noInternetLabel.centerXAnchor.constraint(equalTo: noInternetContainerView.centerXAnchor),
+      noInternetLabel.centerYAnchor.constraint(equalTo: noInternetContainerView.centerYAnchor),
     ])
   }
 }
