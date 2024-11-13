@@ -336,6 +336,7 @@
 				DEVELOPMENT_TEAM = 5729K49X7Z;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MusicBoxApp/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MusicBox;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -364,6 +365,7 @@
 				DEVELOPMENT_TEAM = 5729K49X7Z;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MusicBoxApp/Resources/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = MusicBox;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
