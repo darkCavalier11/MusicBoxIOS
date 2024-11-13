@@ -15,11 +15,15 @@ class HomeViewController: UIViewController {
   private let disposeBag = DisposeBag()
   private let musicItemsTableView = MusicItemsTableView()
   private let noHomeScreenMusicFoundView = NoHomeScreenMusicFoundView()
+  private let loadingView = HomeScreenLoadingView()
+  
   override func viewDidLoad() {
     super.viewDidLoad()
     musicItemsTableView.actionDelegate = self
     view.addSubview(musicItemsTableView)
     view.addSubview(noHomeScreenMusicFoundView)
+    view.addSubview(loadingView)
+    
     noHomeScreenMusicFoundView.isHidden = true
     
     setupMusicItemsTableViewConstraints()
@@ -44,11 +48,17 @@ class HomeViewController: UIViewController {
     )
       .observe(on: MainScheduler.instance)
       .bind { [weak self] (isEmpty, isFetching) in
-        print(isFetching)
         self?.noHomeScreenMusicFoundView.isHidden = (isFetching || !isEmpty)
       }
       .disposed(by: disposeBag)
-      
+    
+    homeMusicViewModel
+      .isFetchingMusicList
+      .observe(on: MainScheduler.instance)
+      .bind { [weak self] isFetching in
+        self?.loadingView.isHidden = !isFetching
+      }
+      .disposed(by: disposeBag)
   }
   
   @objc func navigateToSearchViewController() {
@@ -58,6 +68,8 @@ class HomeViewController: UIViewController {
   
   func setupMusicItemsTableViewConstraints() {
     musicItemsTableView.translatesAutoresizingMaskIntoConstraints = false
+    loadingView.translatesAutoresizingMaskIntoConstraints = false
+    
     NSLayoutConstraint.activate([
       view.topAnchor.constraint(equalTo: musicItemsTableView.topAnchor),
       view.leadingAnchor.constraint(equalTo: musicItemsTableView.leadingAnchor),
@@ -67,6 +79,10 @@ class HomeViewController: UIViewController {
       noHomeScreenMusicFoundView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
       noHomeScreenMusicFoundView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
       noHomeScreenMusicFoundView.widthAnchor.constraint(equalToConstant: 250),
+      
+      loadingView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+      loadingView.centerYAnchor.constraint(equalTo: view.centerYAnchor),
+      loadingView.widthAnchor.constraint(equalToConstant: 250),
     ])
   }
 }
