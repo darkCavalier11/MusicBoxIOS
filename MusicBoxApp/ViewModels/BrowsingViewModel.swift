@@ -68,17 +68,14 @@ final class MusicBrowsingViewModel: BrowsingViewModel {
     musicListQueryTypeRelay.accept(query)
   }
   
-  var musicItemList: Observable<[MusicItem]> {
+  lazy var musicItemList: Observable<[MusicItem]> = {
     musicListQueryTypeRelay
-      .debounce(
-        .milliseconds(600),
-        scheduler: ConcurrentMainScheduler.instance
-      )
       .flatMapLatest { [weak self] query in
         return Observable.create { observer in
           let task = Task { [weak self] in
             guard let self = self else { return }
             self.isFetchingMusicListRelay.accept(true)
+            
             switch query {
             case .defaultMusicList:
               let musicList = await self.musicBox.musicSession.getHomeScreenMusicList()
@@ -118,7 +115,9 @@ final class MusicBrowsingViewModel: BrowsingViewModel {
           }
         }
       }
-  }
+      .share(replay: 1)
+  }()
+    
 
   
   func addMusicToPlaylist(controller: UIViewController, musicItem: MusicItem) {
