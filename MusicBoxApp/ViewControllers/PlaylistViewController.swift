@@ -98,10 +98,17 @@ extension PlaylistViewController: UITableViewDataSource {
     return sectionInfo.numberOfObjects
   }
   
-  func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-    guard let cell = tableView.dequeueReusableCell(withIdentifier: PlaylistTableView.reusableIdentifier, for: indexPath) as? PlaylistTableViewCell else {
+  func tableView(
+    _ tableView: UITableView,
+    cellForRowAt indexPath: IndexPath
+  ) -> UITableViewCell {
+    guard let cell = tableView.dequeueReusableCell(
+      withIdentifier: PlaylistTableView.reusableIdentifier,
+      for: indexPath
+    ) as? PlaylistTableViewCell else {
       return UITableViewCell()
     }
+    
     cell.musicPlaylistModel = fetchedResultController.object(at: indexPath)
     cell.playingViewModel = playingViewModel
     return cell

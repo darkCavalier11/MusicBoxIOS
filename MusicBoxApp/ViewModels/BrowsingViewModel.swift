@@ -70,7 +70,10 @@ final class MusicBrowsingViewModel: BrowsingViewModel {
   
   var musicItemList: Observable<[MusicItem]> {
     musicListQueryTypeRelay
-      .distinctUntilChanged()
+      .debounce(
+        .milliseconds(600),
+        scheduler: ConcurrentMainScheduler.instance
+      )
       .flatMapLatest { [weak self] query in
         return Observable.create { observer in
           let task = Task { [weak self] in
