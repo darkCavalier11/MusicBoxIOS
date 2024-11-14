@@ -27,7 +27,7 @@ class HomeViewController: UIViewController {
     noHomeScreenMusicFoundView.isHidden = true
     
     setupMusicItemsTableViewConstraints()
-    navigationItem.title = "Welcome"
+    navigationItem.title = "For You"
     navigationItem.rightBarButtonItems = [
       UIBarButtonItem(
         image: UIImage(systemName: "magnifyingglass"),
