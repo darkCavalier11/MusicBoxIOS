@@ -12,6 +12,7 @@
 		951EC65F2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951EC65B2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataClass.swift */; };
 		951EC6602CCA707A00E77B2F /* MusicItemModel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951EC65A2CCA707A00E77B2F /* MusicItemModel+CoreDataProperties.swift */; };
 		95DD8DA32CD0EB6D00504BB5 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 95DD8DA22CD0EB6D00504BB5 /* Swinject */; };
+		95E32FEC2CE5BCCA003F5DB8 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 95E32FEB2CE5BCCA003F5DB8 /* README.md */; };
 		95E830FD2CDA88A1002ED5F9 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 95E830FC2CDA88A1002ED5F9 /* RxCocoa */; };
 		95E830FF2CDA88A1002ED5F9 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 95E830FE2CDA88A1002ED5F9 /* RxSwift */; };
 		95EB3D962CCB71B600350A9C /* MusicBox in Frameworks */ = {isa = PBXBuildFile; productRef = 95EB3D952CCB71B600350A9C /* MusicBox */; };
@@ -42,6 +43,7 @@
 		955C77A62CC4BD1E0066BE43 /* MusicBoxApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MusicBoxApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		955C77BF2CC4BD1F0066BE43 /* MusicBoxAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MusicBoxAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		955C77C92CC4BD1F0066BE43 /* MusicBoxAppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = MusicBoxAppUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		95E32FEB2CE5BCCA003F5DB8 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -107,6 +109,7 @@
 		955C779D2CC4BD1E0066BE43 = {
 			isa = PBXGroup;
 			children = (
+				95E32FEB2CE5BCCA003F5DB8 /* README.md */,
 				951EC6592CCA707A00E77B2F /* MusicItemModel+CoreDataClass.swift */,
 				951EC65A2CCA707A00E77B2F /* MusicItemModel+CoreDataProperties.swift */,
 				951EC65B2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataClass.swift */,
@@ -265,6 +268,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				95E32FEC2CE5BCCA003F5DB8 /* README.md in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
