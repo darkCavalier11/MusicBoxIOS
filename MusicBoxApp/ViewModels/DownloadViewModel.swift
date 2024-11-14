@@ -114,20 +114,20 @@ final class MusicDownloadViewModel:
       in: .userDomainMask
     )
       .first!
-      .appendingPathComponent(musicItem.title)
+      .appendingPathComponent(musicItem.musicId)
       .appendingPathExtension("m4a")
     do {
-      if FileManager.default.fileExists(atPath: newLocationURL.absoluteString) {
+      if FileManager.default.fileExists(atPath: newLocationURL.path()) {
         try FileManager.default.removeItem(at: newLocationURL)
       }
       try FileManager.default.moveItem(at: location, to: newLocationURL)
       
-      musicItemModelService.insertNewMusicItemModelWithLocalStorage(
-        musicItem: musicItem,
-        withLocalStorageURL: newLocationURL
+      musicItemModelService
+        .insertNewMusicItemModelWithLocalStorage(
+          musicItem: musicItem,
+          withLocalStorageURL: newLocationURL
       )
     } catch {
-      
       Self.logger.error("Error downloading music item \(musicItem.title): \(error.localizedDescription)")
     }
     
