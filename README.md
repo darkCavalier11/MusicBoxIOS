@@ -1,4 +1,4 @@
-![](https://i.imgur.com/2a0XLt3.png)
+![](https://i.imgur.com/mX7lW5a.png)
 #  MusicBoxApp
 
 The API for music from [MusicBoxSwift](https://github.com/darkCavalier11/MusicBoxSwift).
