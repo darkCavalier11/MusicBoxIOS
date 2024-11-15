@@ -26,6 +26,7 @@ class TabBarController: UITabBarController {
     label.translatesAutoresizingMaskIntoConstraints = false
     label.text = "Device not connected to internet."
     label.textColor = .lightText
+    label.font = .preferredCustomFont(forTextStyle: .caption1)
     return label
   }()
   
