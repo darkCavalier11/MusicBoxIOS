@@ -17,5 +17,6 @@ extension UIViewController: MusicItemTableViewActionDelegate {
   func startDownload(for musicItem: MusicItem) {
     let downloadViewModel = Container.sharedContainer.resolve(DownloadViewModel.self)!
     downloadViewModel.addToDownloadQueue(musicItem: musicItem)
+    self.showToast(text: "Started downloading \(musicItem.title)")
   }
 }
