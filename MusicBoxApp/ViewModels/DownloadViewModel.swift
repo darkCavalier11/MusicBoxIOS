@@ -70,6 +70,7 @@ final class MusicDownloadViewModel:
     guard let localStorageURL = musicItemModel.localStorageURL else {
       return
     }
+    Self.logger.info("Removing music item from local storage")
     try? FileManager.default.removeItem(at: localStorageURL)
   }
   
@@ -120,8 +121,10 @@ final class MusicDownloadViewModel:
       if FileManager.default.fileExists(atPath: newLocationURL.path()) {
         try FileManager.default.removeItem(at: newLocationURL)
       }
-      try FileManager.default.moveItem(at: location, to: newLocationURL)
+      let data = try Data(contentsOf: location)
       
+      FileManager.default.createFile(atPath: newLocationURL.path(), contents: data)
+      try FileManager.default.removeItem(at: location)
       musicItemModelService
         .insertNewMusicItemModelWithLocalStorage(
           musicItem: musicItem,

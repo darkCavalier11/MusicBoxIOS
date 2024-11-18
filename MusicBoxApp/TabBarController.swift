@@ -90,7 +90,7 @@ class TabBarController: UITabBarController {
     NSLayoutConstraint.activate([
       noInternetContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
       noInternetContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-      noInternetContainerView.bottomAnchor.constraint(equalTo: self.tabBar.topAnchor),
+      noInternetContainerView.bottomAnchor.constraint(equalTo: self.view.topAnchor),
       noInternetContainerView.heightAnchor.constraint(equalToConstant: 50),
       noInternetLabel.centerXAnchor.constraint(equalTo: noInternetContainerView.centerXAnchor),
       noInternetLabel.centerYAnchor.constraint(equalTo: noInternetContainerView.centerYAnchor),
