@@ -1,6 +1,6 @@
 ![](https://i.imgur.com/mX7lW5a.png)
 #  MusicBoxApp
-
+![](https://i.imgur.com/kR0odmq.png)
 The API for music from [MusicBoxSwift](https://github.com/darkCavalier11/MusicBoxSwift).
 
 The project uses a MVVM pattern. All the view controllers are inside `ViewControllers` directory and all view models inside `ViewModel` directory. There are few core data files to store musics locally and storing application metadata. `CoreDataModels` contain all the coredata files. This is a project for learning and fun. 
@@ -11,3 +11,5 @@ The project uses a MVVM pattern. All the view controllers are inside `ViewContro
 
 * All Illustrations used in the app are from [unDraw](https://undraw.co/).
 * The awesome app logo is from [Ilham Fitrotul Hayat](https://www.flaticon.com/authors/ilham-fitrotul-hayat)
+
+If you want to download the app, [drop a mail](mailto://sumit.pradhan65@gmail.com), and i you will receive a TestFlight link.

@@ -35,9 +35,9 @@ final class ToastView: UIView {
     super.init(frame: frame)
     addSubview(backView1)
     addSubview(label)
-    self.backgroundColor = .darkText
+    backView1.backgroundColor = .label
     self.layer.cornerRadius = 72
-    label.textColor = .white
+    label.textColor = .systemBackground
     NSLayoutConstraint.activate([
       label.topAnchor.constraint(equalTo: self.topAnchor, constant: 8),
       label.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: -8),

@@ -163,9 +163,10 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
     request.predicate = NSPredicate(format: "musicId == %@", musicItem.musicId)
     if let results = try? coreDataStack.managedObjectContext.fetch(request),
        results.count > 0,
-       let localStorageURL = results.first?.localStorageURL,
-       FileManager.default.fileExists(atPath: localStorageURL.absoluteString)
+       let relativeURL = results.last?.localStorageURL
     {
+      let localStorageURL = FileManager.default.documentURL.appendingPathComponent(relativeURL.path())
+      guard FileManager.default.fileExists(atPath: localStorageURL.path()) else { return }
       Self.logger.info("Found music in local storage for music item \(musicItem.title)")
       let playerItem = AVPlayerItem(url: localStorageURL)
       recentlyPlayedMusicItems.append((playerItem, musicItem))
@@ -294,6 +295,7 @@ class MusicPlayingViewModel: NSObject, PlayingViewModel {
           FileManager.default.fileExists(
             atPath: localStorageURL.path()
           ) {
+        Self.logger.info("Found \(musicItem.title) in local storage.")
         let playerItem = AVPlayerItem(url: musicItemModel.localStorageURL!)
         recentlyPlayedMusicItems[index] = (playerItem, musicItem)
         if index == 0 {

@@ -70,6 +70,7 @@ final class MusicDownloadViewModel:
     guard let localStorageURL = musicItemModel.localStorageURL else {
       return
     }
+    Self.logger.info("Removing music item from local storage")
     try? FileManager.default.removeItem(at: localStorageURL)
   }
   
@@ -109,23 +110,21 @@ final class MusicDownloadViewModel:
       return
     }
     let musicItem = downloadQueue[index].musicItem
-    let newLocationURL = FileManager.default.urls(
-      for: .documentDirectory,
-      in: .userDomainMask
-    )
-      .first!
-      .appendingPathComponent(musicItem.musicId)
-      .appendingPathExtension("m4a")
+    let pathComponent = "\(musicItem.musicId).m4a"
+    let newLocationURL = FileManager.default.documentURL
+      .appendingPathComponent(pathComponent)
     do {
       if FileManager.default.fileExists(atPath: newLocationURL.path()) {
         try FileManager.default.removeItem(at: newLocationURL)
       }
-      try FileManager.default.moveItem(at: location, to: newLocationURL)
+      let data = try Data(contentsOf: location)
       
+      FileManager.default.createFile(atPath: newLocationURL.path(), contents: data)
+      try FileManager.default.removeItem(at: location)
       musicItemModelService
         .insertNewMusicItemModelWithLocalStorage(
           musicItem: musicItem,
-          withLocalStorageURL: newLocationURL
+          withLocalStorageURL: URL(string: pathComponent) ?? FileManager.default.documentURL
       )
     } catch {
       Self.logger.error("Error downloading music item \(musicItem.title): \(error.localizedDescription)")
