@@ -11,3 +11,5 @@ The project uses a MVVM pattern. All the view controllers are inside `ViewContro
 
 * All Illustrations used in the app are from [unDraw](https://undraw.co/).
 * The awesome app logo is from [Ilham Fitrotul Hayat](https://www.flaticon.com/authors/ilham-fitrotul-hayat)
+
+If you want to download the app, [drop a mail](mailto://sumit.pradhan65@gmail.com), and i you will receive a TestFlight link.
