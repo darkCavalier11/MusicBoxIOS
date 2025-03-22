@@ -11,6 +11,7 @@
 		951EC65E2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951EC65C2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataProperties.swift */; };
 		951EC65F2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951EC65B2CCA707A00E77B2F /* MusicPlaylistModel+CoreDataClass.swift */; };
 		951EC6602CCA707A00E77B2F /* MusicItemModel+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 951EC65A2CCA707A00E77B2F /* MusicItemModel+CoreDataProperties.swift */; };
+		953BA8E72D8E900A00859A63 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 953BA8E62D8E900A00859A63 /* Kingfisher */; };
 		95DD8DA32CD0EB6D00504BB5 /* Swinject in Frameworks */ = {isa = PBXBuildFile; productRef = 95DD8DA22CD0EB6D00504BB5 /* Swinject */; };
 		95E32FEC2CE5BCCA003F5DB8 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 95E32FEB2CE5BCCA003F5DB8 /* README.md */; };
 		95E830FD2CDA88A1002ED5F9 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 95E830FC2CDA88A1002ED5F9 /* RxCocoa */; };
@@ -86,6 +87,7 @@
 				95EB3D962CCB71B600350A9C /* MusicBox in Frameworks */,
 				95E830FF2CDA88A1002ED5F9 /* RxSwift in Frameworks */,
 				95DD8DA32CD0EB6D00504BB5 /* Swinject in Frameworks */,
+				953BA8E72D8E900A00859A63 /* Kingfisher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -163,6 +165,7 @@
 				95DD8DA22CD0EB6D00504BB5 /* Swinject */,
 				95E830FC2CDA88A1002ED5F9 /* RxCocoa */,
 				95E830FE2CDA88A1002ED5F9 /* RxSwift */,
+				953BA8E62D8E900A00859A63 /* Kingfisher */,
 			);
 			productName = MusicBoxApp;
 			productReference = 955C77A62CC4BD1E0066BE43 /* MusicBoxApp.app */;
@@ -250,6 +253,7 @@
 				95EB3D942CCB71B100350A9C /* XCRemoteSwiftPackageReference "MusicBoxSwift" */,
 				95DD8DA12CD0EB2B00504BB5 /* XCRemoteSwiftPackageReference "Swinject" */,
 				95E830FB2CDA88A1002ED5F9 /* XCRemoteSwiftPackageReference "RxSwift" */,
+				953BA8E52D8E8F6A00859A63 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 955C77A72CC4BD1E0066BE43 /* Products */;
@@ -341,7 +345,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MusicBoxApp/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MusicBox;
-				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -370,7 +374,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MusicBoxApp/Resources/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = MusicBox;
-				INFOPLIST_KEY_LSApplicationCategoryType = "";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.music";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -621,6 +625,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		953BA8E52D8E8F6A00859A63 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.3.1;
+			};
+		};
 		95DD8DA12CD0EB2B00504BB5 /* XCRemoteSwiftPackageReference "Swinject" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/Swinject/Swinject";
@@ -648,6 +660,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		953BA8E62D8E900A00859A63 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 953BA8E52D8E8F6A00859A63 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
+		};
 		95DD8DA22CD0EB6D00504BB5 /* Swinject */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 95DD8DA12CD0EB2B00504BB5 /* XCRemoteSwiftPackageReference "Swinject" */;

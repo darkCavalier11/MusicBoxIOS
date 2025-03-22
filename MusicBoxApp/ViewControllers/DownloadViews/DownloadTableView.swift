@@ -28,6 +28,10 @@ class DownloadTableView: UITableView {
 class DownloadTableViewCell: UITableViewCell {
   private let disposeBag = DisposeBag()
   
+  override func prepareForReuse() {
+    centerImageView.imageURL = nil
+  }
+  
   private let centerImageView: UIAsyncImageView = {
     let imageView = UIAsyncImageView()
     imageView.translatesAutoresizingMaskIntoConstraints = false

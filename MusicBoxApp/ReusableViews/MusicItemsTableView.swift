@@ -8,6 +8,7 @@
 import UIKit
 import MusicBox
 import RxSwift
+import Kingfisher
 
 class MusicItemsTableView: UITableView {
   static let reusableIdentifier = "MusicItemTableViewCell"
@@ -87,6 +88,10 @@ class MusicItemTableViewCell: UITableViewCell {
     return imageView
   }()
   
+  override func prepareForReuse() {
+    musicThumbnail.image = nil
+  }
+  
   private lazy var musicTitle: UILabel = {
     let label = UILabel()
     label.translatesAutoresizingMaskIntoConstraints = false
@@ -127,15 +132,11 @@ class MusicItemTableViewCell: UITableViewCell {
       musicTitle.text = musicItem.title
       musicArtistTitle.text = musicItem.publisherTitle
       musicDuration.text = musicItem.runningDurationInSeconds.convertToDuration()
-
-      DispatchQueue.global().async { [weak self] in
-        guard let url = URL(string: musicItem.smallestThumbnail) else { return }
-        guard let imageData = try? Data(contentsOf: url) else { return }
-        DispatchQueue.main.async {
-          let image = UIImage(data: imageData)
-          self?.musicThumbnail.image = image
-        }
-      }
+      
+      guard let url = URL(string: musicItem.smallestThumbnail) else { return }
+      musicThumbnail
+        .kf
+        .setImage(with: url)
     }
   }
     

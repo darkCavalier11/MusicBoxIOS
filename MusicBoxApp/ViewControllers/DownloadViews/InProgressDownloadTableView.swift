@@ -9,6 +9,7 @@ import UIKit
 import MusicBox
 import RxSwift
 import SwiftUI
+import Kingfisher
 
 class InProgressDownloadTableView: UITableView {
   static let reusableIdentifier = "InProgressDownloadTableViewCell"
@@ -49,15 +50,10 @@ class InProgressDownloadTableViewCell: UITableViewCell {
       musicArtistTitle.text = musicItem.publisherTitle
       musicDuration.text = musicItem.runningDurationInSeconds.convertToDuration()
       
-      DispatchQueue.global().async { [weak self] in
-        guard let url = URL(string: musicItem.smallestThumbnail) else { return }
-        guard let imageData = try? Data(contentsOf: url) else { return }
-        DispatchQueue.main.async {
-          let image = UIImage(data: imageData)
-          self?.musicThumbnail.image = image
-        }
+      if let url = URL(string: musicItem.smallestThumbnail) {
+        musicThumbnail.kf.setImage(with: url)
       }
-      
+            
       guard let fractionDownloaded = musicDownloadItem?.fractionDownloaded else { return }
       fractionDownloaded
         .bind { [weak self] progress in
